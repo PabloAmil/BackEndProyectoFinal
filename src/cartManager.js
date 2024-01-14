@@ -1,4 +1,6 @@
 const productManager = require("../src/productManager");
+const fs = require('fs');
+const path = require('path');
 
 let carts = [];
 let id = 0;
@@ -26,7 +28,6 @@ class CartCreator {
   addProductToCart = async (productId) => {
     let  { id } = await productManager.getProductsById(productId);
     let productIndex = this.products.findIndex((product) => product.product === id);
-
     if (productIndex !== -1) {
       this.products[productIndex].quantity++;
     } else {
@@ -35,13 +36,10 @@ class CartCreator {
         quantity: 1
       })
     }
-
-    //saveCartsInDataBase();
   }
-
 }
 
-const findCart = (id, productId) => {
+const findCart = async (id, productId) => {
 
   // getCartsFromDataBase()
 
@@ -49,7 +47,8 @@ const findCart = (id, productId) => {
   productId = JSON.parse(productId);
 
   let cart = carts.find((cart) => cart.id === id);
-  cart.addProductToCart(productId);
+  await cart.addProductToCart(productId);
+  await saveCartsInDataBase(carts);
 }
 
 
@@ -57,15 +56,21 @@ const findCart = (id, productId) => {
 
 // }
 
-// const saveCartsInDataBase = () => {
+const saveCartsInDataBase = async (carts) => {
 
-// }
+  try {
+  await fs.promises.writeFile(path.join(__dirname, 'carts.txt'), JSON.stringify(carts));
+  } catch (e) {
+    console.log(e)
+  }
+}
 
 module.exports = {
   CartCreator,
   carts,
   id,
   getCartProducts,
-  findCart
+  findCart,
+  saveCartsInDataBase
 }
 

@@ -137,8 +137,8 @@ const readDataBase = async () => {
   }
 }
 
-const writeDataBase = async (newProductsArray) => {
-  await fs.promises.writeFile(path.join(__dirname, 'products.txt'), JSON.stringify(newProductsArray));
+const writeDataBase = async (ProductsArray) => {
+  await fs.promises.writeFile(path.join(__dirname, 'products.txt'), JSON.stringify(ProductsArray));
 }
 
 module.exports = { getProducts, showXnumberOfProducts, getProductsById, createNewProduct, updateProducts, deleteProduct };
