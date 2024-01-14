@@ -3,7 +3,7 @@ const router = express.Router();
 const CartManager = require("../src/cartManager");
 
 router.get("/", (req, res)=> {
-  res.status(200).send('hola');
+  res.status(200).send(CartManager.carts);
 })
 
 router.get("/:cid", async (req, res) => {
@@ -17,7 +17,6 @@ router.get("/:cid", async (req, res) => {
     res.status(400).send('Carrito inexistente');
   }
 })
-
 
 router.post("/", (req, res) => {
 
@@ -33,8 +32,7 @@ router.post("/:cid/products/:pid", (req, res) => {
   const cartId = req.params.cid;
   const productId = req.params.pid;
 
-  CartManager.findCart(cartId, productId); // encuentra el cart
-
+  CartManager.findCart(cartId, productId); 
   res.send({cartId, productId})
 })
 

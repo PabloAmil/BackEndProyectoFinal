@@ -24,19 +24,17 @@ class CartCreator {
   }
   products = [];
   addProductToCart = async (productId) => {
-
     let  { id } = await productManager.getProductsById(productId);
+    let productIndex = this.products.findIndex((product) => product.product === id);
 
-    // crear metodo para agregar de a 1
-
-
-    this.products.push({
-      product: id,
-      quantity: 1
-    })
-
-    console.log(this.products)
-
+    if (productIndex !== -1) {
+      this.products[productIndex].quantity++;
+    } else {
+      this.products.push({
+        product: id,
+        quantity: 1
+      })
+    }
 
     //saveCartsInDataBase();
   }
@@ -55,7 +53,6 @@ const findCart = (id, productId) => {
 }
 
 
-
 // const getCartsFromDataBase = () => {
 
 // }
@@ -72,6 +69,3 @@ module.exports = {
   findCart
 }
 
-
-
-// tiene que buscar el cart, buscar el producto con ese id, extraerlo y guardarlo en un nuevo objeto dentro de ese cart
