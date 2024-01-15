@@ -11,7 +11,6 @@ const getCartProducts = async (cartId) => {
 
   cartId = JSON.parse(cartId);
   let cart = carts.find((cart) => cart.id === cartId);
-  
   if (cart) {
     return cart.products;
   } else {
@@ -21,20 +20,33 @@ const getCartProducts = async (cartId) => {
 
 class CartCreator {
 
-  constructor(id){
+  constructor(id) {
     this.id = id;
   }
   products = [];
+
   addProductToCart = async (productId) => {
-    let  { id } = await productManager.getProductsById(productId);
-    let productIndex = this.products.findIndex((product) => product.product === id);
-    if (productIndex !== -1) {
-      this.products[productIndex].quantity++;
-    } else {
-      this.products.push({
-        product: id,
-        quantity: 1
-      })
+
+    try {
+      let product = await productManager.getProductsById(productId);
+      if (!product) {
+        return false;
+      }
+      let id = product.id;
+      let productIndex = this.products.findIndex((product) => product.product === id);
+
+      if (productIndex !== -1) {
+        this.products[productIndex].quantity++;
+        return true;
+      } else {
+        this.products.push({
+          product: id,
+          quantity: 1
+        })
+        return true;
+      }
+    } catch (e) {
+      console.log(e);
     }
   }
 }
@@ -47,8 +59,18 @@ const findCart = async (id, productId) => {
   productId = JSON.parse(productId);
 
   let cart = carts.find((cart) => cart.id === id);
-  await cart.addProductToCart(productId);
-  await saveCartsInDataBase(carts);
+
+  if (cart) { 
+
+    let productAlsoExists = await cart.addProductToCart(productId);
+    if (productAlsoExists) {
+      
+      await saveCartsInDataBase(carts);
+      return true;
+    }
+  } else {
+    return false;
+  }
 }
 
 
@@ -59,7 +81,7 @@ const findCart = async (id, productId) => {
 const saveCartsInDataBase = async (carts) => {
 
   try {
-  await fs.promises.writeFile(path.join(__dirname, 'carts.txt'), JSON.stringify(carts));
+    await fs.promises.writeFile(path.join(__dirname, 'carts.txt'), JSON.stringify(carts));
   } catch (e) {
     console.log(e)
   }

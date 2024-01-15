@@ -2,18 +2,22 @@ const express = require("express");
 const router = express.Router();
 const CartManager = require("../src/cartManager");
 
-router.get("/", (req, res)=> {
+router.get("/", (req, res) => {
   res.status(200).send(CartManager.carts);
 })
 
 router.get("/:cid", async (req, res) => {
 
   let cid = req.params.cid;
-  let productsInCart =  await CartManager.getCartProducts(cid);
-  if (productsInCart) {
-    res.status(200).send(productsInCart)
-  } else {
-    res.status(400).send('Carrito inexistente');
+  try {
+    let productsInCart = await CartManager.getCartProducts(cid);
+    if (productsInCart) {
+      res.status(200).send(productsInCart);
+    } else {
+      res.status(400).send('Cart not found');
+    }
+  } catch (e) {
+    console.log(e);
   }
 })
 
@@ -30,8 +34,17 @@ router.post("/:cid/products/:pid", async (req, res) => {
 
   const cartId = req.params.cid;
   const productId = req.params.pid;
-  CartManager.findCart(cartId, productId); 
-  res.send(`product with id ${productId} added to cart ${cartId}`)
+
+  try {
+    let cart = await CartManager.findCart(cartId, productId);
+    if (cart) {
+      res.send(`product with id ${productId} added to cart ${cartId}`)
+    } else {
+      res.status(400).send(`cart not found or product does not exist`);
+    }
+  } catch (e) {
+    console.log(e);
+  }
 })
 
 

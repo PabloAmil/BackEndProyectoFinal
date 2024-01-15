@@ -32,16 +32,18 @@ const showXnumberOfProducts = async (limit) => {
 
 const getProductsById = async (id) => {
 
-  try { 
+  try {
     let products = await getProductsFromDataBase();
     let product = products.find((product) => product.id === id);
     if (product) {
       return product;
     }
-    console.log("Producto no encontrado");
-    return false;
+    else {
+      console.log("Product not found");
+      return false;
+    }
   } catch (e) {
-    console.log(e);
+    console.log(e)
   }
 }
 
@@ -78,7 +80,7 @@ const updateProducts = async (id, body) => {
       }
       return true;
     }
-  } catch(e) {
+  } catch (e) {
     console.log(e)
   }
 }
@@ -87,7 +89,7 @@ const updateProducts = async (id, body) => {
 
 const createNewProduct = async (product) => {
 
-  if(productHasAllKeys(product)) {
+  if (productHasAllKeys(product)) {
     let productToAdd = {
       ...product, id
     }
@@ -107,7 +109,7 @@ const productHasAllKeys = (product) => {
   const expectedKeys = ['title', 'description', 'price', 'code', 'stock', 'status', 'category'];
   const productKeys = Object.keys(product);
   if (expectedKeys.every((key) => productKeys.includes(key)) ||
-    productKeys.length === expectedKeys.length + 1) { 
+    productKeys.length === expectedKeys.length + 1) {
     return true;
   } else {
     return false;
