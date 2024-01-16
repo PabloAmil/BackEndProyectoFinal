@@ -26,24 +26,21 @@ router.post("/", async (req, res) => {
   const newCart = new CartManager.CartCreator(CartManager.id);
   CartManager.carts.push(newCart);
   CartManager.id = CartManager.id + 1;
-  await CartManager.saveCartsInDataBase(CartManager.carts);
+  //await CartManager.saveCartsInDataBase(CartManager.carts);
   res.send(CartManager.carts);
 })
 
 router.post("/:cid/products/:pid", async (req, res) => {
 
-  const cartId = req.params.cid;
-  const productId = req.params.pid;
+  const cartId = req.params.cid; // a un determinado cart
+  const productId = req.params.pid; // agregarle un determinado producto
 
-  try {
-    let cart = await CartManager.findCart(cartId, productId);
-    if (cart) {
-      res.send(`product with id ${productId} added to cart ${cartId}`)
-    } else {
-      res.status(400).send(`cart not found or product does not exist`);
-    }
-  } catch (e) {
-    console.log(e);
+  let addProduct = await CartManager.addxProductToxCart(cartId, productId);
+
+  if (addProduct) {
+    res.status(200).send(CartManager.carts);
+  } else {
+    res.status(400).send('operation failed');
   }
 })
 

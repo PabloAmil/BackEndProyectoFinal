@@ -24,55 +24,50 @@ class CartCreator {
     this.id = id;
   }
   products = [];
-
-  addProductToCart = async (productId) => {
-
-    try {
-      let product = await productManager.getProductsById(productId);
-      if (!product) {
-        return false;
-      }
-      let id = product.id;
-      let productIndex = this.products.findIndex((product) => product.product === id);
-
-      if (productIndex !== -1) {
-        this.products[productIndex].quantity++;
-        return true;
-      } else {
-        this.products.push({
-          product: id,
-          quantity: 1
-        })
-        return true;
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  }
 }
 
-const findCart = async (id, productId) => {
 
-  // getCartsFromDataBase()
 
-  id = JSON.parse(id);
-  productId = JSON.parse(productId);
+const addxProductToxCart = async (cartId, productId) => {
 
-  let cart = carts.find((cart) => cart.id === id);
+  let prodId = JSON.parse(productId)
+  let cart = await getCartById(cartId);
+  let product = await productManager.getProductsById(prodId)
 
-  if (cart) { 
+  if (cart !== false && product !== false) {
 
-    let productAlsoExists = await cart.addProductToCart(productId);
-    if (productAlsoExists) {
-      
-      await saveCartsInDataBase(carts);
-      return true;
-    }
+    let productAlreadyExists = checkIfProductExistsInCart(cart, product.id);
+    return true;
   } else {
     return false;
   }
 }
 
+const checkIfProductExistsInCart = (cart, prodId) => {
+
+  let productIndex = cart.products.findIndex((product) => product.product === prodId);
+  if (productIndex === -1) {
+    cart.products.push({
+      product: prodId,
+      quantity: 1
+    })
+  } else {
+    cart.products[productIndex].quantity++;
+  }
+}
+
+const getCartById = async (id) => {
+
+  // getCartsFromDataBase()
+  id = JSON.parse(id);
+  let cart = carts.find((cart) => cart.id === id);
+
+  if (cart) {
+    return cart;
+  } else {
+    return false;
+  }
+}
 
 // const getCartsFromDataBase = () => {
 
@@ -88,11 +83,10 @@ const saveCartsInDataBase = async (carts) => {
 }
 
 module.exports = {
-  CartCreator,
-  carts,
   id,
+  carts,
+  CartCreator,
   getCartProducts,
-  findCart,
-  saveCartsInDataBase
+  saveCartsInDataBase,
+  addxProductToxCart
 }
-

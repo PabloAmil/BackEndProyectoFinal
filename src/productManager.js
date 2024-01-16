@@ -5,7 +5,8 @@ let id = 0;
 const getProducts = async () => {
 
   try {
-    const products = await getProductsFromDataBase();
+    const products = await getProductsFromDa
+    taBase();
     return products;
   } catch (e) {
     console.log(e)
@@ -85,7 +86,6 @@ const updateProducts = async (id, body) => {
   }
 }
 
-// arreglar el tema ids para que no puedan repetirse
 
 const createNewProduct = async (product) => {
 
