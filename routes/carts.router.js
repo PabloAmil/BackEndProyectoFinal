@@ -6,8 +6,9 @@ async function startApp() {
   await cartManager.main();
 }
 
-router.get("/", (req, res) => {
-  res.status(200).send(CartManager.carts);
+router.get("/", async (req, res) => {
+  let storedCarts = await CartManager.getCartsFromDataBase()
+  res.status(200).send(storedCarts); 
 })
 
 router.get("/:cid", async (req, res) => {

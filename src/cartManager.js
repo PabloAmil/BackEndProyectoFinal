@@ -117,5 +117,6 @@ module.exports = {
   getCartProducts,
   saveCartsInDataBase,
   addxProductToxCart,
-  createAndAddNewCart 
+  createAndAddNewCart,
+  getCartsFromDataBase
 }

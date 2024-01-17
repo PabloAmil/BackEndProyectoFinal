@@ -50,10 +50,14 @@ const getProductsById = async (id) => {
 const getProductsFromDataBase = async () => {
 
   try {
-    const products = await fs.promises.readFile(path.join(__dirname, 'products.txt'), 'utf-8');
-    return JSON.parse(products);
+    let storedProducts = await fs.promises.readFile(path.join(__dirname, 'products.txt'), 'utf-8');
+    if (!storedProducts) {
+      return [];
+    }
+    return JSON.parse(storedProducts);
   } catch (e) {
-    console.log(e)
+    console.log(e);
+    return [];
   }
 }
 
@@ -127,9 +131,11 @@ const deleteProduct = async (id) => {
 }
 
 const readDataBase = async () => {
-
   try {
     const oldProducts = await fs.promises.readFile(path.join(__dirname, 'products.txt'), 'utf-8');
+    if (oldProducts.trim() === '') {
+      return [];
+    }
     let oldProductsArray = JSON.parse(oldProducts);
     return oldProductsArray;
   } catch (e) {
