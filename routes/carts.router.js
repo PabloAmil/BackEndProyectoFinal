@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
   const newCart = new CartManager.CartCreator(CartManager.id);
   CartManager.carts.push(newCart);
   CartManager.id = CartManager.id + 1;
-  //await CartManager.saveCartsInDataBase(CartManager.carts);
+  await CartManager.saveCartsInDataBase(CartManager.carts);
   res.send(CartManager.carts);
 })
 

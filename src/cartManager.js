@@ -7,7 +7,9 @@ let id = 0;
 
 const getCartProducts = async (cartId) => {
 
-  // getCartsFromDataBase()
+  // estos funcionan
+  // let oldCarts = await getCartsFromDataBase();
+  // console.log(oldCarts);
 
   cartId = JSON.parse(cartId);
   let cart = carts.find((cart) => cart.id === cartId);
@@ -26,8 +28,6 @@ class CartCreator {
   products = [];
 }
 
-
-
 const addxProductToxCart = async (cartId, productId) => {
 
   let prodId = JSON.parse(productId)
@@ -37,6 +37,7 @@ const addxProductToxCart = async (cartId, productId) => {
   if (cart !== false && product !== false) {
 
     let productAlreadyExists = checkIfProductExistsInCart(cart, product.id);
+    let save = await saveCartsInDataBase(carts);
     return true;
   } else {
     return false;
@@ -69,16 +70,22 @@ const getCartById = async (id) => {
   }
 }
 
-// const getCartsFromDataBase = () => {
-
-// }
+const getCartsFromDataBase = async () => {
+  try {
+    
+    let storedCarts = await fs.promises.readFile(path.join(__dirname, 'carts.txt'));
+    return JSON.parse(storedCarts);
+  }catch (e) {
+    console.log(e);
+  }
+}
 
 const saveCartsInDataBase = async (carts) => {
 
   try {
     await fs.promises.writeFile(path.join(__dirname, 'carts.txt'), JSON.stringify(carts));
   } catch (e) {
-    console.log(e)
+    console.log(e);
   }
 }
 
