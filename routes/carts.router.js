@@ -27,11 +27,8 @@ router.get("/:cid", async (req, res) => {
 
 router.post("/", async (req, res) => {
 
-  const newCart = new CartManager.CartCreator(CartManager.id);
-  CartManager.carts.push(newCart);
-  CartManager.id = CartManager.id + 1;
-  await CartManager.saveCartsInDataBase(CartManager.carts);
-  res.send(CartManager.carts);
+  let cartsCreated = await CartManager.createAndAddNewCart();
+  res.send(cartsCreated);
 })
 
 router.post("/:cid/products/:pid", async (req, res) => {

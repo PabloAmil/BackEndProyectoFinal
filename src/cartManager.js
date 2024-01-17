@@ -9,6 +9,7 @@ const getCartProducts = async (cartId) => {
 
   let oldCarts = await getCartsFromDataBase();
   carts = oldCarts;
+
   cartId = JSON.parse(cartId);
   let cart = carts.find((cart) => cart.id === cartId);
   if (cart) {
@@ -24,6 +25,25 @@ class CartCreator {
     this.id = id;
   }
   products = [];
+}
+
+const createAndAddNewCart = async () => {
+  const newCart = new CartCreator(id);
+  
+  let oldCarts = await getCartsFromDataBase();
+  carts = oldCarts;
+
+  let idExists = carts.find((cart) => cart.id === id) ;
+  if (idExists) {
+    const maxId = Math.max(...carts.map(cart => cart.id));
+    newCart.id = maxId + 1;
+    carts.push(newCart);
+  } else {
+    carts.push(newCart);
+    id = id + 1;
+  }
+  await saveCartsInDataBase(carts);
+  return carts;
 }
 
 const addxProductToxCart = async (cartId, productId) => {
@@ -70,8 +90,10 @@ const getCartById = async (id) => {
 
 const getCartsFromDataBase = async () => {
   try {
-
-    let storedCarts = await fs.promises.readFile(path.join(__dirname, 'carts.txt'));
+    let storedCarts = await fs.promises.readFile(path.join(__dirname, 'carts.txt'), 'utf-8');
+    if (!storedCarts) {
+      return [];
+    }
     return JSON.parse(storedCarts);
   } catch (e) {
     console.log(e);
@@ -94,5 +116,6 @@ module.exports = {
   CartCreator,
   getCartProducts,
   saveCartsInDataBase,
-  addxProductToxCart
+  addxProductToxCart,
+  createAndAddNewCart 
 }
