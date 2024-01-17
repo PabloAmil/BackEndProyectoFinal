@@ -5,8 +5,7 @@ let id = 0;
 const getProducts = async () => {
 
   try {
-    const products = await getProductsFromDa
-    taBase();
+    const products = await getProductsFromDataBase();
     return products;
   } catch (e) {
     console.log(e)
