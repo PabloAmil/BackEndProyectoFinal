@@ -2,15 +2,13 @@ const productManager = require("../src/productManager");
 const fs = require('fs');
 const path = require('path');
 
-let carts = [];
 let id = 0;
+let carts = [];
 
 const getCartProducts = async (cartId) => {
 
-  // estos funcionan
-  // let oldCarts = await getCartsFromDataBase();
-  // console.log(oldCarts);
-
+  let oldCarts = await getCartsFromDataBase();
+  carts = oldCarts;
   cartId = JSON.parse(cartId);
   let cart = carts.find((cart) => cart.id === cartId);
   if (cart) {
@@ -35,7 +33,6 @@ const addxProductToxCart = async (cartId, productId) => {
   let product = await productManager.getProductsById(prodId)
 
   if (cart !== false && product !== false) {
-
     let productAlreadyExists = checkIfProductExistsInCart(cart, product.id);
     let save = await saveCartsInDataBase(carts);
     return true;
@@ -44,7 +41,7 @@ const addxProductToxCart = async (cartId, productId) => {
   }
 }
 
-const checkIfProductExistsInCart = (cart, prodId) => {
+const checkIfProductExistsInCart = async (cart, prodId) => {
 
   let productIndex = cart.products.findIndex((product) => product.product === prodId);
   if (productIndex === -1) {
@@ -59,7 +56,8 @@ const checkIfProductExistsInCart = (cart, prodId) => {
 
 const getCartById = async (id) => {
 
-  // getCartsFromDataBase()
+  let oldCarts = await getCartsFromDataBase();
+  carts = oldCarts;
   id = JSON.parse(id);
   let cart = carts.find((cart) => cart.id === id);
 
@@ -72,11 +70,12 @@ const getCartById = async (id) => {
 
 const getCartsFromDataBase = async () => {
   try {
-    
+
     let storedCarts = await fs.promises.readFile(path.join(__dirname, 'carts.txt'));
     return JSON.parse(storedCarts);
-  }catch (e) {
+  } catch (e) {
     console.log(e);
+    return [];
   }
 }
 

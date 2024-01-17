@@ -2,6 +2,10 @@ const express = require("express");
 const router = express.Router();
 const CartManager = require("../src/cartManager");
 
+async function startApp() {
+  await cartManager.main();
+}
+
 router.get("/", (req, res) => {
   res.status(200).send(CartManager.carts);
 })
@@ -32,8 +36,8 @@ router.post("/", async (req, res) => {
 
 router.post("/:cid/products/:pid", async (req, res) => {
 
-  const cartId = req.params.cid; // a un determinado cart
-  const productId = req.params.pid; // agregarle un determinado producto
+  const cartId = req.params.cid; 
+  const productId = req.params.pid; 
 
   let addProduct = await CartManager.addxProductToxCart(cartId, productId);
 

@@ -8,8 +8,8 @@ app.use("/api/carts", routerCarts);
 app.use("/api/products", routerProducts);
 
 
-app.get("/ping", (req, res) => {
-  res.send("pong");
+app.get("/", (req, res) => {
+  res.status(200).send("coder house proyecto final - primera entrega");
 })
 
 

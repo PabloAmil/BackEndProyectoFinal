@@ -86,7 +86,6 @@ const updateProducts = async (id, body) => {
   }
 }
 
-
 const createNewProduct = async (product) => {
 
   if (productHasAllKeys(product)) {

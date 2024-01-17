@@ -1,1 +1,1 @@
-[{"products":[{"product":2,"quantity":2}],"id":0},{"products":[],"id":1}]
+[{"products":[],"id":0}]
