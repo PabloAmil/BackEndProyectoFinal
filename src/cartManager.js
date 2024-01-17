@@ -90,7 +90,7 @@ const getCartById = async (id) => {
 
 const getCartsFromDataBase = async () => {
   try {
-    let storedCarts = await fs.promises.readFile(path.join(__dirname, 'carts.txt'), 'utf-8');
+    let storedCarts = await fs.promises.readFile(path.join(__dirname, 'carts.json'), 'utf-8');
     if (!storedCarts) {
       return [];
     }
@@ -104,7 +104,7 @@ const getCartsFromDataBase = async () => {
 const saveCartsInDataBase = async (carts) => {
 
   try {
-    await fs.promises.writeFile(path.join(__dirname, 'carts.txt'), JSON.stringify(carts));
+    await fs.promises.writeFile(path.join(__dirname, 'carts.json'), JSON.stringify(carts));
   } catch (e) {
     console.log(e);
   }

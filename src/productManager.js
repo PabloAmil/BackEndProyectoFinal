@@ -5,7 +5,7 @@ let id = 0;
 const getProducts = async () => {
 
   try {
-    const products = await getProductsFromDataBase();
+    const products = await readDataBase();
     return products;
   } catch (e) {
     console.log(e)
@@ -19,7 +19,7 @@ const showXnumberOfProducts = async (limit) => {
     return 'La cantidad debe ser un numero no menor a 0';
   }
   try {
-    let products = await getProductsFromDataBase();
+    let products = await readDataBase();
     if (convertedLimit <= 0) {
       return 'La cantidad debe ser un numero no menor a 0';
     }
@@ -33,7 +33,7 @@ const showXnumberOfProducts = async (limit) => {
 const getProductsById = async (id) => {
 
   try {
-    let products = await getProductsFromDataBase();
+    let products = await readDataBase();
     let product = products.find((product) => product.id === id);
     if (product) {
       return product;
@@ -44,20 +44,6 @@ const getProductsById = async (id) => {
     }
   } catch (e) {
     console.log(e)
-  }
-}
-
-const getProductsFromDataBase = async () => {
-
-  try {
-    let storedProducts = await fs.promises.readFile(path.join(__dirname, 'products.txt'), 'utf-8');
-    if (!storedProducts) {
-      return [];
-    }
-    return JSON.parse(storedProducts);
-  } catch (e) {
-    console.log(e);
-    return [];
   }
 }
 
@@ -74,7 +60,7 @@ const updateProducts = async (id, body) => {
       }
       product = updatedProduct;
 
-      let oldProducts = await getProductsFromDataBase();
+      let oldProducts = await readDataBase();
       let index = oldProducts.findIndex((prod) => prod.id === product.id);
       if (index !== -1) {
         oldProducts[index] = product;
@@ -132,7 +118,7 @@ const deleteProduct = async (id) => {
 
 const readDataBase = async () => {
   try {
-    const oldProducts = await fs.promises.readFile(path.join(__dirname, 'products.txt'), 'utf-8');
+    const oldProducts = await fs.promises.readFile(path.join(__dirname, 'products.json'), 'utf-8');
     if (oldProducts.trim() === '') {
       return [];
     }
@@ -144,7 +130,7 @@ const readDataBase = async () => {
 }
 
 const writeDataBase = async (ProductsArray) => {
-  await fs.promises.writeFile(path.join(__dirname, 'products.txt'), JSON.stringify(ProductsArray));
+  await fs.promises.writeFile(path.join(__dirname, 'products.json'), JSON.stringify(ProductsArray));
 }
 
 module.exports = { getProducts, showXnumberOfProducts, getProductsById, createNewProduct, updateProducts, deleteProduct };
