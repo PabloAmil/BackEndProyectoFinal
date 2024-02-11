@@ -7,12 +7,13 @@
 <body>
   <ul id="messages">
     {{#each messages}}
-      <li>{{this.userMail}}</li>
+      <p>{{this.userMail}}</p>
+      <li>{{this.message}}</li>
     {{/each}}
   </ul>
   <form action="/api/messages" method="post" id="form"> 
-    <input type="text" name="userMail">
-    <input id="input" name="message" autocomplete="off"><button>Send</button>
+    <input id="input-userMail" type="text" name="userMail" placeholder="User">
+    <input id="input-message" type="text" name="message" autocomplete="off" placeholder="Message"><button>Send</button>
   </form>
 
   <script src="/socket.io/socket.io.js"></script>

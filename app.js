@@ -16,10 +16,7 @@ import productsRouter from "./routes/mongoRoutes/mongoProductsRouter.js";
 import cartsRouter from "./routes/mongoRoutes/mongoCartsRouter.js";
 import chatRouter from "./routes/mongoRoutes/mongoMessagesRouter.js"
 
-
 import messagesInDb from "./src/dao/mongoDbManagers/messagesDbManager.js";
-
-
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -54,10 +51,11 @@ app.use((req, res, next)=> {
 io.on('connection', (socket) => {
   console.log('User connected');
 
-  socket.on('message', async (message) => {
+  socket.on('message', async (data) => {
 
-    await messagesInDb.add(message);
-    io.emit("message", message);
+    //console.log('este es el mensaje ', data); 
+    await messagesInDb.add(data.userMail, data.message); 
+    io.emit("message", data);
   })
 
   socket.on('disconnect', () => {

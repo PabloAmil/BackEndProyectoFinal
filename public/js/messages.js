@@ -1,25 +1,37 @@
-//import messagesInDb from "../../src/dao/mongoDbManagers/messagesDbManager";
 const socket = io();
 
 const form = document.getElementById('form');
-const input = document.getElementById('input');
+const messageInput = document.getElementById('input-message');
+const userInput = document.getElementById('input-userMail')
 const messages = document.getElementById('messages');
+
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
-  if (input.value) {
-    socket.emit('message', input.value);
-    input.value = '';
+
+  if (messageInput.value) { 
+
+    let data =  {
+      message: messageInput.value,
+      userMail: userInput.value
+    };
+    socket.emit('message', data); 
+    messageInput.value = '';
   }
 });
 
-socket.on('message', (message) => {
+socket.on('message', (data) => {
 
+  const userName = document.createElement('p')
   const item = document.createElement('li');
-  item.textContent = message;
+  userName.textContent = data.userMail;
+  item.textContent = data.message;
+
+  messages.appendChild(userName);
   messages.appendChild(item);
   window.scrollTo(0, document.body.scrollHeight);
 });
+
 
 
 
