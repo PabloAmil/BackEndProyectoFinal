@@ -8,10 +8,11 @@
 
 3 - probar las rutas para los productos - CHECK
 
-6 - crear un manager para los mensajes - CHECK
+6 - crear un manager para los mensajes - 
 
 7 - aplicar logica de websockets para los mensajes - CHECK
 
+8 - crear una verificacion de usuario - 
 
 
 9 - crear css 

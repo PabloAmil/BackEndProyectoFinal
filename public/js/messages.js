@@ -1,5 +1,5 @@
+//import messagesInDb from "../../src/dao/mongoDbManagers/messagesDbManager";
 const socket = io();
-import messagesInDb from "../../src/dao/mongoDbManagers/messagesDbManager";
 
 const form = document.getElementById('form');
 const input = document.getElementById('input');
@@ -13,10 +13,13 @@ form.addEventListener('submit', (e) => {
   }
 });
 
-socket.on('message', (msg) => {
+socket.on('message', (message) => {
+
   const item = document.createElement('li');
-  item.textContent = msg;
+  item.textContent = message;
   messages.appendChild(item);
   window.scrollTo(0, document.body.scrollHeight);
 });
+
+
 

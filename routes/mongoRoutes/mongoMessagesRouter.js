@@ -4,15 +4,15 @@ import MessagesDAO from "../../src/dao/mongoDbManagers/messagesDbManager.js";
 const router = Router();
 
 router.get("/", async (req, res) => {
-  const messages = await MessagesDAO.getAll();
-  res.render("chat", { messages });
-});
 
-router.post("/", async (req, res) => {
-  const { userMail, message } = req.body;
+  try {
+    const messages = await MessagesDAO.getAll();
+    console.log(messages);
+    res.render("chat", { messages });
+  } catch (e) {
+    console.log(`Cannot get messages`, e)
+  }
+})
 
-  await MessagesDAO.add(userMail, message);
-  res.redirect("/api/messages");
-});
 
 export default router;

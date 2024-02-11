@@ -16,6 +16,11 @@ import productsRouter from "./routes/mongoRoutes/mongoProductsRouter.js";
 import cartsRouter from "./routes/mongoRoutes/mongoCartsRouter.js";
 import chatRouter from "./routes/mongoRoutes/mongoMessagesRouter.js"
 
+
+import messagesInDb from "./src/dao/mongoDbManagers/messagesDbManager.js";
+
+
+
 const app = express();
 const httpServer = http.createServer(app);
 const io = new Server(httpServer);
@@ -34,7 +39,6 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/messages", chatRouter)
 
-
 // fs routes
 // app.use("/api/products", routerProducts);
 // app.use("/api/carts", routerCarts);
@@ -50,9 +54,15 @@ app.use((req, res, next)=> {
 io.on('connection', (socket) => {
   console.log('User connected');
 
-  socket.on('message', (msg) => {
-    io.emit("message", msg)
+  socket.on('message', async (message) => {
+
+    await messagesInDb.add(message);
+    io.emit("message", message);
   })
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
 })
 
 mongoose.connect("mongodb://localhost:27017/ecommerce");
