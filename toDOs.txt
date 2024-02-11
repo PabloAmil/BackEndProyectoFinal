@@ -1,22 +1,22 @@
 1 - crear rutas para el cart - CHECK
 2 - ver que funcionen - CHECK
 
+4 - agregar metodo para borrar un producto - CHECK
+
+
+5 - agregar metodos para modificar productos y sus paginas
+
 3 - probar las rutas para los productos - 
-
-
-4 - mostrar en los .handlebars los carts y productos
-5 - agregar metodos para modificar productos y carts y sus paginas
-
-
 
 6 - crear un manager para los mensajes
 7 - aplicar logica de websockets para los mensajes
 
 
-8 - crear css 
-9 - correr en atlas
 
-10-agregar filtros 
+9 - crear css 
+10 - correr en atlas
+
+11-agregar filtros 
 
 
-11- opcional - modificar el contenido de carts para poder meterle cosas adentro
+12- opcional - modificar el contenido de carts para poder meterle cosas adentro

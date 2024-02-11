@@ -1,0 +1,19 @@
+<form action="/api/products/{{id}}" method="put" enctype="multipart/form-data">
+    <input type="text" name="title" placeholder="Title">
+    <br>
+    <textarea name="description" placeholder="Product description"></textarea>
+    <br>
+    <input type="text" name="code" placeholder="Product code">
+    <br>
+    <input type="text" name="price" placeholder="Product price">
+    <br>
+    <input type="text" name="status" placeholder="Product status">
+    <br>
+    <input type="text" name="stock" placeholder="Product stock">
+    <br>
+    <input type="text" name="category" placeholder="Product category">
+    <br>
+    <input type="file" name="image">
+    <br>
+    <input type="hidden" name="id" value={{id}}>
+</form>
