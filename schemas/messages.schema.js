@@ -4,7 +4,6 @@ const messagesSchema = new mongoose.Schema({
 
   userMail: String, 
   message: String,
-  required: true,
 
 });
 

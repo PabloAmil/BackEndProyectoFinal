@@ -1,4 +1,5 @@
 const socket = io();
+import messagesInDb from "../../src/dao/mongoDbManagers/messagesDbManager";
 
 const form = document.getElementById('form');
 const input = document.getElementById('input');

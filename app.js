@@ -34,6 +34,7 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/messages", chatRouter)
 
+
 // fs routes
 // app.use("/api/products", routerProducts);
 // app.use("/api/carts", routerCarts);
@@ -49,16 +50,12 @@ app.use((req, res, next)=> {
 io.on('connection', (socket) => {
   console.log('User connected');
 
-
   socket.on('message', (msg) => {
-    console.log(msg)
-    //io.emit("message", msg)
+    io.emit("message", msg)
   })
 })
 
-
 mongoose.connect("mongodb://localhost:27017/ecommerce");
-
 httpServer.listen(8080, () => console.log("now listening to port 8080"));
 
 

@@ -22,7 +22,6 @@ router.get("/", async (req, res) => {
 router.get("/admin-update/:id", async (req, res) => {
 
   let id = req.params.id;
-
   res.render("productUpdate", {id});
 })
 

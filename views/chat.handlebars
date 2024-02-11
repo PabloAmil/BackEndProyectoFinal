@@ -2,15 +2,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Messages</title>
 </head>
 <body>
-  <ul id="messages"></ul>
-  <form id="form" action="">
-    <input id="input" autocomplete="off"><button>Send</button>
+  <ul id="messages">
+    {{#each messages}}
+      <li>{{this.message}}</li>
+    {{/each}}
+  </ul>
+  <form action="/api/messages" method="post" id="form"> 
+    <input type="text" name="userMail">
+    <input id="input" name="message" autocomplete="off"><button>Send</button>
   </form>
 
   <script src="/socket.io/socket.io.js"></script>
+  
   <script src="/js/messages.js"></script>
 </body>
 </html>
+
