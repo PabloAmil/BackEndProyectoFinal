@@ -4,6 +4,8 @@ import upload from "../../utils/upload.middlewares.js";
 
 const router = Router();
 
+
+// get products
 router.get("/", async (req, res) => {
   let withStock = req.query.stock;
   let products;
@@ -14,14 +16,18 @@ router.get("/", async (req, res) => {
     products = await ProductsDAO.getAllWithStock();
   }
   
-  res.render("products", { products });
+  res.render("products", { 
+    style: 'products.css',
+    products });
 })
 
 
+// create product
 router.get("/new", (req, res) => {
   res.render("new-product");
 })
 
+// get get product by id
 router.get("/:id", async (req, res) => {
 
   let id = req.params.id;
@@ -49,11 +55,14 @@ router.post("/", upload.single('image'), async (req, res)=>{
   res.redirect("/");
 })
 
+// delete product
 router.delete("/delete/:id", async (req, res) => {
   try {
     let id = req.params.id;
     if (!id) {
-      return res.render("products");
+      return res.render("products", {
+        style: '/css/styles.css'
+      });
     }
     await ProductsDAO.remove(id);
     res.json({ success: true, message: 'Product deletion success' });
@@ -63,6 +72,8 @@ router.delete("/delete/:id", async (req, res) => {
   }
 })
 
+
+// update product
 router.get("/product-edit/:id", async (req, res) => {
 
   let id = req.params?.id; 

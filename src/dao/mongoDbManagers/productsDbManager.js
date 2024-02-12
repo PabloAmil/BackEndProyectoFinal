@@ -7,7 +7,7 @@ class ProductsInDb {
     try {
       return Products.find().lean();
     } catch (e) {
-      console.log('Error al traer los productos' + e);
+      console.log('Error al traer los productos');
     }
   }
 
@@ -15,7 +15,7 @@ class ProductsInDb {
     try {
       return Products.find({ stock: { $gt: 0 } }).lean();
     } catch (e) {
-      console.log('error while attempting to retrieve the products' + e);
+      console.log('error while attempting to retrieve the products');
     }
   }
 
@@ -23,7 +23,7 @@ class ProductsInDb {
     try {
       return Products.findOne({ _id: id }).lean();
     } catch (e) {
-      console.log(`error while attempting to retrieve the product  ${id}` + e);
+      console.log(`error while attempting to retrieve the product  ${id}`);
     }
   }
 

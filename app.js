@@ -26,8 +26,6 @@ app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname,'/views'));
 
-app.use(express.static('public'));
-
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static('public'));
@@ -63,8 +61,8 @@ io.on('connection', (socket) => {
   });
 })
 
-//mongoose.connect("mongodb://localhost:27017/ecommerce");
-mongoose.connect("mongodb+srv://pabloamil91:UV3JvqPcG41yKbnu@cluster0.ea2y0wr.mongodb.net/?retryWrites=true&w=majority");
+mongoose.connect("mongodb://localhost:27017/ecommerce");
+//mongoose.connect("mongodb+srv://pabloamil91:UV3JvqPcG41yKbnu@cluster0.ea2y0wr.mongodb.net/?retryWrites=true&w=majority");
 
 httpServer.listen(8080, () => console.log("now listening to port 8080"));
 
