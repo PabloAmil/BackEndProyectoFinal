@@ -96,7 +96,7 @@ const getCartsFromDataBase = async () => {
     }
     return JSON.parse(storedCarts);
   } catch (e) {
-    //console.log(e);
+    console.log(e);
     return [];
   }
 }
@@ -106,7 +106,7 @@ const saveCartsInDataBase = async (carts) => {
   try {
     await fs.promises.writeFile(path.join(__dirname, 'carts.json'), JSON.stringify(carts));
   } catch (e) {
-    //console.log(e);
+    console.log(e);
   }
 }
 

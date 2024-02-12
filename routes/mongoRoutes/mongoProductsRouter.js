@@ -17,11 +17,6 @@ router.get("/", async (req, res) => {
   res.render("products", { products });
 })
 
-// router.get("/admin-update/:id", async (req, res) => {
-
-//   let id = req.params.id;
-//   res.render("productUpdate", {id});
-// })
 
 router.get("/new", (req, res) => {
   res.render("new-product");
@@ -98,14 +93,9 @@ router.post("/admin-update/:id", upload.single('image'), async (req, res) => {
   let product = req.body; 
   let id = req.params.id;
 
-  //console.log(id)
-
   let data = {
     ...product, filename
   };
-
-  ////console.log(data);
-
   try {
     if (!id) {
       return res.render("products");
@@ -120,7 +110,3 @@ router.post("/admin-update/:id", upload.single('image'), async (req, res) => {
 })
 
 export default router;
-
-
-
-// https://github.com/PabloAmil/BarckEndProyectoFinal

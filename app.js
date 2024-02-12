@@ -49,17 +49,17 @@ app.use((req, res, next)=> {
 });
 
 io.on('connection', (socket) => {
-  //console.log('User connected');
+  console.log('User connected');
 
   socket.on('message', async (data) => {
 
-    ////console.log('este es el mensaje ', data); 
+
     await messagesInDb.add(data.userMail, data.message); 
     io.emit("message", data);
   })
 
   socket.on('disconnect', () => {
-    //console.log('User disconnected');
+    console.log('User disconnected');
   });
 })
 
