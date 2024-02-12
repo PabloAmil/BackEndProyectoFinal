@@ -17,7 +17,7 @@
 
 9 - crear css 
 
-10 - correr en atlas 
+10 - correr en atlas - CHECK
 
 11-agregar filtros 
 
