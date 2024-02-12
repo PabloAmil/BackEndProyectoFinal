@@ -1,19 +1,23 @@
-<form action="/api/products/{{id}}" method="put" enctype="multipart/form-data">
-    <input type="text" name="title" placeholder="Title">
+<form action="/api/products/admin-update/{{id}}" method="post" enctype="multipart/form-data">
+    <input type="text" name="title" placeholder="Title" value={{title}}>
     <br>
-    <textarea name="description" placeholder="Product description"></textarea>
+    <textarea name="description" placeholder="Product description" value={{description}}></textarea>
     <br>
-    <input type="text" name="code" placeholder="Product code">
+    <input type="text" name="code" placeholder="Product code" value={{code}}>
     <br>
-    <input type="text" name="price" placeholder="Product price">
+    <input type="text" name="price" placeholder="Product price" value={{price}}>
     <br>
-    <input type="text" name="status" placeholder="Product status">
+    <input type="text" name="status" placeholder="Product status" value={{status}}>
     <br>
-    <input type="text" name="stock" placeholder="Product stock">
+    <input type="text" name="stock" placeholder="Product stock" value={{stock}}>
     <br>
-    <input type="text" name="category" placeholder="Product category">
+    <input type="text" name="category" placeholder="Product category" value={{category}}>
     <br>
     <input type="file" name="image">
     <br>
     <input type="hidden" name="id" value={{id}}>
+    <br>
+    <input type="submit" value="Create product">
+    <br>
+    <span>{{id}}</span>
 </form>

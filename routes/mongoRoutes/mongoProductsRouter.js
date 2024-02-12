@@ -4,10 +4,8 @@ import upload from "../../utils/upload.middlewares.js";
 
 const router = Router();
 
-
 router.get("/", async (req, res) => {
   let withStock = req.query.stock;
-  
   let products;
   
   if (withStock === undefined) {
@@ -19,11 +17,11 @@ router.get("/", async (req, res) => {
   res.render("products", { products });
 })
 
-router.get("/admin-update/:id", async (req, res) => {
+// router.get("/admin-update/:id", async (req, res) => {
 
-  let id = req.params.id;
-  res.render("productUpdate", {id});
-})
+//   let id = req.params.id;
+//   res.render("productUpdate", {id});
+// })
 
 router.get("/new", (req, res) => {
   res.render("new-product");
@@ -70,34 +68,56 @@ router.delete("/delete/:id", async (req, res) => {
   }
 })
 
+router.get("/product-edit/:id", async (req, res) => {
+
+  let id = req.params?.id; 
+
+  console.log(id);
+
+  if (!id) {
+    res.redirect("/");
+  }
+  let product = await ProductsDAO.getById(id);
+  if (!product) {
+    res.render("404");
+  }
+  res.render('productUpdate', {
+    title: product.title,
+    description: product.description,
+    price: product.price,
+    photo: product.photo,
+    isStock: product.stock > 0,
+    id: product._id
+  });
+})
 
 
-// router.put("/admin-update/:id", upload.single('image'), async (req, res) => {
+router.post("/admin-update/:id", upload.single('image'), async (req, res) => {
 
-//   let filename = req.file.filename;
-//   let product = req.body; 
-//   let id = req.params.id;
+  let filename = req.file.filename;
+  let product = req.body; 
+  let id = req.params.id;
 
-//   console.log(id)
+  //console.log(id)
 
-//   let data = {
-//     ...product, filename
-//   };
+  let data = {
+    ...product, filename
+  };
 
-//   console.log(data);
+  ////console.log(data);
 
-//   try {
-//     if (!id) {
-//       return res.render("products");
-//     }
+  try {
+    if (!id) {
+      return res.render("products");
+    }
 
-//     await ProductsDAO.update(id, data);
-//     res.json({ success: true, message: 'Product update success' });
-//   } catch (e) {
-//     console.error('Error while trying to delete product:', e);
-//     res.status(500).json({ success: false, message: 'Error while trying to update product' });
-//   }
-// })
+    await ProductsDAO.update(id, data);
+    res.json({ success: true, message: 'Product update success' });
+  } catch (e) {
+    console.error('Error while trying to delete product:', e);
+    res.status(500).json({ success: false, message: 'Error while trying to update product' });
+  }
+})
 
 export default router;
 

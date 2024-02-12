@@ -22,7 +22,7 @@ router.get("/:cid", async (req, res) => {
       res.status(400).send('Cart not found');
     }
   } catch (e) {
-    console.log(e);
+    //console.log(e);
   }
 })
 

@@ -7,10 +7,10 @@ router.get("/", async (req, res) => {
 
   try {
     const messages = await MessagesDAO.getAll();
-    //console.log("info mandada a chat ", messages);
+    ////console.log("info mandada a chat ", messages);
     res.render("chat", { messages });
   } catch (e) {
-    console.log(`Cannot get messages`, e)
+    //console.log(`Cannot get messages`, e)
   }
 })
 

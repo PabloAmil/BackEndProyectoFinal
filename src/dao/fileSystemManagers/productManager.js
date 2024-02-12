@@ -8,7 +8,7 @@ const getProducts = async () => {
     const products = await readDataBase();
     return products;
   } catch (e) {
-    console.log(e)
+    //console.log(e)
   }
 }
 
@@ -26,7 +26,7 @@ const showXnumberOfProducts = async (limit) => {
     let delimitedProducts = products.slice(0, convertedLimit);
     return delimitedProducts;
   } catch (e) {
-    console.log(e);
+    //console.log(e);
   }
 }
 
@@ -39,11 +39,11 @@ const getProductsById = async (id) => {
       return product;
     }
     else {
-      console.log("Product not found");
+      //console.log("Product not found");
       return false;
     }
   } catch (e) {
-    console.log(e)
+    //console.log(e)
   }
 }
 
@@ -71,7 +71,7 @@ const updateProducts = async (id, body) => {
       return true;
     }
   } catch (e) {
-    console.log(e)
+    //console.log(e)
   }
 }
 
@@ -112,7 +112,7 @@ const deleteProduct = async (id) => {
     oldProducts.splice(index, 1);
     writeDataBase(oldProducts);
   } catch (e) {
-    console.log(e);
+    //console.log(e);
   }
 }
 
@@ -125,7 +125,7 @@ const readDataBase = async () => {
     let oldProductsArray = JSON.parse(oldProducts);
     return oldProductsArray;
   } catch (e) {
-    console.log(e);
+    //console.log(e);
   }
 }
 

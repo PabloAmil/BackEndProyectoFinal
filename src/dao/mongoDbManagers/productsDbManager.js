@@ -7,7 +7,7 @@ class ProductsInDb {
     try {
       return Products.find().lean();
     } catch (e) {
-      console.log('Error al traer los productos' + e);
+      //console.log('Error al traer los productos' + e);
     }
   }
 
@@ -15,7 +15,7 @@ class ProductsInDb {
     try {
       return Products.find({ stock: { $gt: 0 } }).lean();
     } catch (e) {
-      console.log('error while attempting to retrieve the products' + e);
+      //console.log('error while attempting to retrieve the products' + e);
     }
   }
 
@@ -23,7 +23,7 @@ class ProductsInDb {
     try {
       return Products.findOne({ _id: id }).lean();
     } catch (e) {
-      console.log(`error while attempting to retrieve the product  ${id}` + e);
+      //console.log(`error while attempting to retrieve the product  ${id}` + e);
     }
   }
 
@@ -31,7 +31,7 @@ class ProductsInDb {
     try {
       return new Products({ title, description, code, price, status, stock, category, photo }).save();
     } catch (e) {
-      console.log(`error while attempting to add product` + e);
+      //console.log(`error while attempting to add product` + e);
     }
   }
 
@@ -39,7 +39,7 @@ class ProductsInDb {
     try {
       return Products.findOneAndUpdate({ _id: id }, data);
     } catch (e) {
-      console.log(`error while attempting to update the product ${id}`);
+      //console.log(`error while attempting to update the product ${id}`);
     }
   }
 
@@ -47,7 +47,7 @@ class ProductsInDb {
     try {
       return Products.findByIdAndDelete(id);
     } catch (e) {
-      console.log(`error while attempting to delete the product ${id}`);
+      //console.log(`error while attempting to delete the product ${id}`);
     }
   }
 }

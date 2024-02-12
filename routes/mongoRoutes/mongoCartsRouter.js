@@ -53,7 +53,7 @@ router.put("/:id", async (req, res)=> {
       payload: cart
     })
   } catch (e) {
-    console.log(`Failed to update Cart`);
+    //console.log(`Failed to update Cart`);
     res.status(500).send({
       status: 500,
       result: "Error",

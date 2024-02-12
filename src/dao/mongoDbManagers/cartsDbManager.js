@@ -5,7 +5,7 @@ class cartsInDb {
     try {
       return Carts.find().lean();
     } catch (e) {
-      console.log(`could not get carts`);
+      //console.log(`could not get carts`);
     }
   }
 
@@ -13,7 +13,7 @@ class cartsInDb {
     try {
       return Carts.findOne({ _id: id }).lean();
     } catch (e) {
-      console.log(`cart ${id} cannot be found`);
+      //console.log(`cart ${id} cannot be found`);
     }
   }
 
@@ -21,7 +21,7 @@ class cartsInDb {
     try {
       return new Carts({content}).save();
     } catch (e) {
-      console.log(`cart creation failed`);
+      //console.log(`cart creation failed`);
     }
   }
 
@@ -29,7 +29,7 @@ class cartsInDb {
     try {
       return Carts.findOneAndUpdate({ _id: id }, data);
     } catch (e) {
-      console.log(`cart update failed, cart id: ${id}`);
+      //console.log(`cart update failed, cart id: ${id}`);
     }
   }
 }
