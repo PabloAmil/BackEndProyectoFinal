@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bokor&family=Metal&family=Protest+Guerrilla&family=Roboto:wght@100;300&display=swap"
+        rel="stylesheet">
     <title>Products</title>
 </head>
 
@@ -11,7 +16,19 @@
 
     <ul>
         {{#each products}}
-        <li><a href="/api/products/{{this._id}}">{{this.title}}</a></li>
+        <li>
+            <a href="/api/products/{{this._id}}">
+                <div class="product-card">
+                    <div class="card-img">
+                        <img src="/images/products/{{this.photo}}" alt="">
+                    </div>
+                    <div class="card-dexcription">
+                        <h3>{{this.title}}</h3>
+                        <p>$ {{this.price}}</p>
+                    </div>
+                </div>
+            </a>
+        </li>
         {{/each}}
     </ul>
 </body>

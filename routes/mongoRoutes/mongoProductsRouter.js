@@ -27,7 +27,7 @@ router.get("/new", (req, res) => {
   res.render("new-product");
 })
 
-// get get product by id
+// get product by id
 router.get("/:id", async (req, res) => {
 
   let id = req.params.id;
