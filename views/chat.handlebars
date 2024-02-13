@@ -1,24 +1,36 @@
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Messages</title>
+  <title>Chat</title>
 </head>
+
 <body>
-  <ul id="messages">
-    {{#each messages}}
-      <p>{{this.userMail}}</p>
-      <li>{{this.message}}</li>
-    {{/each}}
-  </ul>
-  <form action="/api/messages" method="post" id="form"> 
-    <input id="input-userMail" type="text" name="userMail" placeholder="User">
-    <input id="input-message" type="text" name="message" autocomplete="off" placeholder="Message"><button>Send</button>
-  </form>
+
+  <div class="chat-container">
+
+    <div class="chat">
+      <ul id="messages">
+        {{#each messages}}
+        <p>{{this.userMail}}</p>
+        <li>{{this.message}}</li>
+        {{/each}}
+      </ul>
+    </div>
+
+    <div class="messages-container">
+      <form action="/api/messages" method="post" id="form" class="messages-form">
+        <input id="input-userMail" type="text" name="userMail" placeholder="Mail">
+        <input id="input-message" type="text" name="message" autocomplete="off"
+          placeholder="Message"><button>Send</button>
+      </form>
+    </div>
+
+  </div>
 
   <script src="/socket.io/socket.io.js"></script>
-  
   <script src="/js/messages.js"></script>
 </body>
-</html>
 
+</html>

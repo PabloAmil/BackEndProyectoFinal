@@ -7,7 +7,8 @@ router.get("/", async (req, res) => {
 
   try {
     const messages = await MessagesDAO.getAll();
-    res.render("chat", { messages });
+    res.render("chat", { messages, 
+    style: "chat.css" });
   } catch (e) {
     console.log(`Cannot get messages`, e)
   }

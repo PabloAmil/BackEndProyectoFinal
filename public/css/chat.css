@@ -1,0 +1,63 @@
+body {
+  background:  #113f67; 
+} 
+
+ul {
+  list-style: none;
+}
+
+li {
+  display: block;
+  list-style: none;
+}
+
+.chat {
+  background-color: #e7eaf6;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+}
+
+.chat li {
+  border-bottom: 1px solid grey;
+}
+
+.messages-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-left: 1px;
+}
+
+#input-userMail {
+  flex-shrink: 1;
+  height: 2rem;
+  border-top-left-radius: 10px; 
+  border-bottom-left-radius: 10px;  
+  outline: none;
+}
+
+#input-message {
+  flex-shrink: 0.5;
+  width: 100%;
+  height: 2rem;
+  outline: none;
+} 
+
+.messages-form {
+  width: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  
+}
+
+button {
+  height: 2rem;
+  background-color: black;
+  color: #e7eaf6;
+  border-top-right-radius: 10px; 
+  border-bottom-right-radius: 10px;
+  cursor: pointer;
+}

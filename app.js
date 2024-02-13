@@ -39,11 +39,15 @@ app.use("/api/messages", chatRouter)
 // app.use("/api/carts", routerCarts);
 
 app.get("/", (req, res) => {
-  res.render("home");
+  res.render("home", {
+    style: "home.css"
+  });
 })
 
 app.use((req, res, next)=> {
-  res.render("404")
+  res.render("404", {
+      style: "404.css"
+  })
 });
 
 io.on('connection', (socket) => {
@@ -61,8 +65,8 @@ io.on('connection', (socket) => {
   });
 })
 
-mongoose.connect("mongodb://localhost:27017/ecommerce");
-//mongoose.connect("mongodb+srv://pabloamil91:UV3JvqPcG41yKbnu@cluster0.ea2y0wr.mongodb.net/?retryWrites=true&w=majority");
+//mongoose.connect("mongodb://localhost:27017/ecommerce");
+mongoose.connect("mongodb+srv://pabloamil91:UV3JvqPcG41yKbnu@cluster0.ea2y0wr.mongodb.net/?retryWrites=true&w=majority");
 
 httpServer.listen(8080, () => console.log("now listening to port 8080"));
 

@@ -1,13 +1,38 @@
-<h1>{{title}}</h1>
+<html lang="en">
 
-<p>{{description}}</p>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bokor&family=Metal&family=Protest+Guerrilla&family=Roboto:wght@100;300&display=swap"
+    rel="stylesheet">
+  <title>{{title}}</title>
+</head>
 
-{{#if photo}}
-<center><img src="/images/products/{{photo}}"></center>
-{{/if}}
+<body>
 
-{{#if isStock}}
-<p>price: {{price}}</p>
-{{else}}
-<p>Out of stock</p>
-{{/if}}
+  <h1>Details</h1>
+  <div class="product-container">
+
+    <div class="photo-container">
+      {{#if photo}}
+      <img src="/images/products/{{photo}}">
+      {{/if}}
+    </div>
+
+    <div class="details-container">
+      <h3>{{title}}</h3>
+      <p>{{description}}</p>
+      {{#if isStock}}
+      <p>price: ${{price}}</p>
+      {{else}}
+      <p>Out of stock</p>
+      {{/if}}
+      <input type="submit" value="Buy"></input>
+    </div>
+  </div>
+</body>
+
+</html>

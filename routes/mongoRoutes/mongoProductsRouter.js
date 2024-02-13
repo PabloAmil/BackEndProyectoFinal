@@ -9,16 +9,17 @@ const router = Router();
 router.get("/", async (req, res) => {
   let withStock = req.query.stock;
   let products;
-  
+
   if (withStock === undefined) {
     products = await ProductsDAO.getAll();
   } else {
     products = await ProductsDAO.getAllWithStock();
   }
-  
-  res.render("products", { 
+
+  res.render("products", {
     style: 'products.css',
-    products });
+    products
+  });
 })
 
 
@@ -36,22 +37,26 @@ router.get("/:id", async (req, res) => {
   }
   let product = await ProductsDAO.getById(id);
   if (!product) {
-    res.render("404");
+    res.render('404', {
+      style: "404.css"
+    }
+    );
   }
   res.render('product', {
     title: product.title,
     description: product.description,
     price: product.price,
     photo: product.photo,
-    isStock: product.stock > 0
+    isStock: product.stock > 0,
+    style: 'product.css'
   });
 })
 
-router.post("/", upload.single('image'), async (req, res)=>{
+router.post("/", upload.single('image'), async (req, res) => {
   let filename = req.file.filename;
-  let product = req.body; 
+  let product = req.body;
 
-  await ProductsDAO.add( product.title, product.description, product.code, product.price, product.status, product.stock, product.category, filename);
+  await ProductsDAO.add(product.title, product.description, product.code, product.price, product.status, product.stock, product.category, filename);
   res.redirect("/");
 })
 
@@ -61,7 +66,7 @@ router.delete("/delete/:id", async (req, res) => {
     let id = req.params.id;
     if (!id) {
       return res.render("products", {
-        style: '/css/styles.css'
+        style: 'product.css'
       });
     }
     await ProductsDAO.remove(id);
@@ -76,7 +81,7 @@ router.delete("/delete/:id", async (req, res) => {
 // update product
 router.get("/product-edit/:id", async (req, res) => {
 
-  let id = req.params?.id; 
+  let id = req.params?.id;
 
   console.log(id);
 
@@ -85,7 +90,9 @@ router.get("/product-edit/:id", async (req, res) => {
   }
   let product = await ProductsDAO.getById(id);
   if (!product) {
-    res.render("404");
+    res.render("404", {
+      style: "404.css"
+    });
   }
   res.render('productUpdate', {
     title: product.title,
@@ -101,7 +108,7 @@ router.get("/product-edit/:id", async (req, res) => {
 router.post("/admin-update/:id", upload.single('image'), async (req, res) => {
 
   let filename = req.file.filename;
-  let product = req.body; 
+  let product = req.body;
   let id = req.params.id;
 
   let data = {
@@ -109,7 +116,10 @@ router.post("/admin-update/:id", upload.single('image'), async (req, res) => {
   };
   try {
     if (!id) {
-      return res.render("products");
+      return res.render("products", {
+        style: 'product.css'
+      }
+      );
     }
 
     await ProductsDAO.update(id, data);
