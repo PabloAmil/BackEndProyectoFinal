@@ -25,7 +25,9 @@ router.get("/", async (req, res) => {
 
 // create product
 router.get("/new", (req, res) => {
-  res.render("new-product");
+  res.render("new-product", {
+    style: 'new-product.css'
+  });
 })
 
 // get product by id
@@ -100,7 +102,8 @@ router.get("/product-edit/:id", async (req, res) => {
     price: product.price,
     photo: product.photo,
     isStock: product.stock > 0,
-    id: product._id
+    id: product._id,
+    style: 'product-update.css'
   });
 })
 

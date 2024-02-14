@@ -6,7 +6,7 @@ const router = Router();
 router.get('/', async (req, res) => {
   let carts = await CartsDAO.getAll();
 
-  res.render('carts', ({carts}));
+  res.render('carts', carts);
 })
 
 router.get('/new', async (req, res) => {
