@@ -85,7 +85,6 @@ router.get("/product-edit/:id", async (req, res) => {
 
   let id = req.params?.id;
 
-  console.log(id);
 
   if (!id) {
     res.redirect("/");
@@ -117,7 +116,9 @@ router.post("/admin-update/:id", upload.single('image'), async (req, res) => {
   let data = {
     ...product, filename
   };
+
   try {
+
     if (!id) {
       return res.render("products", {
         style: 'product.css'
