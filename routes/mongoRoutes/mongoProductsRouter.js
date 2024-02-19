@@ -1,20 +1,56 @@
-import { Router } from "express";
+import { Router, query } from "express";
 import ProductsDAO from "../../src/dao/mongoDbManagers/productsDbManager.js";
 import upload from "../../utils/upload.middlewares.js";
+import mongoose from "mongoose";
 
 const router = Router();
 
 
 // get products
 router.get("/", async (req, res) => {
-  let withStock = req.query.stock;
-  let products;
 
-  if (withStock === undefined) {
-    products = await ProductsDAO.getAll();
-  } else {
-    products = await ProductsDAO.getAllWithStock();
+  let page = parseInt(req.query.page);
+  if (!page) {
+    page = 1;
   }
+  let limit = parseInt(req.query.limit);
+  if (!limit) {
+    limit = 10;
+  }
+
+  let sort = req.query.sort; 
+  if (!sort) {
+    sort = -1;
+  } else {
+    if (sort === "asc") {
+      sort = 1;
+    } else if (sort === "desc") {
+      sort = -1;
+    } else {
+      sort = 1;
+    }
+  }
+  
+  let filter = {}
+  let category = req.query.category;
+
+  if (category) {
+    filter.category = category
+  }
+
+  let stock = req.query.stock; 
+  if (stock) {
+    filter.stock = stock;
+  }
+
+  let products = await ProductsDAO.paginate(filter, {page, limit, lean: true, sort: {price: sort}})
+
+  products.prevLink = products.hasPrevPage?`http://localhost:8080/api/products/page=${products.prevPage}`:'';
+  products.nextLink = products.hasNextPage?`http://localhost:8080/api/products/page=${products.nextPage}`:'';
+
+
+  //res.send(products);
+  products = products.docs;
 
   res.render("products", {
     style: 'products.css',
@@ -26,7 +62,7 @@ router.get("/", async (req, res) => {
 // create product
 router.get("/new", (req, res) => {
   res.render("new-product", {
-    style: 'new-product.css'
+    style: 'new-product.css',
   });
 })
 
@@ -85,6 +121,7 @@ router.get("/product-edit/:id", async (req, res) => {
 
   let id = req.params?.id;
 
+  console.log(id);
 
   if (!id) {
     res.redirect("/");
@@ -116,9 +153,7 @@ router.post("/admin-update/:id", upload.single('image'), async (req, res) => {
   let data = {
     ...product, filename
   };
-
   try {
-
     if (!id) {
       return res.render("products", {
         style: 'product.css'

@@ -62,5 +62,19 @@ router.put("/:id", async (req, res)=> {
   }
 })
 
+
+router.put("/:cartId/addProduct/:Productid", async (req, res) => { // una ruta de donde sacar los id
+
+  let cartId = req.params.cartId;
+  let productId = req.params.Productid; 
+
+  let cart = await CartsDAO.getCartById(cartId); // codigo real Carts.findOne({ _id: id }).lean();
+
+  cart.content.push({product: productId}); // agrego el producto
+
+  let result = await updateCart(cartId, cart) // busco el cart y lo actualizo con el contenido nuevo
+                                              // codigo real Carts.findOneAndUpdate({ _id: id }, data);
+})
+
 export default router;
 

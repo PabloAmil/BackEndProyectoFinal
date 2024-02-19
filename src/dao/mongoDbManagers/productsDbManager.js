@@ -1,5 +1,5 @@
 import Products from "../../../schemas/products.eschema.js";
-
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 class ProductsInDb {
 
@@ -50,6 +50,15 @@ class ProductsInDb {
       console.log(`error while attempting to delete the product ${id}`);
     }
   }
+
+  static async paginate(filter, options) {
+    try {
+      return Products.paginate(filter, options);
+    } catch (e) {
+      console.log('Products not found', e);
+    }
+  }
 }
+
 
 export default ProductsInDb;
