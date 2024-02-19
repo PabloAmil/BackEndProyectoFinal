@@ -5,7 +5,6 @@ const router = Router();
 
 router.get('/', async (req, res) => {
   let carts = await CartsDAO.getAll();
-
   res.render('carts', carts);
 })
 
@@ -17,22 +16,20 @@ router.get('/new', async (req, res) => {
 router.get("/:id", async (req, res) => {
 
   let id = req.params.id;
-
   if (!id) {
     res.redirect("carts");
   }
   let cart = await CartsDAO.getCartById(id);
-
   if (!cart) {
     res.render("404");
   }
-
+  console.log(cart)
   res.render("cart", {
-    content: cart.content
+    cart
   })
 })
 
-router.put("/:id", async (req, res)=> {
+router.put("/:id", async (req, res) => {
 
   let id = req.params.id;
   let newCartContent = req.body;
@@ -44,7 +41,7 @@ router.put("/:id", async (req, res)=> {
       error: "cart not found"
     });
   }
-  
+
   try {
     let cart = await CartsDAO.updateCart(id, newCartContent);
     res.status(200).send({
@@ -63,18 +60,80 @@ router.put("/:id", async (req, res)=> {
 })
 
 
-router.put("/:cartId/addProduct/:Productid", async (req, res) => { // una ruta de donde sacar los id
+// add product to cart
+router.post("/:cartId/addProduct/:productId", async (req, res) => {
 
   let cartId = req.params.cartId;
-  let productId = req.params.Productid; 
+  let productId = req.params.productId;
 
-  let cart = await CartsDAO.getCartById(cartId); // codigo real Carts.findOne({ _id: id }).lean();
+  try {
+    let cart = await CartsDAO.getCartById(cartId);
+    cart.content.push({ product: productId });
+    let result = await CartsDAO.updateCart(cartId, cart);
 
-  cart.content.push({product: productId}); // agrego el producto
+    res.status(200).send({
+      status: 200,
+      result: "Succes",
+      payload: result
+    })
 
-  let result = await updateCart(cartId, cart) // busco el cart y lo actualizo con el contenido nuevo
-                                              // codigo real Carts.findOneAndUpdate({ _id: id }, data);
+  } catch (e) {
+    res.status(500).send({
+      status: 500,
+      result: "Error",
+      error: "Could not add product to cart"
+    })
+  }
 })
 
+// clear all products in cart
+router.delete("/:cartId", async (req, res) => {
+
+  let cartId = req.params.cartId;
+
+  try {
+    let cart = await CartsDAO.getCartById(cartId);
+    cart.content = [];
+    let result = await CartsDAO.updateCart(cartId, cart);
+
+    res.status(200).send({
+      status: 200,
+      result: "Cart emptied successfully.",
+      payload: result
+    })
+
+  } catch (e) {
+    res.status(500).send({
+      status: 500,
+      result: "Error",
+      error: "Unable to empty the cart."
+    })
+  }
+})
+
+
+// delete 1 product from cart 
+
+router.delete("/:cartId/products/:productId", async (req, res) => {
+  let cartId = req.params.cartId;
+  let productId = req.params.productId;
+
+  try {
+    let result = await CartsDAO.updateCart(cartId, { $pull: { "content": { product: productId } } }, { new: true });
+
+    res.status(200).send({
+      status: 200,
+      result: "product deleted successfully.",
+      payload: result // revisar esto
+    })
+
+  } catch (error) {
+    res.status(500).send({
+      status: 500,
+      result: "Error",
+      error: "Unable to delete the product."
+    })
+  }
+})
 export default router;
 

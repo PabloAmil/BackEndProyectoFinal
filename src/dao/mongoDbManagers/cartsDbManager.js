@@ -11,7 +11,7 @@ class cartsInDb {
 
   static async getCartById(id) {
     try {
-      return Carts.findOne({ _id: id }).lean();
+      return Carts.findOne({ _id: id }).lean().populate('content.product');
     } catch (e) {
       console.log(`cart ${id} cannot be found`);
     }
