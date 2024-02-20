@@ -18,7 +18,7 @@ router.get("/", async (req, res) => {
     limit = 10;
   }
 
-  let sort = req.query.sort; 
+  let sort = req.query.sort;
   if (!sort) {
     sort = -1;
   } else {
@@ -30,7 +30,7 @@ router.get("/", async (req, res) => {
       sort = 1;
     }
   }
-  
+
   let filter = {}
   let category = req.query.category;
 
@@ -38,24 +38,38 @@ router.get("/", async (req, res) => {
     filter.category = category
   }
 
-  let stock = req.query.stock; 
+  let stock = req.query.stock;
   if (stock) {
     filter.stock = stock;
   }
 
-  let products = await ProductsDAO.paginate(filter, {page, limit, lean: true, sort: {price: sort}})
+  try {
+    let products = await ProductsDAO.paginate(filter, { page, limit, lean: true, sort: { price: sort } })
 
-  products.prevLink = products.hasPrevPage?`http://localhost:8080/api/products/page=${products.prevPage}`:'';
-  products.nextLink = products.hasNextPage?`http://localhost:8080/api/products/page=${products.nextPage}`:'';
+    products.prevLink = products.hasPrevPage ? `http://localhost:8080/api/products/page=${products.prevPage}` : '';
+    products.nextLink = products.hasNextPage ? `http://localhost:8080/api/products/page=${products.nextPage}` : '';
 
+    //products = products.docs;
+    
+    res.send({
+      status: 200,
+      result: "Succes",
+      payload: products
+    });
 
-  //res.send(products);
-  products = products.docs;
+    // res.render("products", {
+    //   style: 'products.css',
+    //   products
+    // });
 
-  res.render("products", {
-    style: 'products.css',
-    products
-  });
+  } catch (error) {
+    console.log(`Failed to get products`);
+    res.status(500).send({
+      status: 500,
+      result: "Error",
+      error: "Error getting products"
+    })
+  }
 })
 
 

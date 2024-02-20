@@ -4,6 +4,7 @@ import CartsDAO from "../../src/dao/mongoDbManagers/cartsDbManager.js";
 const router = Router();
 
 router.get('/', async (req, res) => {
+  
   let carts = await CartsDAO.getAll();
   res.render('carts', carts);
 })
@@ -29,6 +30,8 @@ router.get("/:id", async (req, res) => {
   })
 })
 
+
+// update cart
 router.put("/:id", async (req, res) => {
 
   let id = req.params.id;
@@ -44,10 +47,17 @@ router.put("/:id", async (req, res) => {
 
   try {
     let cart = await CartsDAO.updateCart(id, newCartContent);
+
+    let paginatedCart = await CartsDAO.paginate({}, {page: 1, limit: 10, lean: true})
+
+    paginatedCart.prevLink = paginatedCart.hasPrevPage?`http://localhost:8080/api/carts/${id}/page=${paginatedCart.prevPage}`:'';
+    paginatedCart.nextLink = paginatedCart.hasNextPage?`http://localhost:8080/api/carts/${id}/page=${paginatedCart.nextPage}`:'';
+  
+
     res.status(200).send({
       status: 200,
       result: "Succes",
-      payload: cart
+      payload: paginatedCart
     })
   } catch (e) {
     console.log(`Failed to update Cart`);
@@ -121,10 +131,12 @@ router.delete("/:cartId/products/:productId", async (req, res) => {
   try {
     let result = await CartsDAO.updateCart(cartId, { $pull: { "content": { product: productId } } }, { new: true });
 
+    console.log(result);
+
     res.status(200).send({
       status: 200,
       result: "product deleted successfully.",
-      payload: result // revisar esto
+  
     })
 
   } catch (error) {

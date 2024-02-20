@@ -27,9 +27,18 @@ class cartsInDb {
 
   static async updateCart(id, data) {
     try {
-      return Carts.findOneAndUpdate({ _id: id }, data);
+      return Carts.findOneAndUpdate({ _id: id }, data).populate('content.product');
     } catch (e) {
       console.log(`cart update failed, cart id: ${id}`);
+    }
+  }
+
+
+  static async paginate(filter, options) {
+    try {
+      return Carts.paginate(filter, options);
+    } catch (e) {
+      console.log('Carts not found', e);
     }
   }
 }
