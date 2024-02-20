@@ -4,7 +4,7 @@ import CartsDAO from "../../src/dao/mongoDbManagers/cartsDbManager.js";
 const router = Router();
 
 router.get('/', async (req, res) => {
-  
+
   let carts = await CartsDAO.getAll();
   res.render('carts', carts);
 })
@@ -14,9 +14,11 @@ router.get('/new', async (req, res) => {
   res.render('newCart');
 })
 
+
 router.get("/:id", async (req, res) => {
 
   let id = req.params.id;
+
   if (!id) {
     res.redirect("carts");
   }
@@ -24,9 +26,12 @@ router.get("/:id", async (req, res) => {
   if (!cart) {
     res.render("404");
   }
-  console.log(cart)
+
+  //res.send(cart)
+
   res.render("cart", {
-    cart
+    cart,
+    style: 'cart.css'
   })
 })
 
@@ -48,11 +53,11 @@ router.put("/:id", async (req, res) => {
   try {
     let cart = await CartsDAO.updateCart(id, newCartContent);
 
-    let paginatedCart = await CartsDAO.paginate({}, {page: 1, limit: 10, lean: true})
+    let paginatedCart = await CartsDAO.paginate({}, { page: 1, limit: 10, lean: true })
 
-    paginatedCart.prevLink = paginatedCart.hasPrevPage?`http://localhost:8080/api/carts/${id}/page=${paginatedCart.prevPage}`:'';
-    paginatedCart.nextLink = paginatedCart.hasNextPage?`http://localhost:8080/api/carts/${id}/page=${paginatedCart.nextPage}`:'';
-  
+    paginatedCart.prevLink = paginatedCart.hasPrevPage ? `http://localhost:8080/api/carts/${id}/page=${paginatedCart.prevPage}` : '';
+    paginatedCart.nextLink = paginatedCart.hasNextPage ? `http://localhost:8080/api/carts/${id}/page=${paginatedCart.nextPage}` : '';
+
 
     res.status(200).send({
       status: 200,
@@ -69,6 +74,49 @@ router.put("/:id", async (req, res) => {
   }
 })
 
+// update only 1 property from body
+router.put("/:cartId/products/:productId", async (req, res) => {
+
+  let cartId = req.params.cartId;
+  let productId = req.params.productId;
+  let data = req.body
+
+  if (!cartId) {
+    res.status(404).send({
+      status: 400,
+      result: "error",
+      error: "cart not found"
+    });
+  }
+
+  try {
+
+    let cart = await CartsDAO.getCartById(cartId);
+    const productIndex = cart.content.findIndex(object => object.product._id.toString() === String(productId));
+    let oldProduct = cart.content[productIndex].product;
+    let updatedProduct = { ...oldProduct, ...data }
+
+    cart.content[productIndex].product = updatedProduct;
+    //console.log(cart.content)
+
+    await CartsDAO.updateCart(cartId, { content: cart.content });
+
+    res.status(200).send({
+      status: 200,
+      result: "Succes",
+      payload: cart
+    })
+  } catch (e) {
+    console.log(`Failed to update Cart`);
+    res.status(500).send({
+      status: 500,
+      result: "Error",
+      error: "Error updating Cart"
+    })
+  }
+
+})
+
 
 // add product to cart
 router.post("/:cartId/addProduct/:productId", async (req, res) => {
@@ -78,6 +126,7 @@ router.post("/:cartId/addProduct/:productId", async (req, res) => {
 
   try {
     let cart = await CartsDAO.getCartById(cartId);
+
     cart.content.push({ product: productId });
     let result = await CartsDAO.updateCart(cartId, cart);
 
@@ -96,7 +145,7 @@ router.post("/:cartId/addProduct/:productId", async (req, res) => {
   }
 })
 
-// clear all products in cart
+// clear cart
 router.delete("/:cartId", async (req, res) => {
 
   let cartId = req.params.cartId;
@@ -136,7 +185,7 @@ router.delete("/:cartId/products/:productId", async (req, res) => {
     res.status(200).send({
       status: 200,
       result: "product deleted successfully.",
-  
+
     })
 
   } catch (error) {

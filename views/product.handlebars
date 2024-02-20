@@ -24,13 +24,14 @@
 
     <div class="details-container">
       <h3>{{title}}</h3>
-      <p>{{description}}</p>
+      <p>Description: {{description}}</p>
       {{#if isStock}}
       <p>price: ${{price}}</p>
       {{else}}
       <p>Out of stock</p>
       {{/if}}
-      <input type="submit" value="Buy"></input>
+      <p>Category: {{category}}</p>
+      <input type="submit" value="Add to cart" class="addButton"></input>
     </div>
   </div>
 </body>

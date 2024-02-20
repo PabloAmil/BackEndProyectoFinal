@@ -49,18 +49,16 @@ router.get("/", async (req, res) => {
     products.prevLink = products.hasPrevPage ? `http://localhost:8080/api/products/page=${products.prevPage}` : '';
     products.nextLink = products.hasNextPage ? `http://localhost:8080/api/products/page=${products.nextPage}` : '';
 
-    //products = products.docs;
-    
-    res.send({
-      status: 200,
-      result: "Succes",
-      payload: products
-    });
-
-    // res.render("products", {
-    //   style: 'products.css',
-    //   products
+    // res.send({
+    //   status: 200,
+    //   result: "Succes",
+    //   payload: products
     // });
+
+    res.render("products", {
+      style: 'products.css',
+      products
+    });
 
   } catch (error) {
     console.log(`Failed to get products`);
@@ -99,6 +97,7 @@ router.get("/:id", async (req, res) => {
     description: product.description,
     price: product.price,
     photo: product.photo,
+    category: product.category,
     isStock: product.stock > 0,
     style: 'product.css'
   });

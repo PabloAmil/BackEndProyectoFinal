@@ -1,0 +1,22 @@
+body {
+  background:  #113f67; 
+} 
+
+h1 {
+  margin-top: 3em;
+  margin-bottom: 1em;
+  font-size: 50px;
+  text-align: center;
+  font-family: "Protest Guerrilla", sans-serif;
+}
+
+.product-container {
+  background-color: #e7eaf6; ;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: auto;
+  width: 50%;
+  margin: auto;
+  border-radius: 10px;
+}
