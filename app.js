@@ -18,6 +18,8 @@ const __dirname = path.dirname(__filename);
 import productsRouter from "./routes/mongoRoutes/mongoProductsRouter.js";
 import cartsRouter from "./routes/mongoRoutes/mongoCartsRouter.js";
 import chatRouter from "./routes/mongoRoutes/mongoMessagesRouter.js"
+import sessionRouter from "./routes/mongoRoutes/mongoSessionsRouter.js"
+import viewsRouter from "./routes/mongoRoutes/mongoViewsRouter.js"
 
 import messagesInDb from "./src/dao/mongoDbManagers/messagesDbManager.js";
 
@@ -36,8 +38,9 @@ app.use(express.static('public'));
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/messages", chatRouter);
-// app.use("/api/sessions", sessionRouter);
-// app.use("/", viewsRouter);
+
+app.use("/api/sessions", sessionRouter);
+app.use("/", viewsRouter);
 
 app.use(cookieParser());
 app.use(session({

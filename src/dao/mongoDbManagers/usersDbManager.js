@@ -1,4 +1,4 @@
-import Users from "../../../schemas/users.schema";
+import Users from "../../../schemas/users.schema.js"
 
 class UsersDAO {
   static async getUsersByEmail(email) {

@@ -1,6 +1,5 @@
 import { Router } from "express";
-
-import UsersDAO from "../../src/dao/mongoDbManagers/usersDbManager";
+import UsersDAO from "../../src/dao/mongoDbManagers/usersDbManager.js";
 
 const router = Router();
 
@@ -37,3 +36,4 @@ router.get("/profile", async (req, res)=> {
   }
 }) 
 
+export default router;

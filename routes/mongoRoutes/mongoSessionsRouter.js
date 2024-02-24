@@ -1,6 +1,5 @@
 import { Router } from "express";
-import UsersDAO from "../../src/dao/mongoDbManagers/usersDbManager";
-
+import UsersDAO from "../../src/dao/mongoDbManagers/usersDbManager.js";
 
 const router = Router();
 
@@ -43,12 +42,12 @@ router.post("/login", async (req, res)=> {
     req.session.user = user._id;
     res.redirect("/profile");
   }
-})
+});
 
 router.get("/logout", (req, res)=> {
   req.session.destroy((err)=> {
     res.redirect("/home");
   })
-})
+});
 
 export default router;
