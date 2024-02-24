@@ -5,6 +5,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { Server } from "socket.io";
 import http from "http";
+import cookieParser from "cookie-parser";
+import MongoStore from "connect-mongo";
+import session from "express-session";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,7 +35,21 @@ app.use(express.static('public'));
 
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
-app.use("/api/messages", chatRouter)
+app.use("/api/messages", chatRouter);
+// app.use("/api/sessions", sessionRouter);
+// app.use("/", viewsRouter);
+
+app.use(cookieParser());
+app.use(session({
+  store:MongoStore.create({
+    mongoUrl: "mongodb://localhost:27017/ecommerce",
+    ttl: 15,
+  }),
+  secret: "secretCode",
+  resave: true,
+  saveUninitialized: true
+}))
+
 
 // fs routes
 // app.use("/api/products", routerProducts);
@@ -65,8 +82,8 @@ io.on('connection', (socket) => {
   });
 })
 
-//mongoose.connect("mongodb://localhost:27017/ecommerce");
-mongoose.connect("mongodb+srv://pabloamil91:UV3JvqPcG41yKbnu@cluster0.ea2y0wr.mongodb.net/?retryWrites=true&w=majority");
+mongoose.connect("mongodb://localhost:27017/ecommerce");
+//mongoose.connect("mongodb+srv://pabloamil91:UV3JvqPcG41yKbnu@cluster0.ea2y0wr.mongodb.net/?retryWrites=true&w=majority");
 
 httpServer.listen(8080, () => console.log("now listening to port 8080"));
 
