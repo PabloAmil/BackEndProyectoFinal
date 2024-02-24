@@ -29,23 +29,18 @@ const io = new Server(httpServer);
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
-app.set('views', path.join(__dirname,'/views'));
+app.set('views', path.join(__dirname, '/views'));
 
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-app.use("/api/products", productsRouter);
-app.use("/api/carts", cartsRouter);
-app.use("/api/messages", chatRouter);
-
-app.use("/api/sessions", sessionRouter);
-app.use("/", viewsRouter);
-
 app.use(cookieParser());
+
 app.use(session({
-  store:MongoStore.create({
-    mongoUrl: "mongodb://localhost:27017/ecommerce",
+  store: MongoStore.create({
+    //mongoUrl: "mongodb://localhost:27017/ecommerce",
+    mongoUrl: "mongodb+srv://pabloamil91:UV3JvqPcG41yKbnu@cluster0.ea2y0wr.mongodb.net/?retryWrites=true&w=majority",
     ttl: 15,
   }),
   secret: "secretCode",
@@ -53,8 +48,12 @@ app.use(session({
   saveUninitialized: true
 }))
 
+app.use("/api/products", productsRouter);
+app.use("/api/carts", cartsRouter);
+app.use("/api/messages", chatRouter);
+app.use("/api/sessions", sessionRouter);
+app.use("/", viewsRouter);
 
-// fs routes
 // app.use("/api/products", routerProducts);
 // app.use("/api/carts", routerCarts);
 
@@ -64,9 +63,9 @@ app.get("/", (req, res) => {
   });
 })
 
-app.use((req, res, next)=> {
+app.use((req, res, next) => {
   res.render("404", {
-      style: "404.css"
+    style: "404.css"
   })
 });
 
@@ -76,7 +75,7 @@ io.on('connection', (socket) => {
   socket.on('message', async (data) => {
 
 
-    await messagesInDb.add(data.userMail, data.message); 
+    await messagesInDb.add(data.userMail, data.message);
     io.emit("message", data);
   })
 
@@ -85,8 +84,8 @@ io.on('connection', (socket) => {
   });
 })
 
-mongoose.connect("mongodb://localhost:27017/ecommerce");
-//mongoose.connect("mongodb+srv://pabloamil91:UV3JvqPcG41yKbnu@cluster0.ea2y0wr.mongodb.net/?retryWrites=true&w=majority");
+//mongoose.connect("mongodb://localhost:27017/ecommerce");
+mongoose.connect("mongodb+srv://pabloamil91:UV3JvqPcG41yKbnu@cluster0.ea2y0wr.mongodb.net/?retryWrites=true&w=majority");
 
 httpServer.listen(8080, () => console.log("now listening to port 8080"));
 

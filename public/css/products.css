@@ -10,6 +10,11 @@ h1 {
   font-family: "Protest Guerrilla", sans-serif;
 }
 
+h3 {
+  color: #e7eaf6;
+  text-align: center;
+}
+
 a {
   text-decoration: none;
 }

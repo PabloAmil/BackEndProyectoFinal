@@ -44,20 +44,32 @@ router.get("/", async (req, res) => {
   }
 
   try {
+
+    let user;
+    let userLastName;
+    let role;
+
+    if (req.session.user) {
+      user = req.session.user;
+      userLastName = req.session.last_name;
+    }
+
+    if (req.session.role === "Admin") {
+      role = req.session.role;
+    }
+    role = role.toUpperCase();
+
     let products = await ProductsDAO.paginate(filter, { page, limit, lean: true, sort: { price: sort } })
 
     products.prevLink = products.hasPrevPage ? `http://localhost:8080/api/products/page=${products.prevPage}` : '';
     products.nextLink = products.hasNextPage ? `http://localhost:8080/api/products/page=${products.nextPage}` : '';
 
-    // res.send({
-    //   status: 200,
-    //   result: "Succes",
-    //   payload: products
-    // });
-
     res.render("products", {
       style: 'products.css',
-      products
+      products,
+      user,
+      userLastName,
+      role
     });
 
   } catch (error) {
@@ -69,7 +81,6 @@ router.get("/", async (req, res) => {
     })
   }
 })
-
 
 // create product
 router.get("/new", (req, res) => {

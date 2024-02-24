@@ -3,8 +3,8 @@ import UsersDAO from "../../src/dao/mongoDbManagers/usersDbManager.js";
 
 const router = Router();
 
-router.post('/register', async (req, res)=> {
-  
+router.post('/register', async (req, res) => {
+
   let first_name = req.body.first_name;
   let last_name = req.body.last_name;
   let email = req.body.email;
@@ -25,28 +25,35 @@ router.post('/register', async (req, res)=> {
   }
 })
 
-router.post("/login", async (req, res)=> {
+router.post("/login", async (req, res) => {
 
   let email = req.body.email;
-  let password = req.body.password; 
+  let password = req.body.password;
+
 
   if (!email || !password) {
     res.redirect("/login")
   }
 
-  let user = UsersDAO.getUsersByCreds(email, password);
+  let user = await UsersDAO.getUsersByCreds(email, password);
 
   if (!user) {
-    res.redirect("login");
+    res.redirect("/login");
   } else {
-    req.session.user = user._id;
-    res.redirect("/profile");
+
+    req.session.user = user.first_name;
+    req.session.last_name = user.last_name;
+
+    if (user.role === "Admin") {
+      req.session.role = user.role;
+    }
+    res.redirect("/api/products");
   }
 });
 
-router.get("/logout", (req, res)=> {
-  req.session.destroy((err)=> {
-    res.redirect("/home");
+router.get("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    res.redirect("/login");
   })
 });
 

@@ -8,6 +8,7 @@ router.get('/', (req, res) => {
 })
 
 router.get('/home', (req, res) => {
+
   if (req.session.user) {
     res.redirect("/profile")
   } else {
@@ -20,10 +21,12 @@ router.get('/register', (req, res)=> {
 })
 
 router.get("/login", (req, res)=> {
+
   if (req.session.user) {
     res.redirect("/profile");
   } else {
-    res.render("/login");
+    res.render("login");
+
   }
 })
 
