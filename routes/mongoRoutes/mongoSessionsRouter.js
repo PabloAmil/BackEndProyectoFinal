@@ -30,7 +30,6 @@ router.post("/login", async (req, res) => {
   let email = req.body.email;
   let password = req.body.password;
 
-
   if (!email || !password) {
     res.redirect("/login")
   }
@@ -46,7 +45,8 @@ router.post("/login", async (req, res) => {
 
     if (user.role === "Admin") {
       req.session.role = user.role;
-    }
+    } 
+
     res.redirect("/api/products");
   }
 });

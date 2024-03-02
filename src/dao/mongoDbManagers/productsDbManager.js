@@ -1,5 +1,4 @@
 import Products from "../../../schemas/products.eschema.js";
-import mongoosePaginate from 'mongoose-paginate-v2';
 
 class ProductsInDb {
 

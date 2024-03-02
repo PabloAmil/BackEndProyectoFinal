@@ -1,7 +1,6 @@
 import { Router, query } from "express";
 import ProductsDAO from "../../src/dao/mongoDbManagers/productsDbManager.js";
 import upload from "../../utils/upload.middlewares.js";
-import mongoose from "mongoose";
 
 const router = Router();
 
@@ -47,7 +46,7 @@ router.get("/", async (req, res) => {
 
     let user;
     let userLastName;
-    let role;
+    let role = '';
 
     if (req.session.user) {
       user = req.session.user;
