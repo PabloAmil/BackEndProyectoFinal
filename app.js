@@ -8,6 +8,9 @@ import http from "http";
 import cookieParser from "cookie-parser";
 import MongoStore from "connect-mongo";
 import session from "express-session";
+import initializePassport from "./src/dao/passport.config.js";
+import passport from "passport";
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -47,6 +50,9 @@ app.use(session({
   resave: true,
   saveUninitialized: true
 }))
+
+initializePassport();
+app.use(passport.initialize())
 
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);

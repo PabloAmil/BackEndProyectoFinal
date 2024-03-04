@@ -39,4 +39,8 @@ router.get("/profile", async (req, res)=> {
   }
 }) 
 
+router.get("/change-password", (req, res)=> {
+  res.render("change-password");
+});
+
 export default router;
