@@ -1,5 +1,6 @@
 import { Router } from "express";
 import UsersDAO from "../../src/dao/mongoDbManagers/usersDbManager.js";
+import cartsInDb from "../../src/dao/mongoDbManagers/cartsDbManager.js";
 import { createHash, isValidPassword } from "../../utils/crypt.js";
 import passport from "passport";
 import jwt from "jsonwebtoken";
@@ -7,7 +8,7 @@ import jwt from "jsonwebtoken";
 const router = Router();
 
 router.post('/register', async (req, res) => {
-  const { first_name, last_name, email, age } = req.body;
+  const { first_name, last_name, email, age, password } = req.body;
 
   try {
     let user = await UsersDAO.getUsersByEmail(email);
@@ -17,15 +18,21 @@ router.post('/register', async (req, res) => {
       return done(null, false);
     }
 
+    const newCart = await cartsInDb.createNewCart();
+    const cartId = newCart._id;
+
     const newUser = {
       first_name,
       last_name,
       email,
       age,
-      password: createHash(password)
+      password: createHash(password),
+      cart: cartId
     };
 
-    let result = await UsersDAO.insert(newUser.first_name, newUser.last_name, newUser.age, newUser.email, newUser.password);
+    console.log(newUser);
+
+    let result = await UsersDAO.insert(newUser.first_name, newUser.last_name, newUser.age, newUser.email, newUser.password, newUser.cart);
     res.send({ status: "succes", message: "user registered" });
 
   } catch (error) {

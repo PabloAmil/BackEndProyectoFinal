@@ -7,7 +7,7 @@ import { Server } from "socket.io";
 import http from "http";
 import cookieParser from "cookie-parser";
 import MongoStore from "connect-mongo";
-
+import session from 'express-session';
 import initializePassport from "./src/dao/passport.config.js";
 import passport from "passport";
 
@@ -39,17 +39,16 @@ app.use(express.static('public'));
 app.use(cookieParser("secret_cookie"));
 
 
-// esta ya no seria necesaria
-// app.use(session({
-//   store: MongoStore.create({
-//     mongoUrl: "mongodb://localhost:27017/ecommerce",
-//     //mongoUrl: "mongodb+srv://pabloamil91:UV3JvqPcG41yKbnu@cluster0.ea2y0wr.mongodb.net/?retryWrites=true&w=majority",
-//     ttl: 900,
-//   }),
-//   secret: "secretCode",
-//   resave: true,
-//   saveUninitialized: true
-// }))
+app.use(session({
+  store: MongoStore.create({
+    //mongoUrl: "mongodb://localhost:27017/ecommerce",
+    mongoUrl: "mongodb+srv://pabloamil91:UV3JvqPcG41yKbnu@cluster0.ea2y0wr.mongodb.net/?retryWrites=true&w=majority",
+    ttl: 900,
+  }),
+  secret: "secretCode",
+  resave: true,
+  saveUninitialized: true
+}))
 
 initializePassport();
 app.use(passport.initialize());
@@ -88,8 +87,8 @@ io.on('connection', (socket) => {
   });
 })
 
-mongoose.connect("mongodb://localhost:27017/ecommerce");
-//mongoose.connect("mongodb+srv://pabloamil91:UV3JvqPcG41yKbnu@cluster0.ea2y0wr.mongodb.net/?retryWrites=true&w=majority");
+//mongoose.connect("mongodb://localhost:27017/ecommerce");
+mongoose.connect("mongodb+srv://pabloamil91:UV3JvqPcG41yKbnu@cluster0.ea2y0wr.mongodb.net/?retryWrites=true&w=majority");
 
 httpServer.listen(8080, () => console.log("now listening to port 8080"));
 

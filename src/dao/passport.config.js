@@ -1,9 +1,8 @@
 import passport from "passport";
 import GitHubStrategy from "passport-github2";
 import UsersDAO from "./mongoDbManagers/usersDbManager.js";
-import { createHash, isValidPassword } from "../../utils/crypt.js";
 import { Strategy } from "passport-jwt";
-
+import cartsInDb from "./mongoDbManagers/cartsDbManager.js";
 
 const initializePassport = () => {
 
@@ -17,16 +16,20 @@ const initializePassport = () => {
 
       let user = await UsersDAO.getUsersByEmail(profile._json.email);
 
+      const newCart = await cartsInDb.createNewCart();
+      const cartId = newCart._id;
+
       if (!user) {
         let newUser = {
           first_name: profile._json.name,
           last_name: "",
           age: 18,
           email: profile._json.email,
-          password: ""
+          password: "",
+          cart: cartId
         }
 
-        let result = await UsersDAO.insert(newUser.first_name, newUser.last_name, newUser.age, newUser.email, newUser.password);
+        let result = await UsersDAO.insert(newUser.first_name, newUser.last_name, newUser.age, newUser.email, newUser.password, newUser.cart);
         done(null, result);
       } else {
         done(null, user);
@@ -36,6 +39,18 @@ const initializePassport = () => {
     }
   }))
 
+  passport.serializeUser((user, done) => {
+    done(null, user._id);
+  })
+
+  passport.deserializeUser(async (id, done) => {
+    try {
+      const user = await UsersDAO.getUserById(id);
+      done(null, user);
+    } catch (error) {
+      done(error, null);
+    }
+  })
 
   passport.use('jwt', new Strategy({
     jwtFromRequest: (req) => {
@@ -57,6 +72,6 @@ const initializePassport = () => {
     }
   }));
 
-  
+
 }
 export default initializePassport;
