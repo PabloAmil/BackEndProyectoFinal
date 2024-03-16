@@ -5,9 +5,9 @@ class UsersDAO {
     return await Users.findOne({email});
   }
 
-  // static async getUsersByCreds(email, password) {
-  //   return await Users.findOne({email, password});
-  // }
+  static async getUsersByCreds(email, password) {
+    return await Users.findOne({email, password});
+  }
 
   static async insert(first_name, last_name, age, email, password) {
     return await new Users({first_name, last_name, age, email, password}).save();

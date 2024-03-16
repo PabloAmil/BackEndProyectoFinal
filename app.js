@@ -7,7 +7,7 @@ import { Server } from "socket.io";
 import http from "http";
 import cookieParser from "cookie-parser";
 import MongoStore from "connect-mongo";
-import session from "express-session";
+
 import initializePassport from "./src/dao/passport.config.js";
 import passport from "passport";
 
@@ -23,7 +23,6 @@ import cartsRouter from "./routes/mongoRoutes/mongoCartsRouter.js";
 import chatRouter from "./routes/mongoRoutes/mongoMessagesRouter.js"
 import sessionRouter from "./routes/mongoRoutes/mongoSessionsRouter.js"
 import viewsRouter from "./routes/mongoRoutes/mongoViewsRouter.js"
-
 import messagesInDb from "./src/dao/mongoDbManagers/messagesDbManager.js";
 
 const app = express();
@@ -37,23 +36,24 @@ app.set('views', path.join(__dirname, '/views'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
+app.use(cookieParser("secret_cookie"));
 
-app.use(cookieParser());
 
-app.use(session({
-  store: MongoStore.create({
-    //mongoUrl: "mongodb://localhost:27017/ecommerce",
-    mongoUrl: "mongodb+srv://pabloamil91:UV3JvqPcG41yKbnu@cluster0.ea2y0wr.mongodb.net/?retryWrites=true&w=majority",
-    ttl: 15,
-  }),
-  secret: "secretCode",
-  resave: true,
-  saveUninitialized: true
-}))
+// esta ya no seria necesaria
+// app.use(session({
+//   store: MongoStore.create({
+//     mongoUrl: "mongodb://localhost:27017/ecommerce",
+//     //mongoUrl: "mongodb+srv://pabloamil91:UV3JvqPcG41yKbnu@cluster0.ea2y0wr.mongodb.net/?retryWrites=true&w=majority",
+//     ttl: 900,
+//   }),
+//   secret: "secretCode",
+//   resave: true,
+//   saveUninitialized: true
+// }))
 
 initializePassport();
 app.use(passport.initialize());
-app.use(passport.session());
+//app.use(passport.session());
 
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
@@ -80,19 +80,16 @@ io.on('connection', (socket) => {
   console.log('User connected');
 
   socket.on('message', async (data) => {
-
-
     await messagesInDb.add(data.userMail, data.message);
     io.emit("message", data);
   })
-
   socket.on('disconnect', () => {
     console.log('User disconnected');
   });
 })
 
-//mongoose.connect("mongodb://localhost:27017/ecommerce");
-mongoose.connect("mongodb+srv://pabloamil91:UV3JvqPcG41yKbnu@cluster0.ea2y0wr.mongodb.net/?retryWrites=true&w=majority");
+mongoose.connect("mongodb://localhost:27017/ecommerce");
+//mongoose.connect("mongodb+srv://pabloamil91:UV3JvqPcG41yKbnu@cluster0.ea2y0wr.mongodb.net/?retryWrites=true&w=majority");
 
 httpServer.listen(8080, () => console.log("now listening to port 8080"));
 

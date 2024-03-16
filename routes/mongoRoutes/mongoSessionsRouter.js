@@ -2,110 +2,99 @@ import { Router } from "express";
 import UsersDAO from "../../src/dao/mongoDbManagers/usersDbManager.js";
 import { createHash, isValidPassword } from "../../utils/crypt.js";
 import passport from "passport";
+import jwt from "jsonwebtoken";
 
 const router = Router();
 
-// router.post('/register', async (req, res) => {
+router.post('/register', async (req, res) => {
+  const { first_name, last_name, email, age } = req.body;
 
-//   let first_name = req.body.first_name;
-//   let last_name = req.body.last_name;
-//   let email = req.body.email;
-//   let age = parseInt(req.body.age);
-//   let password = req.body.password;
+  try {
+    let user = await UsersDAO.getUsersByEmail(email);
 
-//   if (!first_name || !last_name || !email || !age || !password) {
-//     res.redirect("/register");
-//   }
+    if (user) {
+      console.log('User already exists');
+      return done(null, false);
+    }
 
-//   let emailUsed = await UsersDAO.getUsersByEmail(email);
+    const newUser = {
+      first_name,
+      last_name,
+      email,
+      age,
+      password: createHash(password)
+    };
 
-//   if (emailUsed) {
-//     res.redirect("/register");
-//   } else {
-//     await UsersDAO.insert(first_name, last_name, age, email, createHash(password));
-//     res.redirect("/login");
-//   }
-// })
+    let result = await UsersDAO.insert(newUser.first_name, newUser.last_name, newUser.age, newUser.email, newUser.password);
+    res.send({ status: "succes", message: "user registered" });
 
-// router.post("/login", async (req, res) => {
-
-//   let email = req.body.email;
-//   let password = req.body.password;
-//   if (!email || !password) {
-//     res.redirect("/login")
-//   }
-//   let user = await UsersDAO.getUsersByEmail(email);
-
-//   if (!user) { 
-//     res.redirect("/login");
-//   } else {
-
-//     if (isValidPassword(password, user?.password)) { 
-//       req.session.user = user.first_name; 
-//       req.session.last_name = user.last_name;
-
-//       if (user.role === "Admin") {
-//         req.session.role = user.role; 
-//       }                              
-//       res.redirect("/api/products");
-
-//     } else {
-//       res.redirect("/login")
-//     }
-//   }
-// });
-
-router.post('/register', passport.authenticate('register', {failureRedirect: '/failregister'}), async (req, res)=> {
-  res.redirect('/login');
-  //res.send({status: "succes", message: "user registered"});
+  } catch (error) {
+    res.redirect('/login');
+  }
 })
 
-router.get('/failregister', async (req, res)=> {
-  res.send({stauts: "failed", message: "user registration failed"});
+router.get('/failregister', async (req, res) => {
+  res.send({ stauts: "failed", message: "user registration failed" });
 })
 
-router.post('/login', passport.authenticate('login', {failureRedirect: '/faillogin'}), async (req, res) => {
 
-  if (!req.user) return res.status(400).send({stauts: 'error', error: 'Invalid credentials'});
-  req.session.user = {
-    first_name: req.user.first_name,
-    last_name: req.user.last_name,
-    age: req.user.age,
-    email: req.user.email
-  };
+router.post("/login", async (req, res) => {
+  let email = req.body.email;
+  let userPassword = req.body.password;
 
-  res.send({status: "succes", payload: req.user});
-})
+  if (!email || !userPassword) {
+    res.status(400).json({ status: 400, error: "Wrong email or password" })
+  }
+  let user = await UsersDAO.getUsersByEmail(email);
 
-router.get('/faillogin', (req, res)=> {
-  res.send({error: "Login failed"})
-})
+  if (!user) {
+    res.status(404).json({ status: 404, error: "User not found" })
+  }
 
-router.post("/change-password", async (req, res)=> {
+  if (!isValidPassword(userPassword, user.password)) {
+    return res.status(401).json({ status: 401, error: "Invalid password" });
+  }
+  else {
+
+    let token = jwt.sign({ id: user._id }, "secret_jwt", { expiresIn: "1h" })
+    res.cookie("jwt", token, {
+      signed: true,
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60
+    }).json({ status: 200, msg: "loggend in" })
+  }
+});
+
+
+router.post("/change-password", async (req, res) => {
 
   let email = req.body.email;
   let password = req.body.password;
   if (!email || !password) {
     res.redirect("/change-password")
   }
-  
+
   try {
     let user = await UsersDAO.getUsersByEmail(email);
 
     user.password = createHash(password);
     await UsersDAO.updateUser(email, user);
     res.status(200).send('password changed');
-    
+
   } catch (error) {
     res.status(500).send("Unable to modify user password");
   }
 })
 
-router.get('/github', passport.authenticate('github', {scope: ['user:email']}), async (req, res) => {});
-router.get('/githubcallback', passport.authenticate('github', {failureRedirect: '/login'}), async (req, res)=> {
+router.get('/github', passport.authenticate('github', { scope: ['user:email'] }), async (req, res) => { });
+router.get('/githubcallback', passport.authenticate('github', { failureRedirect: '/login' }), async (req, res) => {
 
   req.session.user = req.user;
   res.redirect('/');
+})
+
+router.get("/current", passport.authenticate("jwt", { session: false }), (req, res) => {
+  res.json(req.user);
 })
 
 router.get("/logout", (req, res) => {

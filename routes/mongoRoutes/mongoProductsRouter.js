@@ -1,12 +1,15 @@
 import { Router, query } from "express";
 import ProductsDAO from "../../src/dao/mongoDbManagers/productsDbManager.js";
 import upload from "../../utils/upload.middlewares.js";
+import passport from "passport";
+import jwt from "jsonwebtoken";
 
 const router = Router();
 
 
 // get products
-router.get("/", async (req, res) => {
+
+router.get("/", passport.authenticate("jwt", {session: false}), async (req, res) => {
 
   let page = parseInt(req.query.page);
   if (!page) {
@@ -48,14 +51,15 @@ router.get("/", async (req, res) => {
     let userLastName;
     let role = '';
 
-    if (req.session.user) {
-      user = req.session.user;
-      userLastName = req.session.last_name;
+    if (req.user) {
+      user = req.user.first_name;
+      userLastName = req.user.last_name;
     }
 
-    if (req.session.role === "Admin") {
-      role = req.session.role;
+    if (req.user.role === "Admin") {
+      role = req.user.role;
     }
+
     role = role.toUpperCase();
 
     let products = await ProductsDAO.paginate(filter, { page, limit, lean: true, sort: { price: sort } })

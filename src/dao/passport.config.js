@@ -1,8 +1,9 @@
 import passport from "passport";
 import GitHubStrategy from "passport-github2";
 import UsersDAO from "./mongoDbManagers/usersDbManager.js";
-import LocalStrategy from "passport-local";
 import { createHash, isValidPassword } from "../../utils/crypt.js";
+import { Strategy } from "passport-jwt";
+
 
 const initializePassport = () => {
 
@@ -15,7 +16,7 @@ const initializePassport = () => {
     try {
 
       let user = await UsersDAO.getUsersByEmail(profile._json.email);
-      
+
       if (!user) {
         let newUser = {
           first_name: profile._json.name,
@@ -24,8 +25,8 @@ const initializePassport = () => {
           email: profile._json.email,
           password: ""
         }
-        
-        let result = await UsersDAO.insert(newUser.first_name, newUser.last_name, newUser.age, newUser.email, newUser.password); 
+
+        let result = await UsersDAO.insert(newUser.first_name, newUser.last_name, newUser.age, newUser.email, newUser.password);
         done(null, result);
       } else {
         done(null, user);
@@ -35,68 +36,27 @@ const initializePassport = () => {
     }
   }))
 
-  // passport en register y login
 
-  passport.use('register', new LocalStrategy(
-    {passReqToCallback:true, usernameField: 'email'}, async (req, username, password, done) => {
-      const {first_name, last_name, email, age} = req.body;
-
-      try {
-        let user = await UsersDAO.getUsersByEmail(email); 
-
-        if (user) {
-          console.log('User already exists');
-          return done(null,false);
-        } 
-
-        const newUser = {
-          first_name,
-          last_name,
-          email,
-          age,
-          passport: createHash(password)
-        }
-
-        let result = await UsersDAO.insert(newUser.first_name, newUser.last_name, newUser.age, newUser.email, newUser.passport);
-        return done(null, result);
-
-      } catch (error) {
-        return done("Could not create user" + error);
+  passport.use('jwt', new Strategy({
+    jwtFromRequest: (req) => {
+      let token = null;
+      if (req && req.signedCookies) {
+        token = req.signedCookies['jwt'];
       }
+      return token;
+    },
+    secretOrKey: "secret_jwt"
+  }, async (jwt_payload, done) => {
+    let userId = jwt_payload.id;
+    let user = await UsersDAO.getUserById(userId);
+
+    if (user) {
+      return done(null, user);
+    } else {
+      return done(null, false);
     }
-  ));
+  }));
 
-  passport.use('login', new LocalStrategy({usernameField: 'email'}, async (username, password, done) => {
-
-    try {
-
-      const user = await UsersDAO.getUsersByEmail(username); 
-
-      if (!user) {
-        console.log('Could not find user')
-        return done (null, false)
-      }
-
-      if (!isValidPassword(password, user.password)) return done (null, false);
-      return done (null, user);
-    } catch (error) { 
-      return done(error);
-    }
-  }))
-
-  passport.serializeUser((user, done) => {
-    done(null, user._id);
-  });
   
-  passport.deserializeUser(async (id, done) => {
-    try {
-      const user = await UsersDAO.getUserById(id);
-      done(null, user);
-    } catch (error) {
-      done(error, null);
-    }
-  });
-  
-
 }
 export default initializePassport;
