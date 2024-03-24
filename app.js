@@ -10,7 +10,7 @@ import MongoStore from "connect-mongo";
 import session from 'express-session';
 import initializePassport from "./src/dao/passport.config.js";
 import passport from "passport";
-
+import config from "./src/config/config.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,6 +24,11 @@ import chatRouter from "./routes/mongoRoutes/mongoMessagesRouter.js"
 import sessionRouter from "./routes/mongoRoutes/mongoSessionsRouter.js"
 import viewsRouter from "./routes/mongoRoutes/mongoViewsRouter.js"
 import messagesInDb from "./src/dao/mongoDbManagers/messagesDbManager.js";
+
+console.log("///////////////////////////")
+console.log(config);
+console.log("///////////////////////////")
+
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -41,11 +46,11 @@ app.use(cookieParser("secret_cookie"));
 
 app.use(session({
   store: MongoStore.create({
-    //mongoUrl: "mongodb://localhost:27017/ecommerce",
-    mongoUrl: "mongodb+srv://pabloamil91:UV3JvqPcG41yKbnu@cluster0.ea2y0wr.mongodb.net/?retryWrites=true&w=majority",
+    //mongoUrl: config.local_mongo_url,
+    mongoUrl: config.atlas_mongo_url,
     ttl: 900,
   }),
-  secret: "secretCode",
+  secret: config.session_secret, 
   resave: true,
   saveUninitialized: true
 }))
@@ -87,10 +92,10 @@ io.on('connection', (socket) => {
   });
 })
 
-//mongoose.connect("mongodb://localhost:27017/ecommerce");
-mongoose.connect("mongodb+srv://pabloamil91:UV3JvqPcG41yKbnu@cluster0.ea2y0wr.mongodb.net/?retryWrites=true&w=majority");
+//mongoose.connect(config.local_mongo_url);
+mongoose.connect(config.atlas_mongo_url);
 
-httpServer.listen(8080, () => console.log("now listening to port 8080"));
+httpServer.listen(8080, () => console.log("now listening to port 8080")); 
 
 
 

@@ -3,14 +3,15 @@ import GitHubStrategy from "passport-github2";
 import UsersDAO from "./mongoDbManagers/usersDbManager.js";
 import { Strategy } from "passport-jwt";
 import cartsInDb from "./mongoDbManagers/cartsDbManager.js";
+import config from "../config/config.js";
 
 const initializePassport = () => {
 
   passport.use('github', new GitHubStrategy({
 
-    clientID: "Iv1.7bedaeb477a40f46",
-    clientSecret: "b8aca51c95f34280c853cd47d45a8ba4b2430500",
-    callbackURL: "http://localhost:8080/api/sessions/githubcallback"
+    clientID: config.client_Id, 
+    clientSecret: config.client_secret, 
+    callbackURL: config.callback_url 
   }, async (accesToken, refreshToken, profile, done) => {
     try {
 
@@ -60,7 +61,7 @@ const initializePassport = () => {
       }
       return token;
     },
-    secretOrKey: "secret_jwt"
+    secretOrKey: config.jwt_secret
   }, async (jwt_payload, done) => {
     let userId = jwt_payload.id;
     let user = await UsersDAO.getUserById(userId);
@@ -71,7 +72,6 @@ const initializePassport = () => {
       return done(null, false);
     }
   }));
-
-
 }
 export default initializePassport;
+

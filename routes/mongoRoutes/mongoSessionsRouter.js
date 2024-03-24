@@ -4,6 +4,7 @@ import cartsInDb from "../../src/dao/mongoDbManagers/cartsDbManager.js";
 import { createHash, isValidPassword } from "../../utils/crypt.js";
 import passport from "passport";
 import jwt from "jsonwebtoken";
+import config from "../../src/config/config.js";
 
 const router = Router();
 
@@ -44,7 +45,6 @@ router.get('/failregister', async (req, res) => {
   res.send({ stauts: "failed", message: "user registration failed" });
 })
 
-
 router.post("/login", async (req, res) => {
   let email = req.body.email;
   let userPassword = req.body.password;
@@ -63,7 +63,7 @@ router.post("/login", async (req, res) => {
   }
   else {
 
-    let token = jwt.sign({ id: user._id }, "secret_jwt", { expiresIn: "1h" })
+    let token = jwt.sign({ id: user._id }, config.jwt_secret, { expiresIn: "1h" }) 
     res.cookie("jwt", token, {
       signed: true,
       httpOnly: true,
@@ -71,7 +71,6 @@ router.post("/login", async (req, res) => {
     }).json({ status: 200, msg: "loggend in" })
   }
 });
-
 
 router.post("/change-password", async (req, res) => {
 
