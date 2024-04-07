@@ -1,10 +1,12 @@
 import { Router } from "express";
 import UsersDAO from "../../src/dao/mongoDbManagers/usersDbManager.js";
-import cartsInDb from "../../src/dao/mongoDbManagers/cartsDbManager.js";
+import cartsDAO from "../../src/dao/mongoDbManagers/cartsDbManager.js";
+import usersDTO from "../../src/dtos/usersDto.js";
 import { createHash, isValidPassword } from "../../utils/crypt.js";
 import passport from "passport";
 import jwt from "jsonwebtoken";
 import config from "../../src/config/config.js";
+import userService from "../../src/repositories/usersRepository.js";
 
 const router = Router();
 
@@ -12,28 +14,21 @@ router.post('/register', async (req, res) => {
   const { first_name, last_name, email, age, password } = req.body;
 
   try {
-    let user = await UsersDAO.getUsersByEmail(email);
+    let user = await userService.getUsersByEmail(email);
 
     if (user) {
       console.log('User already exists');
       return done(null, false);
     }
 
-    const newCart = await cartsInDb.createNewCart();
+    // repository dedicado a carts?
+
+    const newCart = await cartsDAO.createNewCart();
     const cartId = newCart._id;
 
-    const newUser = {
-      first_name,
-      last_name,
-      email,
-      age,
-      password: createHash(password),
-      cart: cartId
-    };
+    let newUser =  await userService.formatRegisterDataForDAO({ first_name, last_name, email, age, password }, cartId);
+    let result = await userService.insertUser(newUser);
 
-    console.log(newUser);
-
-    let result = await UsersDAO.insert(newUser.first_name, newUser.last_name, newUser.age, newUser.email, newUser.password, newUser.cart);
     res.send({ status: "succes", message: "user registered" });
 
   } catch (error) {
@@ -52,8 +47,8 @@ router.post("/login", async (req, res) => {
   if (!email || !userPassword) {
     res.status(400).json({ status: 400, error: "Wrong email or password" })
   }
-  let user = await UsersDAO.getUsersByEmail(email);
 
+  let user = await userService.getUsersByEmail(email);
   if (!user) {
     res.status(404).json({ status: 404, error: "User not found" })
   }
@@ -63,7 +58,7 @@ router.post("/login", async (req, res) => {
   }
   else {
 
-    let token = jwt.sign({ id: user._id }, config.jwt_secret, { expiresIn: "1h" }) 
+    let token = jwt.sign({ id: user._id }, config.jwt_secret, { expiresIn: "1h" })
     res.cookie("jwt", token, {
       signed: true,
       httpOnly: true,
@@ -81,10 +76,11 @@ router.post("/change-password", async (req, res) => {
   }
 
   try {
-    let user = await UsersDAO.getUsersByEmail(email);
 
+    let user = await userService.getUsersByEmail(email);
     user.password = createHash(password);
-    await UsersDAO.updateUser(email, user);
+    await userService.updateUsers(email, user);
+
     res.status(200).send('password changed');
 
   } catch (error) {

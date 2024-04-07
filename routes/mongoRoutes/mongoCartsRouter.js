@@ -51,6 +51,8 @@ router.put("/:id", async (req, res) => {
   }
 
   try {
+    // esta esta para un repository
+
     let cart = await CartsDAO.updateCart(id, newCartContent);
 
     let paginatedCart = await CartsDAO.paginate({}, { page: 1, limit: 10, lean: true })
@@ -92,6 +94,9 @@ router.put("/:cartId/products/:productId", async (req, res) => {
   try {
 
     let cart = await CartsDAO.getCartById(cartId);
+
+    // aca podria ir un DTO
+    
     const productIndex = cart.content.findIndex(object => object.product._id.toString() === String(productId));
     let oldProduct = cart.content[productIndex].product;
     let updatedProduct = { ...oldProduct, ...data }

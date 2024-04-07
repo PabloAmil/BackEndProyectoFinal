@@ -25,11 +25,6 @@ import sessionRouter from "./routes/mongoRoutes/mongoSessionsRouter.js"
 import viewsRouter from "./routes/mongoRoutes/mongoViewsRouter.js"
 import messagesInDb from "./src/dao/mongoDbManagers/messagesDbManager.js";
 
-console.log("///////////////////////////")
-console.log(config);
-console.log("///////////////////////////")
-
-
 const app = express();
 const httpServer = http.createServer(app);
 const io = new Server(httpServer);
@@ -43,11 +38,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(cookieParser("secret_cookie"));
 
-
 app.use(session({
   store: MongoStore.create({
-    //mongoUrl: config.local_mongo_url,
-    mongoUrl: config.atlas_mongo_url,
+    mongoUrl: config.local_mongo_url,
+    //mongoUrl: config.atlas_mongo_url,
     ttl: 900,
   }),
   secret: config.session_secret, 
@@ -92,8 +86,8 @@ io.on('connection', (socket) => {
   });
 })
 
-//mongoose.connect(config.local_mongo_url);
-mongoose.connect(config.atlas_mongo_url);
+mongoose.connect(config.local_mongo_url);
+//mongoose.connect(config.atlas_mongo_url);
 
 httpServer.listen(8080, () => console.log("now listening to port 8080")); 
 

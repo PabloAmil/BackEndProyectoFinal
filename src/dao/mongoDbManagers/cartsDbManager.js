@@ -1,6 +1,6 @@
 import Carts from "../../../schemas/carts.schema.js";
 
-class cartsInDb {
+class cartsDAO {
   static async getAll() {
     try {
       return Carts.find().lean();
@@ -43,4 +43,4 @@ class cartsInDb {
   }
 }
 
-export default cartsInDb;
+export default cartsDAO;

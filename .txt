@@ -1,0 +1,54 @@
+
+el DTO en este caso seria utilizando lo que devuelve el DAO. lo voy a usar para convertir los datos que el usuario pone en los imputs en los metodos de
+agregar productos o usuarios para comprobaciones y mayusculas y las validaciones de github y jwt.
+
+
+el DTO se trae y usa en los routers y en el passport.config. aca vamos a trabajar sobre los datos que devuelve al front
+
+
+
+
+
+
+empezar los DTO por passsport.config.js //////////////// HECHO
+
+
+luego ir a las rutas y crear los DTO que sean necesarios para pasar la informacion a los DAO ///////////////// HECHO
+
+
+luego crear los repository para que en lo posible contengan a los DAO y los DTO /////////////////////////// HECHO
+
+
+luego modificar lo de current. /////////////////////// HECHO
+
+
+
+
+
+
+
+
+DTO tiene que tener un metodo para mandar datos al DAO, y otro para traer datos del DAO en un determinado formato. 
+
+
+
+
+
+
+va a tener que existir un productsDTO y conectarlo con el DAO de productos
+
+
+
+///// ARREGLAR /////
+
+usuarios no existentes en la base de atlas rompen el programa.
+
+si me logueo con github no puedo lograr que en /products aparezca el nombre de la persona que se logueo, si me logueo normalmente si.
+asi que el problema es de donde esta obteniendo la informacion.
+
+
+
+
+
+
+

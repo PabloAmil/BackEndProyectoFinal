@@ -1,52 +1,48 @@
 import passport from "passport";
 import GitHubStrategy from "passport-github2";
-import UsersDAO from "./mongoDbManagers/usersDbManager.js";
 import { Strategy } from "passport-jwt";
-import cartsInDb from "./mongoDbManagers/cartsDbManager.js";
+import cartsDAO from "./mongoDbManagers/cartsDbManager.js";
 import config from "../config/config.js";
+import userService from "../repositories/usersRepository.js";
 
 const initializePassport = () => {
 
   passport.use('github', new GitHubStrategy({
 
-    clientID: config.client_Id, 
-    clientSecret: config.client_secret, 
-    callbackURL: config.callback_url 
+    clientID: config.client_Id,
+    clientSecret: config.client_secret,
+    callbackURL: config.callback_url
   }, async (accesToken, refreshToken, profile, done) => {
     try {
 
-      let user = await UsersDAO.getUsersByEmail(profile._json.email);
+      let user = await userService.getUsersByEmail(profile._json.email);
 
-      const newCart = await cartsInDb.createNewCart();
+      // repository para carts
+
+      const newCart = await cartsDAO.createNewCart();
       const cartId = newCart._id;
 
       if (!user) {
-        let newUser = {
-          first_name: profile._json.name,
-          last_name: "",
-          age: 18,
-          email: profile._json.email,
-          password: "",
-          cart: cartId
-        }
-
-        let result = await UsersDAO.insert(newUser.first_name, newUser.last_name, newUser.age, newUser.email, newUser.password, newUser.cart);
+        let newUser = await userService.formatGithubDataForDAO(profile._json, cartId);
+        let result = await userService.insertUser(newUser)
         done(null, result);
-      } else {
-        done(null, user);
+
+      } else {   
+        let storedUser = await userService.returnFormatedDataFromDAO(user);
+        done(null, storedUser);
       }
     } catch (e) {
       return done(e);
     }
   }))
 
-  passport.serializeUser((user, done) => {
-    done(null, user._id);
+  passport.serializeUser((storedUser, done) => {
+    done(null, storedUser._id);
   })
 
   passport.deserializeUser(async (id, done) => {
     try {
-      const user = await UsersDAO.getUserById(id);
+      const user = await userService.getUserById(id)
       done(null, user);
     } catch (error) {
       done(error, null);
@@ -64,10 +60,11 @@ const initializePassport = () => {
     secretOrKey: config.jwt_secret
   }, async (jwt_payload, done) => {
     let userId = jwt_payload.id;
-    let user = await UsersDAO.getUserById(userId);
+    let user = await userService.getUserById(userId);
+    let storedUser =  await userService.returnFormatedDataFromDAO(user)
 
-    if (user) {
-      return done(null, user);
+    if (storedUser) {
+      return done(null, storedUser);
     } else {
       return done(null, false);
     }

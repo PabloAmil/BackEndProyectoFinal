@@ -9,12 +9,12 @@ class UsersDAO {
     return await Users.findOne({email, password});
   }
 
-  static async insert(first_name, last_name, age, email, password, cart) {
+  static async insert({first_name, last_name, age, email, password, cart}) {
     return await new Users({first_name, last_name, age, email, password, cart}).save();
   }
 
   static async getUserById(id) {
-    return await Users.findOne({_id: id}, {first_name:1, last_name:1, age:1, email:1, password:1}).lean();
+    return await Users.findOne({_id: id}, {first_name:1, last_name:1, age:1, email:1, password:1, role:1, cart:1}).lean();
   }
 
   static async updateUser(email, data) {

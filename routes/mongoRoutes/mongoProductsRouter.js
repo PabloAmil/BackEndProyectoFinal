@@ -106,6 +106,9 @@ router.get("/:id", async (req, res) => {
     }
     );
   }
+
+  // aca iria un repository con un DTO que prepare el producto para renderizarlo
+
   res.render('product', {
     title: product.title,
     description: product.description,
@@ -118,8 +121,13 @@ router.get("/:id", async (req, res) => {
 })
 
 router.post("/", upload.single('image'), async (req, res) => {
+
+
   let filename = req.file.filename;
   let product = req.body;
+
+
+  // aca podria ir un DTO de productos. 
 
   await ProductsDAO.add(product.title, product.description, product.code, product.price, product.status, product.stock, product.category, filename);
   res.redirect("/");
