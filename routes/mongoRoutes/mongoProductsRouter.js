@@ -2,10 +2,9 @@ import { Router, query } from "express";
 import ProductsDAO from "../../src/dao/mongoDbManagers/productsDbManager.js";
 import upload from "../../utils/upload.middlewares.js";
 import passport from "passport";
-import jwt from "jsonwebtoken";
+import checkPermissions from "../../utils/auth.middleware.js";
 
 const router = Router();
-
 
 // get products
 
@@ -86,7 +85,8 @@ router.get("/", passport.authenticate("jwt", {session: false}), async (req, res)
 })
 
 // create product
-router.get("/new", (req, res) => {
+router.get("/new", passport.authenticate("jwt", { session: false }), checkPermissions("Admin"), (req, res) => {
+
   res.render("new-product", {
     style: 'new-product.css',
   });
@@ -134,7 +134,7 @@ router.post("/", upload.single('image'), async (req, res) => {
 })
 
 // delete product
-router.delete("/delete/:id", async (req, res) => {
+router.get("/delete/:id", passport.authenticate("jwt", { session: false }), checkPermissions("Admin"), async (req, res) => {
   try {
     let id = req.params.id;
     if (!id) {
@@ -152,7 +152,7 @@ router.delete("/delete/:id", async (req, res) => {
 
 
 // update product
-router.get("/product-edit/:id", async (req, res) => {
+router.get("/product-edit/:id", passport.authenticate("jwt", { session: false }), checkPermissions("Admin"), async (req, res) => {
 
   let id = req.params?.id;
 

@@ -1,9 +1,11 @@
 import { Router } from "express";
 import MessagesDAO from "../../src/dao/mongoDbManagers/messagesDbManager.js";
+import passport from "passport";
+import checkPermissions from "../../utils/auth.middleware.js";
 
 const router = Router();
 
-router.get("/", async (req, res) => {
+router.get("/", passport.authenticate("jwt", { session: false }), checkPermissions("User"), async (req, res) => {
 
   try {
     const messages = await MessagesDAO.getAll();
@@ -13,6 +15,5 @@ router.get("/", async (req, res) => {
     console.log(`Cannot get messages`, e)
   }
 })
-
 
 export default router;

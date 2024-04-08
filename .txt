@@ -7,35 +7,19 @@ el DTO se trae y usa en los routers y en el passport.config. aca vamos a trabaja
 
 
 
-
-
-
 empezar los DTO por passsport.config.js //////////////// HECHO
-
-
 luego ir a las rutas y crear los DTO que sean necesarios para pasar la informacion a los DAO ///////////////// HECHO
-
-
 luego crear los repository para que en lo posible contengan a los DAO y los DTO /////////////////////////// HECHO
-
-
 luego modificar lo de current. /////////////////////// HECHO
+DTO tiene que tener un metodo para mandar datos al DAO, y otro para traer datos del DAO en un determinado formato.  /////////////////////////////////// HECHO
 
 
 
+crear DTO, DAO  y repository para productos.
 
 
 
-
-
-DTO tiene que tener un metodo para mandar datos al DAO, y otro para traer datos del DAO en un determinado formato. 
-
-
-
-
-
-
-va a tener que existir un productsDTO y conectarlo con el DAO de productos
+////////////////////
 
 
 

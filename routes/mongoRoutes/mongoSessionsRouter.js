@@ -7,6 +7,7 @@ import passport from "passport";
 import jwt from "jsonwebtoken";
 import config from "../../src/config/config.js";
 import userService from "../../src/repositories/usersRepository.js";
+//import checkPermissions from "../../utils/auth.middleware.js";
 
 const router = Router();
 
@@ -40,7 +41,7 @@ router.get('/failregister', async (req, res) => {
   res.send({ stauts: "failed", message: "user registration failed" });
 })
 
-router.post("/login", async (req, res) => {
+router.post("/login", passport.authenticate("jwt",  { session: false }), async (req, res) => {
   let email = req.body.email;
   let userPassword = req.body.password;
 
@@ -49,6 +50,11 @@ router.post("/login", async (req, res) => {
   }
 
   let user = await userService.getUsersByEmail(email);
+
+  console.log(req.user);
+
+  // hay que hacer que al loguearse se cree la sesion
+
   if (!user) {
     res.status(404).json({ status: 404, error: "User not found" })
   }
