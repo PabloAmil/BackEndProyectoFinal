@@ -129,7 +129,7 @@ router.post("/", upload.single('image'), async (req, res) => {
 
   // aca podria ir un DTO de productos. 
 
-  await ProductsDAO.add(product.title, product.description, product.code, product.price, product.status, product.stock, product.category, filename);
+  await ProductsDAO.add(product.title, product.description, product.code, product.price, product.status, product.stock, product.category, filename, product.quantity);
   res.redirect("/");
 })
 

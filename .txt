@@ -54,4 +54,9 @@ mongoCartsRouter.js revisar los permisos
 
 
 
+//////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+modificar el metodo para que un producto no pueda agregarse mas de 1 vez al cart
 

@@ -19,20 +19,20 @@ class cartsDAO {
 
   static async createNewCart(content = []) {
     try {
-      return new Carts({content}).save();
+      return new Carts({ content }).save();
     } catch (e) {
       console.log(`cart creation failed`);
     }
   }
 
   static async updateCart(id, data) {
+
     try {
       return Carts.findOneAndUpdate({ _id: id }, data).populate('content.product');
     } catch (e) {
       console.log(`cart update failed, cart id: ${id}`);
     }
   }
-
 
   static async paginate(filter, options) {
     try {
@@ -46,34 +46,48 @@ class cartsDAO {
     try {
       const cart = await Carts.findOne({ _id: id }).populate({
         path: 'content.product',
-        model: 'products' 
+        model: 'products'
       });
-  
+
       if (!cart) {
         throw new Error('Cart not found');
       }
-  
+
       if (cart.content.length === 0) {
         return "Cart is empty";
       }
+      
 
-  
       return cart.content.map(item => {
         return {
-          productId: item.product._id, 
-          productName: item.product.title, 
+          productId: item.product._id,
+          productName: item.product.title,
           productPrice: item.product.price,
           stock: item.product.stock,
-          
+          quantity: item.product.quantity
+
         };
       });
     } catch (error) {
       console.error('Error obtaining cart content:', error.message);
-      throw error; 
+      throw error;
     }
   }
-  
-  
+
+  static async findProductIndexById(productId, cart) {
+
+    console.log("//////////////////////////////////////")
+    console.log(cart.content[0])
+    console.log("//////////////////////////////////////")
+
+
+    const productIndex = cart.content.findIndex(item => {
+      return item.product._id.toString() === productId;
+    });
+
+    return productIndex;
+  };
+
 }
 
 export default cartsDAO;
