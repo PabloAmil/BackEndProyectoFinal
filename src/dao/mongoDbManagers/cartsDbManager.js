@@ -41,6 +41,39 @@ class cartsDAO {
       console.log('Carts not found', e);
     }
   }
+
+  static async displayCartItems(id) {
+    try {
+      const cart = await Carts.findOne({ _id: id }).populate({
+        path: 'content.product',
+        model: 'products' 
+      });
+  
+      if (!cart) {
+        throw new Error('Cart not found');
+      }
+  
+      if (cart.content.length === 0) {
+        return "Cart is empty";
+      }
+
+  
+      return cart.content.map(item => {
+        return {
+          productId: item.product._id, 
+          productName: item.product.title, 
+          productPrice: item.product.price,
+          stock: item.product.stock,
+          
+        };
+      });
+    } catch (error) {
+      console.error('Error obtaining cart content:', error.message);
+      throw error; 
+    }
+  }
+  
+  
 }
 
 export default cartsDAO;

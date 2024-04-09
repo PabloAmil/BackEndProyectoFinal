@@ -1,7 +1,5 @@
 import { Router } from "express";
-import UsersDAO from "../../src/dao/mongoDbManagers/usersDbManager.js";
 import cartsDAO from "../../src/dao/mongoDbManagers/cartsDbManager.js";
-import usersDTO from "../../src/dtos/usersDto.js";
 import { createHash, isValidPassword } from "../../utils/crypt.js";
 import passport from "passport";
 import jwt from "jsonwebtoken";
@@ -41,7 +39,10 @@ router.get('/failregister', async (req, res) => {
   res.send({ stauts: "failed", message: "user registration failed" });
 })
 
-router.post("/login", passport.authenticate("jwt",  { session: false }), async (req, res) => {
+//router.post("/login", passport.authenticate("jwt",  { session: false }), async (req, res) => {
+
+router.post("/login", async (req, res) => {
+
   let email = req.body.email;
   let userPassword = req.body.password;
 
@@ -50,10 +51,6 @@ router.post("/login", passport.authenticate("jwt",  { session: false }), async (
   }
 
   let user = await userService.getUsersByEmail(email);
-
-  console.log(req.user);
-
-  // hay que hacer que al loguearse se cree la sesion
 
   if (!user) {
     res.status(404).json({ status: 404, error: "User not found" })

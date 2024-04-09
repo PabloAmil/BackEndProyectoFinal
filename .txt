@@ -6,21 +6,29 @@ agregar productos o usuarios para comprobaciones y mayusculas y las validaciones
 el DTO se trae y usa en los routers y en el passport.config. aca vamos a trabajar sobre los datos que devuelve al front
 
 
+crear DTO, DAO  y repository para productos y carts
 
-empezar los DTO por passsport.config.js //////////////// HECHO
-luego ir a las rutas y crear los DTO que sean necesarios para pasar la informacion a los DAO ///////////////// HECHO
-luego crear los repository para que en lo posible contengan a los DAO y los DTO /////////////////////////// HECHO
-luego modificar lo de current. /////////////////////// HECHO
-DTO tiene que tener un metodo para mandar datos al DAO, y otro para traer datos del DAO en un determinado formato.  /////////////////////////////////// HECHO
+////////////////////////////////////////////////////
 
 
 
-crear DTO, DAO  y repository para productos.
+
+tickets, ya esta creado el schema, ahora es crear el DAO para los metodos, el repository, y luego el endpoint para poder llamarlos. 
 
 
 
-////////////////////
+para poder sacar el number antes tengo que poder ver todo el contenido de un cart de un usuario, navegarlo y sumar esa cantidad. 
 
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////
 
 
 ///// ARREGLAR /////
@@ -28,7 +36,18 @@ crear DTO, DAO  y repository para productos.
 usuarios no existentes en la base de atlas rompen el programa.
 
 si me logueo con github no puedo lograr que en /products aparezca el nombre de la persona que se logueo, si me logueo normalmente si.
-asi que el problema es de donde esta obteniendo la informacion.
+asi que el problema es de donde esta obteniendo la informacion. lo primero es revisar si la obtiene del req.user.
+
+
+
+volver a retocar la autenticacion 
+
+//////////////////////////////////////////////////////////
+
+
+mongoSessionsRouter.js revisar los permisos
+
+mongoCartsRouter.js revisar los permisos
 
 
 

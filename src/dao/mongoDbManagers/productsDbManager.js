@@ -1,6 +1,6 @@
-import Products from "../../../schemas/products.eschema.js";
+import Products from "../../../schemas/products.schema.js";
 
-class ProductsInDb {
+class ProductsDAO {
 
   static async getAll() {
     try {
@@ -60,4 +60,4 @@ class ProductsInDb {
 }
 
 
-export default ProductsInDb;
+export default ProductsDAO;
