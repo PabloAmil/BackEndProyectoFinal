@@ -26,6 +26,7 @@ class ticketsDAO {
     return dateTime;
   }
 
+
   static async checkStock(cart_data) {
 
     let cartId = cart_data.toString();
@@ -40,9 +41,6 @@ class ticketsDAO {
       Ids[productID] = (Ids[productID] || 0) + 1;
     });
 
-    //console.log(Ids) //CHEKPOINT
-    //console.log(products)
-
     for (let product in products) {
 
       if (products[product].stock >= Ids[products[product]._id]) {
@@ -54,21 +52,14 @@ class ticketsDAO {
       }
     } 
 
-    console.log(withStock); // CHECKPOINT
-    console.log(backToCart); // CHECKPOINT
-    
+    cart = await cartsDAO.emptyCart(cartId);
 
+    for (let i = 0; i < backToCart.length; i++) {
+      cart.content.push(backToCart[i]);
+    }
+    cart = await cartsDAO.updateCart(cartId, cart);
 
-    //cart = await cartsDAO.emptyCart(cartId);
-
-    // for (let i = 0; i < backToCart.length; i++) {
-    //   cart.content.push(backToCart[i])
-    // }
-
-    // cart = await cartsDAO.updateCart(cartId, cart)
-
-    return 1
-
+    return await this.getAmount(withStock);
   }
 
   static async getAmount(prices) {
@@ -83,8 +74,7 @@ class ticketsDAO {
       console.log(`something went wrong with your purchase` + e);
     }
   }
-
-}
+};
 
 
 export default ticketsDAO;
