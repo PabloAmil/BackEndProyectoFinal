@@ -40,8 +40,8 @@ app.use(cookieParser("secret_cookie"));
 
 app.use(session({
   store: MongoStore.create({
-    mongoUrl: config.local_mongo_url,
-    //mongoUrl: config.atlas_mongo_url,
+    //mongoUrl: config.local_mongo_url,
+    mongoUrl: config.atlas_mongo_url,
     ttl: 900,
   }),
   secret: config.session_secret, 
@@ -86,8 +86,8 @@ io.on('connection', (socket) => {
   });
 })
 
-mongoose.connect(config.local_mongo_url);
-//mongoose.connect(config.atlas_mongo_url);
+//mongoose.connect(config.local_mongo_url);
+mongoose.connect(config.atlas_mongo_url);
 
 httpServer.listen(8080, () => console.log("now listening to port 8080")); 
 

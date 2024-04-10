@@ -1,34 +1,7 @@
 
-el DTO en este caso seria utilizando lo que devuelve el DAO. lo voy a usar para convertir los datos que el usuario pone en los imputs en los metodos de
-agregar productos o usuarios para comprobaciones y mayusculas y las validaciones de github y jwt.
-
-
-el DTO se trae y usa en los routers y en el passport.config. aca vamos a trabajar sobre los datos que devuelve al front
-
-
 crear DTO, DAO  y repository para productos y carts
 
 ////////////////////////////////////////////////////
-
-
-
-
-tickets, ya esta creado el schema, ahora es crear el DAO para los metodos, el repository, y luego el endpoint para poder llamarlos. 
-
-
-
-para poder sacar el number antes tengo que poder ver todo el contenido de un cart de un usuario, navegarlo y sumar esa cantidad. 
-
-
-
-
-
-
-
-
-
-
-//////////////////////////////////////////////////////
 
 
 ///// ARREGLAR /////

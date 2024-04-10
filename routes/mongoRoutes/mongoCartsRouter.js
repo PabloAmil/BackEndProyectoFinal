@@ -204,10 +204,7 @@ router.delete("/:cartId/products/:productId", async (req, res) => {
 
 router.get("/:cartId/purchase", passport.authenticate("jwt", { session: false }), checkPermissions("User"), async (req, res) => {
 
-  
-
   let ticket = await ticketsDAO.createTicket(req.user);
-
   res.send(ticket)
 })
 

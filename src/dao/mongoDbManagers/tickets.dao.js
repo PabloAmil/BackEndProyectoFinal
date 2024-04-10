@@ -44,7 +44,13 @@ class ticketsDAO {
     for (let product in products) {
 
       if (products[product].stock >= Ids[products[product]._id]) {
-        withStock.push(products[product].price * Ids[products[product]._id])
+
+        withStock.push(products[product].price * Ids[products[product]._id]);
+
+        let stock = products[product].stock - Ids[products[product]._id];
+        let oldProduct = await ProductsDAO.getById(products[product]._id);
+        let updatedProduct = await ProductsDAO.update(products[product]._id.toString(), {...oldProduct, stock});
+
       } else {
         for (let i = 0; i < Ids[products[product]._id]; i++) {
           backToCart.push({product: products[product]._id} ) 
@@ -58,7 +64,6 @@ class ticketsDAO {
       cart.content.push(backToCart[i]);
     }
     cart = await cartsDAO.updateCart(cartId, cart);
-
     return await this.getAmount(withStock);
   }
 
@@ -75,6 +80,5 @@ class ticketsDAO {
     }
   }
 };
-
 
 export default ticketsDAO;
