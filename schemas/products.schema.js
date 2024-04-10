@@ -41,11 +41,7 @@ const ProductsSchema = new mongoose.Schema({
 
   photo: {
     type: String,
-  },
-
-  // quantity: {
-  //   type: Number,
-  // }
+  }
 })
 
 ProductsSchema.plugin(mongoosePaginate);

@@ -27,7 +27,6 @@ router.post('/register', async (req, res) => {
 
     let newUser =  await userService.formatRegisterDataForDAO({ first_name, last_name, email, age, password }, cartId);
     let result = await userService.insertUser(newUser);
-
     res.send({ status: "succes", message: "user registered" });
 
   } catch (error) {
@@ -39,7 +38,6 @@ router.get('/failregister', async (req, res) => {
   res.send({ stauts: "failed", message: "user registration failed" });
 })
 
-//router.post("/login", passport.authenticate("jwt",  { session: false }), async (req, res) => {
 
 router.post("/login", async (req, res) => {
 
@@ -49,7 +47,6 @@ router.post("/login", async (req, res) => {
   if (!email || !userPassword) {
     res.status(400).json({ status: 400, error: "Wrong email or password" })
   }
-
   let user = await userService.getUsersByEmail(email);
 
   if (!user) {

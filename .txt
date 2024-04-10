@@ -39,24 +39,13 @@ si me logueo con github no puedo lograr que en /products aparezca el nombre de l
 asi que el problema es de donde esta obteniendo la informacion. lo primero es revisar si la obtiene del req.user.
 
 
-
-volver a retocar la autenticacion 
-
 //////////////////////////////////////////////////////////
 
 
-mongoSessionsRouter.js revisar los permisos
-
-mongoCartsRouter.js revisar los permisos
 
 
 
 
 
 
-//////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-modificar el metodo para que un producto no pueda agregarse mas de 1 vez al cart
 

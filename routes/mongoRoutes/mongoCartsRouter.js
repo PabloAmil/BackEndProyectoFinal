@@ -121,8 +121,9 @@ router.put("/:cartId/products/:productId", async (req, res) => {
   }
 })
 
+
 // add product to cart
-router.get("/:cartId/addProduct/:productId",  passport.authenticate("jwt", { session: false }), checkPermissions("User"), async (req, res) => {
+router.get("/:cartId/addProduct/:productId", passport.authenticate("jwt", { session: false }), checkPermissions("User"), async (req, res) => {
 
   let cartId = req.params.cartId;
   let productId = req.params.productId;
@@ -130,33 +131,12 @@ router.get("/:cartId/addProduct/:productId",  passport.authenticate("jwt", { ses
   try {
     let cart = await CartsDAO.getCartById(cartId);
 
-    // console.log("//////////////////////////////////////////")
-    // console.log(cart.content)
-    // console.log("//////////////////////////////////////////")
-
-    // primero tiene que buscar si ese producto ya existe, porque si es asi, solo tiene que modificarle la cantidad
-    //al array que obtiene le pushea el nuevo producto. 
-    
     cart.content.push({ product: productId });
-    
-    // //setea un cantidad
-    // let quantity = 1
-    
-    // // busca en el cart falso el producto recien pusheado, agarra su indice 
-    // let productIndex = await CartsDAO.findProductIndexById(productId, cart)
-    
-    // // y le agrega una cantidad
-    // cart.content[productIndex].product.quantity = quantity
-    
-    // // luego va actualizado a la base
-
-  
-    // por alguna razon no lo esta haciendo
     let result = await CartsDAO.updateCart(cartId, cart);
 
     res.status(200).send({
       status: 200,
-      result: "Succes",
+      result: "Success",
       payload: result
     })
 
@@ -175,6 +155,8 @@ router.delete("/:cartId", async (req, res) => {
   let cartId = req.params.cartId;
 
   try {
+
+    // reemplazar este por el metodo
     let cart = await CartsDAO.getCartById(cartId);
     cart.content = [];
     let result = await CartsDAO.updateCart(cartId, cart);
@@ -193,7 +175,6 @@ router.delete("/:cartId", async (req, res) => {
     })
   }
 })
-
 
 // delete 1 product from cart 
 
@@ -221,31 +202,14 @@ router.delete("/:cartId/products/:productId", async (req, res) => {
   }
 })
 
-router.get("/:cartId/purchase", passport.authenticate("jwt", { session: false }), async (req, res) => {
+router.get("/:cartId/purchase", passport.authenticate("jwt", { session: false }), checkPermissions("User"), async (req, res) => {
 
+  
 
-  // aca esta el problema, el cart que se trae de req.user NO esta actualizado
+  let ticket = await ticketsDAO.createTicket(req.user);
 
-
-  let cartId = req.user.cart.toString();
-  let cart = await CartsDAO.displayCartItems(cartId);
-
-
-  //await ticketsDAO.checkStock(cart);
-  //let ticket = await ticketsDAO.createTicket(req.user);
-
-
-
-  res.send(cart)
-
-
+  res.send(ticket)
 })
-
-
-
-
-
-
 
 export default router;
 

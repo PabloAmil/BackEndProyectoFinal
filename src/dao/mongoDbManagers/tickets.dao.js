@@ -1,4 +1,5 @@
 import ticketModel from "../../../schemas/tickets.schema.js";
+import cartsDAO from "./cartsDbManager.js";
 import ProductsDAO from "./productsDbManager.js";
 
 class ticketsDAO {
@@ -16,7 +17,7 @@ class ticketsDAO {
   static async getDatetime() {
     const date = new Date();
     const year = date.getFullYear();
-    const month = date.getMonth() + 1; 
+    const month = date.getMonth() + 1;
     const day = date.getDate();
     const hour = date.getHours();
     const minutes = date.getMinutes();
@@ -27,29 +28,57 @@ class ticketsDAO {
 
   static async checkStock(cart_data) {
 
-    // checkear en la base si cada item del cart en especifico tiene stock mayor o menor de lo que se eligio
+    let cartId = cart_data.toString();
+    let cart = await cartsDAO.getCartById(cartId);
+    let products = await ProductsDAO.getAll();
+    const Ids = {};
+    const withStock = [];
+    const backToCart = [];
 
-    // necesita ademas crear un nuevo objeto con los ID de los que que no haya, o no haya suficientes, y actualizar el cart con esos, buscandolos
+    cart.content.forEach(product => {
+      const productID = product.product._id;
+      Ids[productID] = (Ids[productID] || 0) + 1;
+    });
+
+    //console.log(Ids) //CHEKPOINT
+    //console.log(products)
+
+    for (let product in products) {
+
+      if (products[product].stock >= Ids[products[product]._id]) {
+        withStock.push(products[product].price * Ids[products[product]._id])
+      } else {
+        for (let i = 0; i < Ids[products[product]._id]; i++) {
+          backToCart.push({product: products[product]._id} ) 
+        }
+      }
+    } 
+
+    console.log(withStock); // CHECKPOINT
+    console.log(backToCart); // CHECKPOINT
     
 
-    
-    
+
+    //cart = await cartsDAO.emptyCart(cartId);
+
+    // for (let i = 0; i < backToCart.length; i++) {
+    //   cart.content.push(backToCart[i])
+    // }
+
+    // cart = await cartsDAO.updateCart(cartId, cart)
+
+    return 1
 
   }
 
-  static async getAmount(cart_data) {
-    // de los productos que SI hay stock sumarlos y buscar el precio
-
-    let amount = 0;
-
-
-    return 1;
-
-  }
+  static async getAmount(prices) {
+    let total = prices.reduce((acc, val) => acc + val, 0);
+    return total;
+  };
 
   static async createTicket(user) {
     try {
-      return new ticketModel({ code: await ticketsDAO.generateCode(25), purchase_datetime: await  ticketsDAO.getDatetime(), amount: await ticketsDAO.getAmount(), purchaser: user.email }).save();
+      return new ticketModel({ code: await ticketsDAO.generateCode(25), purchase_datetime: await ticketsDAO.getDatetime(), amount: await ticketsDAO.checkStock(user.cart), purchaser: user.email }).save();
     } catch (e) {
       console.log(`something went wrong with your purchase` + e);
     }

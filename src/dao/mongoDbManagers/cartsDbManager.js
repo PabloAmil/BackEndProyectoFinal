@@ -1,4 +1,5 @@
 import Carts from "../../../schemas/carts.schema.js";
+import productsModel from "../../../schemas/products.schema.js";
 
 class cartsDAO {
   static async getAll() {
@@ -28,9 +29,13 @@ class cartsDAO {
   static async updateCart(id, data) {
 
     try {
-      return Carts.findOneAndUpdate({ _id: id }, data).populate('content.product');
+      let updatedCart = await Carts.findOneAndUpdate({ _id: id }, data, { new: true });
+      updatedCart = await updatedCart.populate('content')
+      return updatedCart;
+
     } catch (e) {
       console.log(`cart update failed, cart id: ${id}`);
+      console.log(e)
     }
   }
 
@@ -56,7 +61,6 @@ class cartsDAO {
       if (cart.content.length === 0) {
         return "Cart is empty";
       }
-      
 
       return cart.content.map(item => {
         return {
@@ -65,7 +69,6 @@ class cartsDAO {
           productPrice: item.product.price,
           stock: item.product.stock,
           quantity: item.product.quantity
-
         };
       });
     } catch (error) {
@@ -75,19 +78,20 @@ class cartsDAO {
   }
 
   static async findProductIndexById(productId, cart) {
-
-    console.log("//////////////////////////////////////")
-    console.log(cart.content[0])
-    console.log("//////////////////////////////////////")
-
-
     const productIndex = cart.content.findIndex(item => {
       return item.product._id.toString() === productId;
     });
-
     return productIndex;
   };
 
-}
+
+  static async emptyCart(cartId) {
+
+    const cart = await cartsDAO.getCartById(cartId);
+    cart.content = [];
+    let result = await cartsDAO.updateCart(cartId, cart);
+    return result;
+  }
+};
 
 export default cartsDAO;
