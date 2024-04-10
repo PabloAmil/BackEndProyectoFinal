@@ -3,17 +3,18 @@ import CartsDAO from "../../src/dao/mongoDbManagers/cartsDbManager.js";
 import ticketsDAO from "../../src/dao/mongoDbManagers/tickets.dao.js";
 import passport from "passport";
 import checkPermissions from "../../utils/auth.middleware.js";
+import cartService from "../../src/repositories/cartsRepository.js";
 
 const router = Router();
 
 router.get('/', async (req, res) => {
 
-  let carts = await CartsDAO.getAll();
+  let carts = await cartService.getAllCarts();
   res.render('carts', carts);
 })
 
 router.get('/new', async (req, res) => {
-  await CartsDAO.createNewCart();
+  await cartService.create()
   res.render('newCart');
 })
 
@@ -25,7 +26,7 @@ router.get("/:id", async (req, res) => {
   if (!id) {
     res.redirect("carts");
   }
-  let cart = await CartsDAO.getCartById(id);
+  let cart = await cartService.getCartById(id)
   if (!cart) {
     res.render("404");
   }
@@ -54,11 +55,9 @@ router.put("/:id", async (req, res) => {
   }
 
   try {
-    // esta esta para un repository
 
-    let cart = await CartsDAO.updateCart(id, newCartContent);
-
-    let paginatedCart = await CartsDAO.paginate({}, { page: 1, limit: 10, lean: true })
+    let cart = await cartService.update(id, newCartContent);
+    let paginatedCart = await CartsDAO.paginate({}, { page: 1, limit: 10, lean: true });
 
     paginatedCart.prevLink = paginatedCart.hasPrevPage ? `http://localhost:8080/api/carts/${id}/page=${paginatedCart.prevPage}` : '';
     paginatedCart.nextLink = paginatedCart.hasNextPage ? `http://localhost:8080/api/carts/${id}/page=${paginatedCart.nextPage}` : '';
@@ -96,15 +95,14 @@ router.put("/:cartId/products/:productId", async (req, res) => {
 
   try {
 
-    let cart = await CartsDAO.getCartById(cartId);
+    let cart = await cartService.getCartById(cartId);
 
     const productIndex = cart.content.findIndex(object => object.product._id.toString() === String(productId));
     let oldProduct = cart.content[productIndex].product;
     let updatedProduct = { ...oldProduct, ...data }
-
     cart.content[productIndex].product = updatedProduct;
 
-    await CartsDAO.updateCart(cartId, { content: cart.content });
+    await cartService.update(cartId, { content: cart.content });
 
     res.status(200).send({
       status: 200,
@@ -129,10 +127,10 @@ router.get("/:cartId/addProduct/:productId", passport.authenticate("jwt", { sess
   let productId = req.params.productId;
 
   try {
-    let cart = await CartsDAO.getCartById(cartId);
+    let cart = await cartService.getCartById(cartId);
 
     cart.content.push({ product: productId });
-    let result = await CartsDAO.updateCart(cartId, cart);
+    let result = await cartService.update(cartId, cart);
 
     res.status(200).send({
       status: 200,
@@ -156,10 +154,7 @@ router.delete("/:cartId", async (req, res) => {
 
   try {
 
-    // reemplazar este por el metodo
-    let cart = await CartsDAO.getCartById(cartId);
-    cart.content = [];
-    let result = await CartsDAO.updateCart(cartId, cart);
+    let result = await cartService.clearClart(cartId);
 
     res.status(200).send({
       status: 200,
@@ -183,7 +178,7 @@ router.delete("/:cartId/products/:productId", async (req, res) => {
   let productId = req.params.productId;
 
   try {
-    let result = await CartsDAO.updateCart(cartId, { $pull: { "content": { product: productId } } }, { new: true });
+    let result = await cartService.update(cartId, { $pull: { "content": { product: productId } } }, { new: true });
 
     console.log(result);
 

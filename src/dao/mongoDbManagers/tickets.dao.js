@@ -1,6 +1,7 @@
 import ticketModel from "../../../schemas/tickets.schema.js";
-import cartsDAO from "./cartsDbManager.js";
+import cartService from "../../repositories/cartsRepository.js";
 import ProductsDAO from "./productsDbManager.js";
+
 
 class ticketsDAO {
 
@@ -26,12 +27,11 @@ class ticketsDAO {
     return dateTime;
   }
 
-
   static async checkStock(cart_data) {
 
     let cartId = cart_data.toString();
-    let cart = await cartsDAO.getCartById(cartId);
-    let products = await ProductsDAO.getAll();
+    let cart = await cartService.getCartById(cartId);
+
     const Ids = {};
     const withStock = [];
     const backToCart = [];
@@ -41,29 +41,29 @@ class ticketsDAO {
       Ids[productID] = (Ids[productID] || 0) + 1;
     });
 
-    for (let product in products) {
+    for (let product in cart.content) {
 
-      if (products[product].stock >= Ids[products[product]._id]) {
+      let productInCart = cart.content[product].product;
+      let idStored = Ids[cart.content[product].product._id];
 
-        withStock.push(products[product].price * Ids[products[product]._id]);
+      if (productInCart.stock >= idStored) {
 
-        let stock = products[product].stock - Ids[products[product]._id];
-        let oldProduct = await ProductsDAO.getById(products[product]._id);
-        let updatedProduct = await ProductsDAO.update(products[product]._id.toString(), {...oldProduct, stock});
-
-      } else {
-        for (let i = 0; i < Ids[products[product]._id]; i++) {
-          backToCart.push({product: products[product]._id} ) 
-        }
+        withStock.push(productInCart.price);
+          let stock = productInCart.stock - idStored;
+          let oldProduct = await ProductsDAO.getById(productInCart._id);
+          let updatedProduct = await ProductsDAO.update(productInCart._id.toString(), {...oldProduct, stock});
       }
-    } 
+      else {
+          backToCart.push({ product: productInCart._id }); 
+      }
+    }
 
-    cart = await cartsDAO.emptyCart(cartId);
+    cart = await cartService.clearClart(cartId);
 
     for (let i = 0; i < backToCart.length; i++) {
       cart.content.push(backToCart[i]);
     }
-    cart = await cartsDAO.updateCart(cartId, cart);
+    cart = await cartService.update(cartId, cart);
     return await this.getAmount(withStock);
   }
 
