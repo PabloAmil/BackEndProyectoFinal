@@ -86,11 +86,12 @@ router.get("/", passport.authenticate("jwt", {session: false}), async (req, res)
 
 // create product
 router.get("/new", passport.authenticate("jwt", { session: false }), checkPermissions("Admin"), (req, res) => {
-
   res.render("new-product", {
     style: 'new-product.css',
   });
 })
+
+
 
 // get product by id
 router.get("/:id", async (req, res) => {

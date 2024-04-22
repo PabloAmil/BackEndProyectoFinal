@@ -10,7 +10,9 @@ export default {
   jwt_secret: process.env.JWT_SECRET,
   client_Id: process.env.CLIENT_ID,
   client_secret: process.env.CLIENT_SECRET,
-  callback_url: process.env.CALLBACK_URL
+  callback_url: process.env.CALLBACK_URL,
+  devEnviorment: process.env.DEV,
+  prodEnviorment: process.env.PROD
 }
 
 

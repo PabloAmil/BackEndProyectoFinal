@@ -24,10 +24,16 @@ import chatRouter from "./routes/mongoRoutes/mongoMessagesRouter.js"
 import sessionRouter from "./routes/mongoRoutes/mongoSessionsRouter.js"
 import viewsRouter from "./routes/mongoRoutes/mongoViewsRouter.js"
 import messagesInDb from "./src/dao/mongoDbManagers/messagesDbManager.js";
+import { productionLogger } from "./utils/productionLogger.js";
+import { devLogger } from "./utils/devLogger.js";
+
+//const enviorment = config.devEnviorment;
+const enviorment = config.prodEnviorment
 
 const app = express();
 const httpServer = http.createServer(app);
 const io = new Server(httpServer);
+let logger;
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
@@ -37,6 +43,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(cookieParser("secret_cookie"));
+
+if (enviorment === "development") {
+  logger = devLogger;
+} else {
+  logger = productionLogger;
+};
+
+app.use(logger);
 
 app.use(session({
   store: MongoStore.create({
@@ -63,6 +77,7 @@ app.use("/", viewsRouter);
 // app.use("/api/carts", routerCarts);
 
 app.get("/", (req, res) => {
+  
   res.render("home", {
     style: "home.css"
   });
@@ -88,7 +103,6 @@ io.on('connection', (socket) => {
 
 //mongoose.connect(config.local_mongo_url);
 mongoose.connect(config.atlas_mongo_url);
-
 httpServer.listen(8080, () => console.log("now listening to port 8080")); 
 
 
