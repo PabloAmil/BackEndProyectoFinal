@@ -11,8 +11,8 @@ const customLevelOptions = {
   },
 
   colors: {
-    fatal: 'red',
-    error: 'orange',
+    fatal: 'magenta',
+    error: 'red',
     warning: 'yellow',
     info: 'blue',
     http: 'white',
@@ -25,7 +25,7 @@ const logger = winston.createLogger({
   levels: customLevelOptions.levels,
   transports: [
     new winston.transports.Console({ 
-      level: "debug", // mientras que este es el piso
+      level: "debug",
       format: winston.format.combine(
         winston.format.colorize({colors: customLevelOptions.colors}),
         winston.format.simple()
@@ -34,12 +34,13 @@ const logger = winston.createLogger({
   ]
 });
 
-export const devLogger = (req, res, next) => {
+let devLogger = logger;
+export default devLogger;
 
-  // el problema de que siempre salga el mismo tipo de log esta aca
+// export const devLogger = (req, res, next) => {
 
-  req.logger = logger;
-  req.logger.debug('prueba info'); // este es el tipo de error que le voy a tirar
-  //req.logger.http('./')
-  next();
-};
+//   req.logger = logger;
+//   req.logger.error('prueba info'); 
+//   //req.logger.http('./')
+//   next();
+// };

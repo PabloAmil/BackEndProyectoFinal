@@ -1,6 +1,7 @@
 import { Router } from "express";
 import UsersDAO from "../../src/dao/mongoDbManagers/usersDbManager.js";
 import passport from "passport";
+import logger from "../../app.js";
 
 const router = Router();
 
@@ -23,7 +24,7 @@ router.get('/register', (req, res)=> {
 })
 
 router.get("/login", (req, res)=> { 
-  
+
   if (req.user) {
     res.redirect("/profile");
   } else {
@@ -44,5 +45,18 @@ router.get("/profile",  passport.authenticate("jwt", {session: false}), async (r
 router.get("/change-password", (req, res)=> {
   res.render("change-password");
 });
+
+
+router.get("/loggerTest", (req, res) => {
+  logger.fatal('this is a fatal error test log');
+  logger.error('this is an error test log');
+  logger.warning('this is a warning test log');
+  logger.info('this is an info test log');
+  logger.http('this is an http test log');
+  logger.debug('this is a debug test log');
+
+  res.send('testing logs')
+
+})
 
 export default router;

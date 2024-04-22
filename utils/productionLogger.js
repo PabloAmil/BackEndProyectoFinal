@@ -11,8 +11,8 @@ const customLevelOptions = {
   },
 
   colors: {
-    fatal: 'red',
-    error: 'orange', // hay un problema con el orange, revisar docu
+    fatal: 'magenta',
+    error: 'red',
     warning: 'yellow',
     info: 'blue',
     http: 'white',
@@ -40,11 +40,14 @@ const logger = winston.createLogger({
   ]
 });
 
-export const productionLogger = (req, res, next) => {
-  req.logger = logger;
-  req.logger.fatal('Error test');
-  next();
-};
+let productionLogger = logger;
+export default productionLogger;
+
+// export const productionLogger = (req, res, next) => {
+//   req.logger = logger;
+//   req.logger.error({ message: 'Error test' });
+//   next();
+// };
 
 
 

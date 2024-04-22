@@ -1,19 +1,8 @@
 
-crear DTO, DAO  y repository para productos y carts
-
-////////////////////////////////////////////////////
+pensar en que rutas pueden usarse, ej login, register, tal vez algo de la base de datos
 
 
-///// ARREGLAR /////
-
-usuarios no existentes en la base de atlas rompen el programa.
-
-si me logueo con github no puedo lograr que en /products aparezca el nombre de la persona que se logueo, si me logueo normalmente si.
-asi que el problema es de donde esta obteniendo la informacion. lo primero es revisar si la obtiene del req.user.
-
-
-//////////////////////////////////////////////////////////
-
+mongoProductsRouter -> ver por que no permite ver nada sin jwt
 
 
 
