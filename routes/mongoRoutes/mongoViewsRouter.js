@@ -38,6 +38,7 @@ router.get("/profile",  passport.authenticate("jwt", {session: false}), async (r
     let user = await UsersDAO.getUserById(req.user._id);
     res.render("profile", {user});
   } else {
+    
     res.redirect("/login");
   }
 }) 

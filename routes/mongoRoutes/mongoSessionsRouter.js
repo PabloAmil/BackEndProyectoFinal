@@ -29,9 +29,11 @@ router.post('/register', async (req, res) => {
 
     let newUser = await userService.formatRegisterDataForDAO({ first_name, last_name, email, age, password }, cartId);
     let result = await userService.insertUser(newUser);
+    logger.info('User successfully registered');
     res.send({ status: "succes", message: "user registered" });
 
   } catch (error) {
+    logger.error('Failed to register user', error);
     res.redirect('/login');
   }
 })
@@ -62,12 +64,13 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ status: 401, error: "Invalid password" });
     }
     else {
+      logger.info(`user ${user.first_name, user.last_name} has logged in`);
       let token = jwt.sign({ id: user._id }, config.jwt_secret, { expiresIn: "1h" })
       res.cookie("jwt", token, {
         signed: true,
         httpOnly: true,
         maxAge: 1000 * 60 * 60
-      }).json({ status: 200, msg: "loggend in" })
+      }).json({ status: 200, msg: "loggend in" });
     }
   } catch (err) {
     logger.warning('User not found', err)
@@ -81,9 +84,7 @@ router.post("/change-password", async (req, res) => {
   if (!email || !password) {
     logger.warning('All fields must be completed to change password')
   }
-
   try {
-
     let user = await userService.getUsersByEmail(email);
     user.password = createHash(password);
     await userService.updateUsers(email, user);

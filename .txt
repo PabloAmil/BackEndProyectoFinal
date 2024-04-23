@@ -2,7 +2,7 @@
 pensar en que rutas pueden usarse, ej login, register, tal vez algo de la base de datos
 
 
-mongoProductsRouter -> ver por que no permite ver nada sin jwt
+mongoCartsRouter -> aplicar logger a metodos de carts
 
 
 

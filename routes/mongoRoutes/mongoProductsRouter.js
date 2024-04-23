@@ -3,12 +3,13 @@ import ProductsDAO from "../../src/dao/mongoDbManagers/productsDbManager.js";
 import upload from "../../utils/upload.middlewares.js";
 import passport from "passport";
 import checkPermissions from "../../utils/auth.middleware.js";
+import logger from "../../app.js";
 
 const router = Router();
 
 // get products
 
-router.get("/", passport.authenticate("jwt", {session: false}), async (req, res) => {
+router.get("/", async (req, res) => {
 
   let page = parseInt(req.query.page);
   if (!page) {
@@ -53,13 +54,10 @@ router.get("/", passport.authenticate("jwt", {session: false}), async (req, res)
     if (req.user) {
       user = req.user.first_name;
       userLastName = req.user.last_name;
+      if (req.user.role && req.user.role === "Admin") {
+        role = req.user.role.toUpperCase();
+      }
     }
-
-    if (req.user.role === "Admin") {
-      role = req.user.role;
-    }
-
-    role = role.toUpperCase();
 
     let products = await ProductsDAO.paginate(filter, { page, limit, lean: true, sort: { price: sort } })
 
@@ -75,21 +73,21 @@ router.get("/", passport.authenticate("jwt", {session: false}), async (req, res)
     });
 
   } catch (error) {
-    console.log(`Failed to get products`);
+    logger.error('failed to retrieve products', error)
     res.status(500).send({
       status: 500,
       result: "Error",
       error: "Error getting products"
     })
   }
-})
+});
 
 // create product
 router.get("/new", passport.authenticate("jwt", { session: false }), checkPermissions("Admin"), (req, res) => {
   res.render("new-product", {
     style: 'new-product.css',
   });
-})
+});
 
 
 
@@ -100,25 +98,36 @@ router.get("/:id", async (req, res) => {
   if (!id) {
     res.redirect("/");
   }
-  let product = await ProductsDAO.getById(id);
-  if (!product) {
-    res.render('404', {
-      style: "404.css"
+
+  try {
+    let product = await ProductsDAO.getById(id);
+    if (!product) {
+      res.render('404', {
+        style: "404.css"
+      }
+      );
     }
-    );
+  
+    // aca iria un repository con un DTO que prepare el producto para renderizarlo
+  
+    res.render('product', {
+      title: product.title,
+      description: product.description,
+      price: product.price,
+      photo: product.photo,
+      category: product.category,
+      isStock: product.stock > 0,
+      style: 'product.css'
+    });
+    
+  } catch (error) {
+      logger.error(`Could not find item with id ${id}`, error);
+      res.status(400).send({
+        status: 400,
+        result: "Error",
+        error: "Error getting product"
+      })
   }
-
-  // aca iria un repository con un DTO que prepare el producto para renderizarlo
-
-  res.render('product', {
-    title: product.title,
-    description: product.description,
-    price: product.price,
-    photo: product.photo,
-    category: product.category,
-    isStock: product.stock > 0,
-    style: 'product.css'
-  });
 })
 
 router.post("/", upload.single('image'), async (req, res) => {
@@ -127,12 +136,13 @@ router.post("/", upload.single('image'), async (req, res) => {
   let filename = req.file.filename;
   let product = req.body;
 
-
   // aca podria ir un DTO de productos. 
 
   await ProductsDAO.add(product.title, product.description, product.code, product.price, product.status, product.stock, product.category, filename, product.quantity);
   res.redirect("/");
 })
+
+
 
 // delete product
 router.get("/delete/:id", passport.authenticate("jwt", { session: false }), checkPermissions("Admin"), async (req, res) => {
@@ -144,6 +154,7 @@ router.get("/delete/:id", passport.authenticate("jwt", { session: false }), chec
       });
     }
     await ProductsDAO.remove(id);
+    logger.info('Product deleted successfully');
     res.json({ success: true, message: 'Product deletion success' });
   } catch (e) {
     console.error('Error while trying to delete product:', e);
@@ -152,31 +163,35 @@ router.get("/delete/:id", passport.authenticate("jwt", { session: false }), chec
 })
 
 
+
 // update product
 router.get("/product-edit/:id", passport.authenticate("jwt", { session: false }), checkPermissions("Admin"), async (req, res) => {
 
   let id = req.params?.id;
 
-  console.log(id);
-
   if (!id) {
     res.redirect("/");
   }
-  let product = await ProductsDAO.getById(id);
-  if (!product) {
-    res.render("404", {
-      style: "404.css"
+  try {
+    let product = await ProductsDAO.getById(id);
+    if (!product) {
+      res.render("404", {
+        style: "404.css"
+      });
+    }
+    logger.info('Product updated successfully')
+    res.render('productUpdate', {
+      title: product.title,
+      description: product.description,
+      price: product.price,
+      photo: product.photo,
+      isStock: product.stock > 0,
+      id: product._id,
+      style: 'product-update.css'
     });
+  } catch (error) {
+      logger.error('There was a proble while attempting to update product', error)
   }
-  res.render('productUpdate', {
-    title: product.title,
-    description: product.description,
-    price: product.price,
-    photo: product.photo,
-    isStock: product.stock > 0,
-    id: product._id,
-    style: 'product-update.css'
-  });
 })
 
 
