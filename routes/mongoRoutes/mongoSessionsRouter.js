@@ -6,6 +6,8 @@ import jwt from "jsonwebtoken";
 import config from "../../src/config/config.js";
 import userService from "../../src/repositories/usersRepository.js";
 import logger from "../../app.js";
+import transport from "../../src/config/mailing.js";
+
 
 //import checkPermissions from "../../utils/auth.middleware.js";
 
@@ -18,7 +20,7 @@ router.post('/register', async (req, res) => {
     let user = await userService.getUsersByEmail(email);
 
     if (user) {
-      console.log('User already exists');
+      logger.info('User already exists');
       return done(null, false);
     }
 
@@ -95,7 +97,61 @@ router.post("/change-password", async (req, res) => {
     logger.error("Unable to modify user password, please contact support");
     res.status(500).send("Unable to modify user password");
   }
-})
+});
+
+
+router.post("/reset-password", async (req, res) => {
+  let email = req.body.email;
+
+  if (!email) {
+    res.status(400).send('Non existent email');
+  }
+
+  try {
+    let user = await userService.getUsersByEmail(email);
+
+    if (!user) {
+      logger.info('user not found');
+      res.redirect("/register");
+    }
+
+    let result = await transport.sendMail({
+      from: config.gmailUSer,
+      to: 'pablo.amil91@gmail.com', // cambiar por user.email
+      subject: 'Password restoration',
+      html: `
+
+      <div>
+        <h1> Reset Password </h1>
+        <a href="http://localhost:8080/change-password"> <button> Reset password </button></a>
+      </div>
+
+      `,
+      attachments: []
+    })
+
+    logger.info(`User ${user.email} requested password change`);
+    res.status(200).send('An email was sent to your registered account');
+
+  } catch (error) {
+    logger.error('Something went wrong while retrieving your information', error);
+    res.send('Something went wrong while retrieving your information');
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 router.get('/github', passport.authenticate('github', { scope: ['user:email'] }), async (req, res) => { });
 router.get('/githubcallback', passport.authenticate('github', { failureRedirect: '/login' }), async (req, res) => {

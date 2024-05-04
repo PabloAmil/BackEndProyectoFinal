@@ -5,7 +5,7 @@ import checkPermissions from "../../utils/auth.middleware.js";
 
 const router = Router();
 
-router.get("/", passport.authenticate("jwt", { session: false }), checkPermissions("User"), async (req, res) => {
+router.get("/",  async (req, res) => {
 
   try {
     const messages = await MessagesDAO.getAll();

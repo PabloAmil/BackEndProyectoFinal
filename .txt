@@ -7,7 +7,7 @@ mongoCartsRouter -> aplicar logger a metodos de carts
 
 
 
-
+1.05.44 explicacion sobre el timeout de los links
 
 
 

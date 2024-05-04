@@ -43,6 +43,10 @@ router.get("/profile",  passport.authenticate("jwt", {session: false}), async (r
   }
 }) 
 
+router.get("/reset-password", (req, res) => {
+  res.render("reset-password");
+})
+
 router.get("/change-password", (req, res)=> {
   res.render("change-password");
 });

@@ -12,7 +12,9 @@ export default {
   client_secret: process.env.CLIENT_SECRET,
   callback_url: process.env.CALLBACK_URL,
   devEnviorment: process.env.DEV,
-  prodEnviorment: process.env.PROD
+  prodEnviorment: process.env.PROD,
+  gmailUSer: process.env.GUSER,
+  gmailPass: process.env.GPASS,
 }
 
 
