@@ -9,6 +9,7 @@ import logger from "../../app.js";
 import transport from "../../src/config/mailing.js";
 
 
+
 //import checkPermissions from "../../utils/auth.middleware.js";
 
 const router = Router();
@@ -83,15 +84,23 @@ router.post("/change-password", async (req, res) => {
 
   let email = req.body.email;
   let password = req.body.password;
+
   if (!email || !password) {
     logger.warning('All fields must be completed to change password')
   }
+
   try {
     let user = await userService.getUsersByEmail(email);
-    user.password = createHash(password);
-    await userService.updateUsers(email, user);
-    logger.info('password changed')
-    res.status(200).send('password changed');
+
+    if (isValidPassword(password, user.password)) {
+      console.log("The new password cannot be the same as the old one");
+      res.redirect('/change-password');
+    } else {
+      user.password = createHash(password);
+      await userService.updateUsers(email, user);
+      logger.info('password changed')
+      res.status(200).send('password changed');
+    }
 
   } catch (error) {
     logger.error("Unable to modify user password, please contact support");
@@ -115,22 +124,24 @@ router.post("/reset-password", async (req, res) => {
       res.redirect("/register");
     }
 
+    const requestTime = new Date();
+    let userId = createHash(user._id.toString());
+    let date = requestTime;
+
     let result = await transport.sendMail({
       from: config.gmailUSer,
-      to: 'pablo.amil91@gmail.com', // cambiar por user.email
+      to: user.email, 
       subject: 'Password restoration',
       html: `
-
       <div>
         <h1> Reset Password </h1>
-        <a href="http://localhost:8080/change-password"> <button> Reset password </button></a>
+        <a href="http://localhost:8080/change-password?id=${userId}&date=${date}"> <button> Reset password </button></a>
       </div>
-
       `,
       attachments: []
     })
 
-    logger.info(`User ${user.email} requested password change`);
+    logger.info(`User ${user.email}, id: ${user.id}, requested password change`);
     res.status(200).send('An email was sent to your registered account');
 
   } catch (error) {

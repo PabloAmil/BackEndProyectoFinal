@@ -1,13 +1,11 @@
 
-pensar en que rutas pueden usarse, ej login, register, tal vez algo de la base de datos
-
 
 mongoCartsRouter -> aplicar logger a metodos de carts
 
+1.05.44 explicacion sobre el timeout de los links. 
 
 
 
-1.05.44 explicacion sobre el timeout de los links
 
 
 

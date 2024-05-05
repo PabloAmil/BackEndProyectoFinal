@@ -1,7 +1,8 @@
-import { Router } from "express";
+import { Router, query } from "express";
 import UsersDAO from "../../src/dao/mongoDbManagers/usersDbManager.js";
 import passport from "passport";
 import logger from "../../app.js";
+import checkDate from "../../utils/dateChecker.js";
 
 const router = Router();
 
@@ -48,7 +49,12 @@ router.get("/reset-password", (req, res) => {
 })
 
 router.get("/change-password", (req, res)=> {
-  res.render("change-password");
+
+  if (checkDate(req.query.date)) {
+    res.render("reset-password");
+  } else {
+    res.render("change-password");
+  }
 });
 
 
