@@ -83,7 +83,8 @@ router.get("/", async (req, res) => {
 });
 
 // create product
-router.get("/new", passport.authenticate("jwt", { session: false }), checkPermissions("Admin"), (req, res) => {
+router.get("/new", passport.authenticate("jwt", { session: false }), checkPermissions("Premium"), (req, res) => {
+
   res.render("new-product", {
     style: 'new-product.css',
   });
@@ -107,9 +108,9 @@ router.get("/:id", async (req, res) => {
       }
       );
     }
-  
+
     // aca iria un repository con un DTO que prepare el producto para renderizarlo
-  
+
     res.render('product', {
       title: product.title,
       description: product.description,
@@ -119,49 +120,56 @@ router.get("/:id", async (req, res) => {
       isStock: product.stock > 0,
       style: 'product.css'
     });
-    
+
   } catch (error) {
-      logger.error(`Could not find item with id ${id}`, error);
-      res.status(400).send({
-        status: 400,
-        result: "Error",
-        error: "Error getting product"
-      })
+    logger.error(`Could not find item with id ${id}`, error);
+    res.status(400).send({
+      status: 400,
+      result: "Error",
+      error: "Error getting product"
+    })
   }
 })
 
-router.post("/", upload.single('image'), async (req, res) => {
 
+router.post("/", upload.single('image'), passport.authenticate("jwt", { session: false }), async (req, res) => {
 
   let filename = req.file.filename;
-  let product = req.body;
+  let owner = req.user.email
+  let product = { ...req.body, owner };
 
   // aca podria ir un DTO de productos. 
 
-  await ProductsDAO.add(product.title, product.description, product.code, product.price, product.status, product.stock, product.category, filename, product.quantity);
+  await ProductsDAO.add(product.title, product.description, product.code, product.price, product.status, product.stock, product.category, filename, product.owner);
   res.redirect("/");
 })
 
 
-
 // delete product
-router.get("/delete/:id", passport.authenticate("jwt", { session: false }), checkPermissions("Admin"), async (req, res) => {
+router.get("/delete/:id", passport.authenticate("jwt", { session: false }), checkPermissions("Premium"), async (req, res) => {
   try {
-    let id = req.params.id;
+    let id = req.params?.id;
     if (!id) {
       return res.render("products", {
         style: 'product.css'
       });
     }
-    await ProductsDAO.remove(id);
-    logger.info('Product deleted successfully');
-    res.json({ success: true, message: 'Product deletion success' });
+
+    let product = await ProductsDAO.getById(id)
+
+    if (req.user.email === product.owner || req.user.role === "Admin") {
+      await ProductsDAO.remove(id);
+      logger.info('Product deleted successfully');
+      res.json({ success: true, message: 'Product deletion success' });
+    } else {
+      res.status(401).json({ message: 'Only the product creator or an Admin can delete this product' })
+    }
+
   } catch (e) {
     console.error('Error while trying to delete product:', e);
     res.status(500).json({ success: false, message: 'Error while trying to delete product' });
   }
 })
-
 
 
 // update product
@@ -179,18 +187,26 @@ router.get("/product-edit/:id", passport.authenticate("jwt", { session: false })
         style: "404.css"
       });
     }
-    logger.info('Product updated successfully')
-    res.render('productUpdate', {
-      title: product.title,
-      description: product.description,
-      price: product.price,
-      photo: product.photo,
-      isStock: product.stock > 0,
-      id: product._id,
-      style: 'product-update.css'
-    });
+
+    if (req.user.email === product.owner || req.user.role === "Admin") {
+
+      logger.info('Product updated successfully')
+      res.render('productUpdate', {
+        title: product.title,
+        description: product.description,
+        price: product.price,
+        photo: product.photo,
+        isStock: product.stock > 0,
+        id: product._id,
+        style: 'product-update.css'
+      });
+    }
+
+    else {
+      res.status(401).send({message: `Sorry, you dont have the credentials to modify this product`});
+    }
   } catch (error) {
-      logger.error('There was a proble while attempting to update product', error)
+    logger.error('There was a problem while attempting to update product', error)
   }
 })
 

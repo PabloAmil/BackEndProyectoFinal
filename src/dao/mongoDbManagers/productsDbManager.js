@@ -26,9 +26,10 @@ class ProductsDAO {
     }
   }
 
-  static async add(title, description, code, price, status, stock, category, photo) {
+  static async add(title, description, code, price, status, stock, category, photo, owner) {
+
     try {
-      return new Products({ title, description, code, price, status, stock, category, photo }).save();
+      return new Products({ title, description, code, price, status, stock, category, photo, owner}).save();
     } catch (e) {
       console.log(`error while attempting to add product` + e);
     }

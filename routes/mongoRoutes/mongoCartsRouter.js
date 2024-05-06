@@ -4,6 +4,7 @@ import ticketsDAO from "../../src/dao/mongoDbManagers/tickets.dao.js";
 import passport from "passport";
 import checkPermissions from "../../utils/auth.middleware.js";
 import cartService from "../../src/repositories/cartsRepository.js";
+import ProductsDAO from "../../src/dao/mongoDbManagers/productsDbManager.js";
 
 const router = Router();
 
@@ -96,7 +97,6 @@ router.put("/:cartId/products/:productId", async (req, res) => {
   try {
 
     let cart = await cartService.getCartById(cartId);
-
     const productIndex = cart.content.findIndex(object => object.product._id.toString() === String(productId));
     let oldProduct = cart.content[productIndex].product;
     let updatedProduct = { ...oldProduct, ...data }
@@ -117,27 +117,32 @@ router.put("/:cartId/products/:productId", async (req, res) => {
       error: "Error updating Cart"
     })
   }
-})
+});
 
 
 // add product to cart
-router.get("/:cartId/addProduct/:productId", passport.authenticate("jwt", { session: false }), checkPermissions("User"), async (req, res) => {
+router.get("/:cartId/addProduct/:productId", passport.authenticate("jwt", { session: false }), checkPermissions("Premium"), async (req, res) => {
 
   let cartId = req.params.cartId;
   let productId = req.params.productId;
 
   try {
     let cart = await cartService.getCartById(cartId);
+    let product = await ProductsDAO.getById(productId);
 
-    cart.content.push({ product: productId });
-    let result = await cartService.update(cartId, cart);
-
-    res.status(200).send({
-      status: 200,
-      result: "Success",
-      payload: result
-    })
-
+    if (product.owner !== req.user.email) {
+      cart.content.push({ product: productId });
+      let result = await cartService.update(cartId, cart);
+  
+      res.status(200).send({
+        status: 200,
+        result: "Success",
+        payload: result
+      })
+    } else {
+      res.status(401).send(`You cannot add your own product to your cart`);
+    }
+  
   } catch (e) {
     res.status(500).send({
       status: 500,
@@ -153,15 +158,12 @@ router.delete("/:cartId", async (req, res) => {
   let cartId = req.params.cartId;
 
   try {
-
     let result = await cartService.clearClart(cartId);
-
     res.status(200).send({
       status: 200,
       result: "Cart emptied successfully.",
       payload: result
     })
-
   } catch (e) {
     res.status(500).send({
       status: 500,
@@ -179,28 +181,25 @@ router.delete("/:cartId/products/:productId", async (req, res) => {
 
   try {
     let result = await cartService.update(cartId, { $pull: { "content": { product: productId } } }, { new: true });
-
-    console.log(result);
-
+  
     res.status(200).send({
       status: 200,
       result: "product deleted successfully.",
-
-    })
+    });
 
   } catch (error) {
     res.status(500).send({
       status: 500,
       result: "Error",
       error: "Unable to delete the product."
-    })
+    });
   }
-})
+});
 
 router.get("/:cartId/purchase", passport.authenticate("jwt", { session: false }), checkPermissions("User"), async (req, res) => {
 
   let ticket = await ticketsDAO.createTicket(req.user);
-  res.send(ticket)
+  res.send(ticket);
 })
 
 export default router;

@@ -20,12 +20,14 @@ const __dirname = path.dirname(__filename);
 
 import productsRouter from "./routes/mongoRoutes/mongoProductsRouter.js";
 import cartsRouter from "./routes/mongoRoutes/mongoCartsRouter.js";
+import usersRouter from "./routes/mongoRoutes/usersRouter.js"
 import chatRouter from "./routes/mongoRoutes/mongoMessagesRouter.js"
 import sessionRouter from "./routes/mongoRoutes/mongoSessionsRouter.js"
 import viewsRouter from "./routes/mongoRoutes/mongoViewsRouter.js"
 import messagesInDb from "./src/dao/mongoDbManagers/messagesDbManager.js";
 import productionLogger from "./utils/productionLogger.js";
 import devLogger from "./utils/devLogger.js";
+
 
 const enviorment = config.devEnviorment;
 //const enviorment = config.prodEnviorment
@@ -71,6 +73,7 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/messages", chatRouter);
 app.use("/api/sessions", sessionRouter);
+app.use("/api/users/premium", usersRouter); 
 app.use("/", viewsRouter);
 
 // app.use("/api/products", routerProducts);
@@ -89,14 +92,14 @@ app.use((req, res, next) => {
 });
 
 io.on('connection', (socket) => {
-  console.log('User connected');
+  logger.info('User connected');
 
   socket.on('message', async (data) => {
     await messagesInDb.add(data.userMail, data.message);
     io.emit("message", data);
   })
   socket.on('disconnect', () => {
-    console.log('User disconnected');
+    logger.info('User disconnected');
   });
 })
 
@@ -105,6 +108,7 @@ export default logger;
 mongoose.connect(config.local_mongo_url);
 //mongoose.connect(config.atlas_mongo_url);
 httpServer.listen(8080, () => logger.info("now listening to port 8080")); 
+
 
 
 
