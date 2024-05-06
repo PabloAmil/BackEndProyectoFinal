@@ -8,7 +8,6 @@ import logger from "../../app.js";
 const router = Router();
 
 // get products
-
 router.get("/", async (req, res) => {
 
   let page = parseInt(req.query.page);
@@ -89,7 +88,6 @@ router.get("/new", passport.authenticate("jwt", { session: false }), checkPermis
     style: 'new-product.css',
   });
 });
-
 
 
 // get product by id

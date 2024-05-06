@@ -7,9 +7,6 @@ import config from "../../src/config/config.js";
 import userService from "../../src/repositories/usersRepository.js";
 import logger from "../../app.js";
 import transport from "../../src/config/mailing.js";
-
-
-
 //import checkPermissions from "../../utils/auth.middleware.js";
 
 const router = Router();
