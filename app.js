@@ -27,6 +27,8 @@ import viewsRouter from "./routes/mongoRoutes/mongoViewsRouter.js"
 import messagesInDb from "./src/dao/mongoDbManagers/messagesDbManager.js";
 import productionLogger from "./utils/productionLogger.js";
 import devLogger from "./utils/devLogger.js";
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUiExpress from "swagger-ui-express";
 
 
 const enviorment = config.devEnviorment;
@@ -36,6 +38,20 @@ const app = express();
 const httpServer = http.createServer(app);
 const io = new Server(httpServer);
 let logger;
+
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.3',
+    info: {
+      title: 'Coder Final Project',
+      description: 'Store oriented API'
+    }
+  },
+  apis:[`${__dirname}/docs/**/*.yaml`]
+}
+
+const specs = swaggerJSDoc(swaggerOptions);
+app.use("/apidocs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
@@ -105,8 +121,8 @@ io.on('connection', (socket) => {
 
 export default logger;
 
-//mongoose.connect(config.local_mongo_url);
-mongoose.connect(config.atlas_mongo_url);
+mongoose.connect(config.local_mongo_url);
+//mongoose.connect(config.atlas_mongo_url);
 httpServer.listen(8080, () => logger.info("now listening to port 8080")); 
 
 

@@ -60,6 +60,8 @@ router.get("/", async (req, res) => {
 
     let products = await ProductsDAO.paginate(filter, { page, limit, lean: true, sort: { price: sort } })
 
+    console.log(products)
+
     products.prevLink = products.hasPrevPage ? `http://localhost:8080/api/products/page=${products.prevPage}` : '';
     products.nextLink = products.hasNextPage ? `http://localhost:8080/api/products/page=${products.nextPage}` : '';
 
@@ -72,7 +74,7 @@ router.get("/", async (req, res) => {
     });
 
   } catch (error) {
-    logger.error('failed to retrieve products', error)
+    logger.error('Failed to retrieve products', error)
     res.status(500).send({
       status: 500,
       result: "Error",
@@ -104,7 +106,7 @@ router.get("/:id", async (req, res) => {
       res.render('404', {
         style: "404.css"
       }
-      );
+      )
     }
 
     // aca iria un repository con un DTO que prepare el producto para renderizarlo
@@ -201,7 +203,7 @@ router.get("/product-edit/:id", passport.authenticate("jwt", { session: false })
     }
 
     else {
-      res.status(401).send({message: `Sorry, you dont have the credentials to modify this product`});
+      res.status(401).send({ message: `Sorry, you dont have the credentials to modify this product` });
     }
   } catch (error) {
     logger.error('There was a problem while attempting to update product', error)

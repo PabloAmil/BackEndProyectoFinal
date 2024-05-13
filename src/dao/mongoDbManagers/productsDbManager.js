@@ -20,7 +20,7 @@ class ProductsDAO {
 
   static async getById(id) {
     try {
-      return Products.findOne({ _id: id }).lean();
+      return await Products.findOne({ _id: id }).lean();
     } catch (e) {
       console.log(`error while attempting to retrieve the product  ${id}`);
     }
