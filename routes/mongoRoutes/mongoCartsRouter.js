@@ -121,7 +121,7 @@ router.put("/:cartId/products/:productId", async (req, res) => {
 
 
 // add product to cart
-router.get("/:cartId/addProduct/:productId", passport.authenticate("jwt", { session: false }), checkPermissions("Premium"), async (req, res) => {
+router.post("/:cartId/addProduct/:productId", passport.authenticate("jwt", { session: false }), async (req, res) => {
 
   let cartId = req.params.cartId;
   let productId = req.params.productId;
