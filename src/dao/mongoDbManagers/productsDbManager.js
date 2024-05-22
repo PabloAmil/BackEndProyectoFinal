@@ -1,4 +1,5 @@
 import Products from "../../../schemas/products.schema.js";
+import intputChecker from "../../../utils/inputChecker.js";
 
 class ProductsDAO {
 

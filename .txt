@@ -1,7 +1,7 @@
-
-
 mongoCartsRouter -> aplicar logger a metodos de carts
 
+
+test para logearse y crear un producto, checkeando que todos los inputs esten
 
 
 

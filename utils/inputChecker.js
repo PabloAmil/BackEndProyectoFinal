@@ -1,5 +1,4 @@
 const intputChecker = (...inputs) => {
-
   for ( let input of inputs) {
     if (input == ''){
       return false

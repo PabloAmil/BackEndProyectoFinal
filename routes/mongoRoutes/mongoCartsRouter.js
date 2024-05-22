@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
   res.render('carts', carts);
 })
 
-router.get('/new', async (req, res) => {
+router.get('/new', passport.authenticate("jwt", { session: false }), checkPermissions("Premium"), async (req, res) => {
   await cartService.create()
   res.render('newCart');
 })

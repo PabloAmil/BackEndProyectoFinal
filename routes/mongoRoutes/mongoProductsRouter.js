@@ -4,6 +4,7 @@ import upload from "../../utils/upload.middlewares.js";
 import passport from "passport";
 import checkPermissions from "../../utils/auth.middleware.js";
 import logger from "../../app.js";
+import productIntputChecker from "../../utils/productInputChecker.js";
 
 const router = Router();
 
@@ -59,8 +60,6 @@ router.get("/", async (req, res) => {
     }
 
     let products = await ProductsDAO.paginate(filter, { page, limit, lean: true, sort: { price: sort } })
-
-    console.log(products)
 
     products.prevLink = products.hasPrevPage ? `http://localhost:8080/api/products/page=${products.prevPage}` : '';
     products.nextLink = products.hasNextPage ? `http://localhost:8080/api/products/page=${products.nextPage}` : '';
@@ -140,10 +139,18 @@ router.post("/", upload.single('image'), passport.authenticate("jwt", { session:
 
   // aca podria ir un DTO de productos. 
 
-  await ProductsDAO.add(product.title, product.description, product.code, product.price, product.status, product.stock, product.category, filename, product.owner);
-  res.redirect("/");
-})
-
+  const check = productIntputChecker(product);
+  if (check === false) {
+    return res.status(400).send("All fields must be completed");
+  }
+  try { 
+    await ProductsDAO.add(product.title, product.description, product.code, product.price, product.status, product.stock, product.category, filename, product.owner);
+    res.redirect("/");
+  } catch (error) {
+    logger.warning("All fields must be completed");
+    res.status(400).send("Error while trying to create product");
+  }
+});
 
 // delete product
 router.get("/delete/:id", passport.authenticate("jwt", { session: false }), checkPermissions("Premium"), async (req, res) => {

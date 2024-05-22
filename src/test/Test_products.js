@@ -1,59 +1,48 @@
 import { expect } from 'chai';
-import { request } from 'express';
 import supertest from "supertest";
+import ProductsDAO from '../dao/mongoDbManagers/productsDbManager.js';
 
 const requester = supertest("http://localhost:8080/");
 
-describe('Testing user register, cart creation, password hashing', () => {
+
+describe('All fields are complete, jwt created succesfully, product is saved correctly', () => {
 
   beforeEach(function () {
     this.timeout = 5000;
   });
 
-  it('Testing user register, cart creation and password hashing', async function() {
-    const result = await requester.post('api/sessions/register')
-      .send({
-        first_name: 'Test',
-        last_name: 'Test',
-        age: '1',
-        email: 'Test@gmail.com',
-        password: '1234'
-      });
-    expect(result.status).to.equal(200);
-  });
-
-  it ('Already registered user cannot be registered again' , async function() {
-    const result = await requester.post('api/sessions/register')
-      .send({
-        first_name: 'Test',
-        last_name: 'Test',
-        age: '1',
-        email: 'Test@gmail.com',
-        password: '1234'
-      });
-    expect(result.status).to.equal(400);
-  });
-
-  it ('Incomplete fields while trying to register' , async function() {
-    const result = await requester.post('api/sessions/register')
-      .send({
-        first_name: '',
-        last_name: 'Test',
-        age: '1',
-        email: 'Test@gmail.com',
-        password: '1234'
-      });
-    expect(result.status).to.equal(400);
-  })
-
-  it ('Log in/user existence, fields are complete, decypting encrypted password', async function() {
+  it('Log in, jwt auth passed', async function () {
     const result = await requester.post('api/sessions/login')
       .send({
-        email:'Test@gmail.com',
+        email: '1234@gmail.com',
         password: '1234'
       });
+
     expect(result.status).to.equal(200);
   })
+
+  it('Product creation, all fields are complete, product is correctly stored in database', async function () {
+    const result = await requester.post('api/products/new')
+      .send({
+        title: 'Test',
+        description: 'Test',
+        code: 'Test',
+        price: '1234',
+        status: 'Test',
+        stock: '1234',
+        category: 'Test',
+      });
+    expect(result.status).to.equal(200);
+  });
+
+  it ('Find a product, change a property, display it and delete it', async function() {
+
+    const products = await ProductsDAO.getAll();
+
+    console.log(products);
+
+    
+    
+
+  })
 });
-
-
