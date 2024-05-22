@@ -7,6 +7,7 @@ import config from "../../src/config/config.js";
 import userService from "../../src/repositories/usersRepository.js";
 import logger from "../../app.js";
 import transport from "../../src/config/mailing.js";
+import intputChecker from "../../utils/inputChecker.js";
 //import checkPermissions from "../../utils/auth.middleware.js";
 
 const router = Router();
@@ -19,7 +20,14 @@ router.post('/register', async (req, res) => {
 
     if (user) {
       logger.info('User already exists');
-      return done(null, false);
+      return res.status(400).send({ status: "failed", message: "User already exists" });
+    }
+
+    let check = intputChecker(first_name, last_name, email, age, password);
+
+    if (check === false) {
+      logger.warning('All fields must be completed');
+      return res.status(400).send({ status: "failed", message: "All fields must be completed" });
     }
 
     // repository dedicado a carts?
@@ -29,12 +37,13 @@ router.post('/register', async (req, res) => {
 
     let newUser = await userService.formatRegisterDataForDAO({ first_name, last_name, email, age, password }, cartId);
     let result = await userService.insertUser(newUser);
+
     logger.info('User successfully registered');
     res.send({ status: "succes", message: "user registered" });
 
   } catch (error) {
     logger.error('Failed to register user', error);
-    res.redirect('/login');
+    res.status(400).send('Err');
   }
 })
 
@@ -50,7 +59,7 @@ router.post("/login", async (req, res) => {
 
   if (!email || !userPassword) {
     logger.warning('All fields must be completed to log in')
-    res.status(400).json({ status: 400, error: "Wrong email or password" })
+    res.status(400).json({ status: 400, error: "All fields must be completed to log in" })
   }
 
   try {
