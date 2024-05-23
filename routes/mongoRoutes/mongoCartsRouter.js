@@ -152,7 +152,7 @@ router.post("/:cartId/addProduct/:productId", passport.authenticate("jwt", { ses
   }
 })
 
-// clear cart
+// delete cart
 router.delete("/:cartId", async (req, res) => {
 
   let cartId = req.params.cartId;

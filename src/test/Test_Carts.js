@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import supertest from "supertest";
-import cartService from '../repositories/cartsRepository.js';
 
 const requester = supertest("http://localhost:8080/");
 
@@ -25,4 +24,13 @@ describe('Carts creation, permissions', () => {
     expect(result.status).to.equal(200);
   })
 
+  it ('Get all dummy carts', async function() {
+    const result = await requester.get('/api/carts/');
+    expect(result.status).to.equal(200);
+  })
+
+  it ('Check that only admin can delete carts', async function () {
+    const result = await requester.post('/api/carts/664e5174ae8354b494505be8')
+    expect(result.status).to.equal(200)
+  })
 });
