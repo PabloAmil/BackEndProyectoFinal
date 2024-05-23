@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
   res.render('carts', carts);
 })
 
-router.get('/new', passport.authenticate("jwt", { session: false }), checkPermissions("Premium"), async (req, res) => {
+router.get('/new', async (req, res) => {
   await cartService.create()
   res.render('newCart');
 })
@@ -121,16 +121,22 @@ router.put("/:cartId/products/:productId", async (req, res) => {
 
 
 // add product to cart
-router.post("/:cartId/addProduct/:productId", passport.authenticate("jwt", { session: false }), async (req, res) => {
+router.post("/:cartId/addProduct/:productId", async (req, res) => {
 
   let cartId = req.params.cartId;
   let productId = req.params.productId;
+
 
   try {
     let cart = await cartService.getCartById(cartId);
     let product = await ProductsDAO.getById(productId);
 
+    if (!req.user) {
+      return res.status(401)
+    }
+
     if (product.owner !== req.user.email) {
+
       cart.content.push({ product: productId });
       let result = await cartService.update(cartId, cart);
   
@@ -152,7 +158,7 @@ router.post("/:cartId/addProduct/:productId", passport.authenticate("jwt", { ses
   }
 })
 
-// delete cart
+// clear cart
 router.delete("/:cartId", async (req, res) => {
 
   let cartId = req.params.cartId;
@@ -161,17 +167,17 @@ router.delete("/:cartId", async (req, res) => {
     let result = await cartService.clearClart(cartId);
     res.status(200).send({
       status: 200,
-      result: "Cart emptied successfully.",
+      result: "Cart deleted successfully.",
       payload: result
-    })
+    });
   } catch (e) {
     res.status(500).send({
       status: 500,
       result: "Error",
-      error: "Unable to empty the cart."
-    })
+      error: "Unable to delete the cart."
+    });
   }
-})
+});
 
 // delete 1 product from cart 
 

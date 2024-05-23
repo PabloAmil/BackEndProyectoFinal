@@ -37,11 +37,6 @@ describe('All fields are complete, jwt created succesfully, product is saved cor
 
   it ('Find a product, change a property, display it and delete it', async function() {
 
-    const products = await ProductsDAO.getAll();
-
-    console.log(products);
-
-    
     
 
   })

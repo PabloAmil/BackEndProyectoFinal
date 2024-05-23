@@ -31,8 +31,8 @@ import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUiExpress from "swagger-ui-express";
 
 
-const enviorment = config.devEnviorment;
-//const enviorment = config.prodEnviorment
+//const enviorment = config.devEnviorment;
+const enviorment = config.prodEnviorment
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -72,8 +72,8 @@ logger.info(`now using development: ${enviorment}`)
 
 app.use(session({
   store: MongoStore.create({
-    //mongoUrl: config.local_mongo_url,
-    mongoUrl: config.atlas_mongo_url,
+    mongoUrl: config.local_mongo_url,
+    //mongoUrl: config.atlas_mongo_url,
     ttl: 900,
   }),
   secret: config.session_secret, 
@@ -121,8 +121,8 @@ io.on('connection', (socket) => {
 
 export default logger;
 
-//mongoose.connect(config.local_mongo_url);
-mongoose.connect(config.atlas_mongo_url);
+mongoose.connect(config.local_mongo_url);
+//mongoose.connect(config.atlas_mongo_url);
 httpServer.listen(8080, () => logger.info("now listening to port 8080")); 
 
 
