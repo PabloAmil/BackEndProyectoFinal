@@ -57,6 +57,8 @@ router.post("/login", async (req, res) => {
   let email = req.body.email;
   let userPassword = req.body.password;
 
+  console.log('estamos en el api/sessions/login')
+
   if (!email || !userPassword) {
     logger.warning('All fields must be completed to log in')
     res.status(400).json({ status: 400, error: "All fields must be completed to log in" })
@@ -67,6 +69,7 @@ router.post("/login", async (req, res) => {
     if (!user) {
       res.status(404).json({ status: 404, error: "User not found" })
     }
+
 
     if (!isValidPassword(userPassword, user.password)) {
       logger.warning('Incorrect password')

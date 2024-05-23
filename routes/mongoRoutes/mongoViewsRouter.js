@@ -37,6 +37,10 @@ router.get("/profile",  passport.authenticate("jwt", {session: false}), async (r
 
   if (req.user) {
     let user = await UsersDAO.getUserById(req.user._id);
+
+    console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+    console.log(req.user)
+
     res.render("profile", {user});
   } else {
     

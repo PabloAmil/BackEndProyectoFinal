@@ -23,6 +23,7 @@ class CartsRepository {
 
   create = async () => {
     let result = await this.DAO.createNewCart();
+    console.log(result);
     return result;
   }
 

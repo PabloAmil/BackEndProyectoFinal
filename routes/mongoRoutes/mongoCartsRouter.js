@@ -14,7 +14,10 @@ router.get('/', async (req, res) => {
   res.status(200).send(carts);
 })
 
-router.get('/new', passport.authenticate("jwt", { session: false }), checkPermissions("User"), async (req, res) => { // revisar
+router.get('/new', passport.authenticate("jwt", { session: false }),  checkPermissions('Admin'), async (req, res) => { // revisar
+
+  console.log('estamos aca adentro')
+
   let dummyCart = await cartService.create()
   res.status(200).send(dummyCart);
 })
