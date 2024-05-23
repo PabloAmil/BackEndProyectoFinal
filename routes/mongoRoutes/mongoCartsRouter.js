@@ -11,14 +11,13 @@ const router = Router();
 router.get('/', async (req, res) => {
 
   let carts = await cartService.getAllCarts();
-  res.render('carts', carts);
+  res.status(200).send(carts);
 })
 
-router.get('/new', async (req, res) => {
-  await cartService.create()
-  res.render('newCart');
+router.get('/new', passport.authenticate("jwt", { session: false }), checkPermissions("User"), async (req, res) => { // revisar
+  let dummyCart = await cartService.create()
+  res.status(200).send(dummyCart);
 })
-
 
 router.get("/:id", async (req, res) => {
 
