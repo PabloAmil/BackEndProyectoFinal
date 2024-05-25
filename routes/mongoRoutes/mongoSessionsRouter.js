@@ -57,8 +57,6 @@ router.post("/login", async (req, res) => {
   let email = req.body.email;
   let userPassword = req.body.password;
 
-  console.log('estamos en el api/sessions/login')
-
   if (!email || !userPassword) {
     logger.warning('All fields must be completed to log in')
     res.status(400).json({ status: 400, error: "All fields must be completed to log in" })
@@ -124,7 +122,6 @@ router.post("/reset-password", async (req, res) => {
   if (!email) {
     res.status(400).send('Non existent email');
   }
-
   try {
     let user = await userService.getUsersByEmail(email);
 
@@ -132,11 +129,9 @@ router.post("/reset-password", async (req, res) => {
       logger.info('user not found');
       res.redirect("/register");
     }
-
     const requestTime = new Date();
     let userId = createHash(user._id.toString());
     let date = requestTime;
-
     let result = await transport.sendMail({
       from: config.gmailUSer,
       to: user.email, 

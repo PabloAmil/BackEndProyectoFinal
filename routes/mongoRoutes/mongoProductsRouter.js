@@ -85,9 +85,14 @@ router.get("/", async (req, res) => {
 // create product
 router.get("/new", passport.authenticate("jwt", { session: false }), checkPermissions("Premium"), (req, res) => {
 
-  res.render("new-product", {
-    style: 'new-product.css',
-  });
+  if (req.user) {
+    res.render("new-product", {
+      style: 'new-product.css',
+    });
+  }
+  else {
+    res.status(401).send();
+  }
 });
 
 
@@ -143,7 +148,7 @@ router.post("/", upload.single('image'), passport.authenticate("jwt", { session:
   if (check === false) {
     return res.status(400).send("All fields must be completed");
   }
-  try { 
+  try {
     await ProductsDAO.add(product.title, product.description, product.code, product.price, product.status, product.stock, product.category, filename, product.owner);
     res.redirect("/");
   } catch (error) {

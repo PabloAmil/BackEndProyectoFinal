@@ -1,9 +1,7 @@
 import { expect } from 'chai';
 import supertest from "supertest";
-import ProductsDAO from '../dao/mongoDbManagers/productsDbManager.js';
 
 const requester = supertest("http://localhost:8080/");
-
 
 describe('All fields are complete, jwt created succesfully, product is saved correctly', () => {
 
@@ -11,13 +9,12 @@ describe('All fields are complete, jwt created succesfully, product is saved cor
     this.timeout = 5000;
   });
 
-  it('Log in, jwt auth passed', async function () {
+  it('Log in first to create product', async function () {
     const result = await requester.post('api/sessions/login')
       .send({
-        email: '1234@gmail.com',
-        password: '1234'
+        email: '123@gmail.com',
+        password: '123'
       });
-
     expect(result.status).to.equal(200);
   })
 
@@ -35,9 +32,8 @@ describe('All fields are complete, jwt created succesfully, product is saved cor
     expect(result.status).to.equal(200);
   });
 
-  it ('Find a product, change a property, display it and delete it', async function() {
-
-    
-
+  it ('Reject product creation if user is not loged in', async function() {
+    const result = await requester.get('api/products/new');
+    expect(result.status).to.equal(401);
   })
 });
