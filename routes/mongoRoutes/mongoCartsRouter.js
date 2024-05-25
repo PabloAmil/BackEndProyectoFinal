@@ -16,8 +16,6 @@ router.get('/', async (req, res) => {
 
 router.get('/new', passport.authenticate("jwt", { session: false }),  checkPermissions('Admin'), async (req, res) => { // revisar
 
-  console.log('estamos aca adentro')
-
   let dummyCart = await cartService.create()
   res.status(200).send(dummyCart);
 })
@@ -123,11 +121,10 @@ router.put("/:cartId/products/:productId", async (req, res) => {
 
 
 // add product to cart
-router.post("/:cartId/addProduct/:productId", async (req, res) => {
+router.post("/:cartId/addProduct/:productId", passport.authenticate("jwt", { session: false }), checkPermissions("User"), async (req, res) => {
 
   let cartId = req.params.cartId;
   let productId = req.params.productId;
-
 
   try {
     let cart = await cartService.getCartById(cartId);

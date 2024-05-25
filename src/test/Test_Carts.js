@@ -1,17 +1,11 @@
 import { expect } from 'chai';
 import supertest from 'supertest';
-import cartService from '../repositories/cartsRepository.js';
-import jwt from 'jsonwebtoken';
-import userService from '../repositories/usersRepository.js';
-import chaiHttp from 'chai-http';
-import config from '../config/config.js';
-
 
 const requester = supertest("http://localhost:8080/");
 
 const testConfig = {
   jwt_secret: process.env.JWT_SECRET,
-  dbConnectionString: 'mongodb://localhost:27017/ecommerce', 
+  dbConnectionString: 'mongodb://localhost:27017/ecommerce',
 };
 
 describe('Carts creation, permissions', () => {
@@ -19,37 +13,70 @@ describe('Carts creation, permissions', () => {
     this.timeout = 5000;
   });
 
-  it('Log in as Admin', async function () {
-    
-    const loginResponse = await requester.post('api/sessions/login')
-    .send({
-      email: '123@gmail.com',
-      password: '123'
-    });
-  
-  const cookies = loginResponse.headers['set-cookie'];
-  console.log(cookies); 
+  it('gets all carts created', async () => {
+    const createdCarts = await requester.get('api/carts/')
+    console.log(createdCarts.body);
 
-  });
+    const oldDummyCart = createdCarts.body[createdCarts.body.length - 1]._id;
+    console.log(oldDummyCart);
 
-  it('should return status 200 and a dummy cart object', async () => {
+    expect(createdCarts.body).to.be.an('array');
+  })
+
+
+  it('Log in as Admin and create dummy cart for testing', async () => {
     const loginResponse = await requester.post('api/sessions/login')
       .send({
         email: '123@gmail.com',
         password: '123'
       });
-  
-    const cookies = loginResponse.headers['set-cookie']; 
+
+    const cookies = loginResponse.headers['set-cookie'];
     const jwtCookie = cookies.find(cookie => cookie.startsWith('jwt='));
-  
+
     if (jwtCookie) {
       const res = await requester
         .get('api/carts/new')
-        .set('Cookie', jwtCookie) 
+        .set('Cookie', jwtCookie)
         .expect(200);
-  
+
       expect(res.body).to.be.an('object');
       console.log(res.body);
+    } else {
+      console.error('JWT cookie not found in login response');
+    }
+  });
+
+  it('Logs in, Gets a dummy cart, adds a product, finally empties the cart', async () => {
+
+    const loginResponse = await requester.post('api/sessions/login')
+      .send({
+        email: '123@gmail.com',
+        password: '123'
+      });
+
+    const cookies = loginResponse.headers['set-cookie'];
+    const jwtCookie = cookies.find(cookie => cookie.startsWith('jwt='));
+
+    if (jwtCookie) {
+      const carts = await requester
+        .get('api/carts/')
+        .set('Cookie', jwtCookie)
+        .expect(200);
+
+      const cartId = carts.body[carts.body.length - 1]._id;
+      const productId = '664e6c70339275130ab13d6d';
+
+      const addProduct = await requester
+        .post(`api/carts/${cartId}/addProduct/${productId}`)
+        .set('Cookie', jwtCookie)
+        .expect(200);
+
+      const productDeletion = await requester
+        .delete(`api/carts/${cartId}`)
+
+      expect(productDeletion.status).to.equal(200);
+
     } else {
       console.error('JWT cookie not found in login response');
     }
