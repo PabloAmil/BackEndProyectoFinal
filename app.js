@@ -89,7 +89,7 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/messages", chatRouter);
 app.use("/api/sessions", sessionRouter);
-app.use("/api/users/premium", usersRouter); 
+app.use("/api/users", usersRouter); 
 app.use("/", viewsRouter);
 
 // app.use("/api/products", routerProducts);
