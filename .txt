@@ -1,6 +1,4 @@
-verificar: 
 
-al crear un usuario puedo elegir su rol
 
 
 
