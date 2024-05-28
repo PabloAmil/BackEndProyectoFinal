@@ -35,7 +35,7 @@ router.post('/register', async (req, res) => {
     const newCart = await cartsDAO.createNewCart();
     const cartId = newCart._id;
 
-    let newUser = await userService.formatRegisterDataForDAO({ first_name, last_name, email, age, password }, cartId);
+    let newUser = await userService.formatRegisterDataForDAO({ first_name, last_name, email, age, password }, cartId); // aca tal vez o darle una fecha por default?
     let result = await userService.insertUser(newUser);
 
     logger.info('User successfully registered');
@@ -64,6 +64,10 @@ router.post("/login", async (req, res) => {
 
   try {
     let user = await userService.getUsersByEmail(email);
+
+    // aca el metodo para obtener la fecha y hora de login
+    // llama al metodo para updatear user
+
     if (!user) {
       res.status(404).json({ status: 404, error: "User not found" })
     }
@@ -103,7 +107,7 @@ router.post("/change-password", async (req, res) => {
       console.log("The new password cannot be the same as the old one");
       res.redirect('/change-password');
     } else {
-      user.password = createHash(password);
+      user.password = createHash(password); // usar este a modo de ejemplo
       await userService.updateUsers(email, user);
       logger.info('password changed')
       res.status(200).send('password changed');
