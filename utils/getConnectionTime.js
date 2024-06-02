@@ -1,1 +1,7 @@
-// metodo para obtener el dia y hora de ultima conexion y que devuelva un string ya listo
+const getConnectionTime = () => {
+  const connectionTime = new Date();
+  return connectionTime;
+}
+
+export default getConnectionTime;
+

@@ -4,6 +4,7 @@ import { Strategy } from "passport-jwt";
 import cartsDAO from "./mongoDbManagers/cartsDbManager.js";
 import config from "../config/config.js";
 import userService from "../repositories/usersRepository.js";
+import getConnectionTime from "../../utils/getConnectionTime.js";
 
 const initializePassport = () => {
 
@@ -27,7 +28,12 @@ const initializePassport = () => {
         let result = await userService.insertUser(newUser)
         done(null, result);
 
-      } else {   
+      } else {  
+        
+        const connectionTime = getConnectionTime();
+        user.last_conection = connectionTime;
+        let updatedUser = await userService.updateUsers(user.email, user);
+
         let storedUser = await userService.returnFormatedDataFromDAO(user);
         done(null, storedUser);
       }

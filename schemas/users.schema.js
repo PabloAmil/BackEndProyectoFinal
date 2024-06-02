@@ -45,7 +45,8 @@ const UsersSchema = new mongoose.Schema({
   },
 
   last_conection: {
-    type: String
+    type: String,
+    default: '00:00'
   }
 });
 

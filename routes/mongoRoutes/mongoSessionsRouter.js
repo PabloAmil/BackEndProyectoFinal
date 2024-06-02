@@ -8,6 +8,7 @@ import userService from "../../src/repositories/usersRepository.js";
 import logger from "../../app.js";
 import transport from "../../src/config/mailing.js";
 import intputChecker from "../../utils/inputChecker.js";
+import getConnectionTime from "../../utils/getConnectionTime.js";
 //import checkPermissions from "../../utils/auth.middleware.js";
 
 const router = Router();
@@ -65,19 +66,20 @@ router.post("/login", async (req, res) => {
   try {
     let user = await userService.getUsersByEmail(email);
 
-    // aca el metodo para obtener la fecha y hora de login
-    // llama al metodo para updatear user
-
     if (!user) {
       res.status(404).json({ status: 404, error: "User not found" })
     }
-
 
     if (!isValidPassword(userPassword, user.password)) {
       logger.warning('Incorrect password')
       return res.status(401).json({ status: 401, error: "Invalid password" });
     }
     else {
+
+      const connectionTime = getConnectionTime();
+      user.last_conection = connectionTime;
+      let updatedUser = await userService.updateUsers(user.email, user);
+
       logger.info(`user ${user.first_name, user.last_name} has logged in`);
       let token = jwt.sign({ id: user._id }, config.jwt_secret, { expiresIn: "1h" })
       res.cookie("jwt", token, {
@@ -95,7 +97,6 @@ router.post("/change-password", async (req, res) => {
 
   let email = req.body.email;
   let password = req.body.password;
-
   if (!email || !password) {
     logger.warning('All fields must be completed to change password')
   }

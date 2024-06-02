@@ -19,6 +19,19 @@ router.get("/premium/:uid", async (req, res) => {
 })
 
 
+// ver como conseguir el uid para este enlace
+
+router.get("/:uid/documents", async (req, res) => {
+  let uid = req.params.uid;
+  res.render("upload-documents", { uid });
+});
+
+router.post("/:uid/documents", async (req, res) => {
+  res.send(req.body)
+});
+
+
+
 
 
 export default router;
