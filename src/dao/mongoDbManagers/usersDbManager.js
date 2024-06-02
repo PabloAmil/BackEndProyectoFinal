@@ -14,7 +14,7 @@ class UsersDAO {
   }
 
   static async getUserById(id) {
-    return await Users.findOne({_id: id}, {first_name:1, last_name:1, age:1, email:1, password:1, role:1, cart:1}).lean();
+    return await Users.findOne({_id: id}, {first_name:1, last_name:1, age:1, email:1, password:1, role:1, cart:1, documents: 1, last_conection: 1}).lean();
   }
 
   static async updateUser(email, data) {

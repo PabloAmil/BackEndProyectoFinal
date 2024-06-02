@@ -1,18 +1,39 @@
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
 </head>
+
 <body>
   <h1>Upload Documentation</h1>
-  
-  <form action="/api/users/{{uid}}/documents" method="POST">
-    <input type="text" name="document">
-    <br>
-    <br>
-    <button type="submit">Upload Document</button>
-  </form>
 
+  <div>
+    <p>In order to upgrade to Premium, ID, proof of residence and account statement must be uploaded</p>
+    <div>
+
+      <form action="/api/users/{{uid}}/documents" method="POST" enctype="multipart/form-data">
+        <input type="file" name="profile" placeholder="Profile picture">
+        <br>
+        <br>
+        <input type="file" name="product" placeholder="Product picture">
+        <br>
+        <br>
+        <span>ID</span>
+        <input type="file" name="document" placeholder="Document">
+        <br>
+        <br>
+        <span>Proof of Residence</span>
+        <input type="file" name="document" placeholder="Document">
+        <br>
+        <br>
+        <span>Account Statement</span>
+        <input type="file" name="document" placeholder="Document">
+        <br>
+        <br>
+        <button type="submit">Upload Documents</button>
+      </form>
 </body>
+
 </html>
