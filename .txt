@@ -1,4 +1,29 @@
 
+agregar docker
+
+mejorar middleware de permisos
+
+llamar user service en vez de DAOs
+
+arreglar el endpoint para agregar items al carrito.
+
+corroborar la seguridad del /create-payment-intent', puede que necesite mandarle el jwt como con los tests
+
+tengo que poder entrar al front, cargar productos al carrito al clickearlos, ir a un boton que me redirija al pago, poder borrar productos del carrito
 
 
+
+
+
+///////////////////////////////
+
+
+postman tests: 
+
+
+add product to cart ----- FIX auth
+
+
+
+/////
 

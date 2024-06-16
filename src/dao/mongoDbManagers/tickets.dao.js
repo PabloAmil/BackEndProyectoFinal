@@ -70,7 +70,7 @@ class ticketsDAO {
   static async getAmount(prices) {
     let total = prices.reduce((acc, val) => acc + val, 0);
     return total;
-  };
+  }
 
   static async createTicket(user) {
     try {

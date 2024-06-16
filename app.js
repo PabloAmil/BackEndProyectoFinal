@@ -29,6 +29,8 @@ import productionLogger from "./utils/productionLogger.js";
 import devLogger from "./utils/devLogger.js";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUiExpress from "swagger-ui-express";
+import handlebars from 'handlebars';
+import paymentRouter from './routes/mongoRoutes/paymentRouter.js'
 
 
 //const enviorment = config.devEnviorment;
@@ -62,6 +64,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(cookieParser("secret_cookie"));
 
+
+handlebars.registerHelper('json', function(context) {
+  return JSON.stringify(context);
+});
+
 if (enviorment === "development") {
   logger = devLogger;
 } else {
@@ -91,6 +98,7 @@ app.use("/api/messages", chatRouter);
 app.use("/api/sessions", sessionRouter);
 app.use("/api/users", usersRouter); 
 app.use("/", viewsRouter);
+app.use('/api/payments', paymentRouter)
 
 // app.use("/api/products", routerProducts);
 // app.use("/api/carts", routerCarts);
