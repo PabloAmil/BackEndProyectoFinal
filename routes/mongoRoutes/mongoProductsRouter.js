@@ -5,6 +5,9 @@ import passport from "passport";
 import checkPermissions from "../../utils/auth.middleware.js";
 import logger from "../../app.js";
 import productIntputChecker from "../../utils/productInputChecker.js";
+import transport from "../../src/config/mailing.js";
+import userService from "../../src/repositories/usersRepository.js";
+import config from "../../src/config/config.js";
 
 const router = Router();
 
@@ -158,7 +161,8 @@ router.post("/", upload.single('image'), passport.authenticate("jwt", { session:
 });
 
 // delete product
-router.get("/delete/:id", passport.authenticate("jwt", { session: false }), checkPermissions("Premium"), async (req, res) => {
+router.get("/delete/:id", passport.authenticate("jwt", { session: false }), async (req, res) => {
+
   try {
     let id = req.params?.id;
     if (!id) {
@@ -170,6 +174,24 @@ router.get("/delete/:id", passport.authenticate("jwt", { session: false }), chec
     let product = await ProductsDAO.getById(id)
 
     if (req.user.email === product.owner || req.user.role === "Admin") {
+
+      let producOwner = await userService.getUsersByEmail(product.owner);
+      if (producOwner.role === "Premium") {
+        
+        let result = await transport.sendMail({
+          from: config.gmailUSer,
+          to: producOwner.email, 
+          subject: 'A product of yours has been deleted by an Admin',
+          html: `
+          <div>
+          <h3>Hi, ${req.user.first_name}</h3>
+          <p>An Admin has erased your product: ${product.title}</p>
+          </div>
+          `,
+          attachments: []
+        })
+      }
+      
       await ProductsDAO.remove(id);
       logger.info('Product deleted successfully');
       res.json({ success: true, message: 'Product deletion success' });
