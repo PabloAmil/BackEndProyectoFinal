@@ -7,6 +7,11 @@ class UsersRepository {
     this.DTO = DTO
   }
 
+  getUsers = async() => {
+    let result = await this.DAO.getAllUsers();
+    return result;
+  }
+
   getUsersByEmail = async (email) => {
     let result = await this.DAO.getUsersByEmail(email);
     return result;
@@ -45,6 +50,11 @@ class UsersRepository {
 
   returnFormatedDataFromDAO = async (user_data) => {
     let result = await this.DTO.returnFormatedDataFromDAO(user_data);
+    return result;
+  }
+
+  deleteOutOfDateUsers = async () => {
+    let result = await this.DAO.deleteAllExpiredUsers();
     return result;
   }
 }
