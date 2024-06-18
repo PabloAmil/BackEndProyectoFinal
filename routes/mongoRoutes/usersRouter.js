@@ -93,5 +93,17 @@ router.post("/:uid/documents", passport.authenticate("jwt", { session: false }),
   }
 });
 
+
+router.get("/admin-control-panel", passport.authenticate("jwt", { session: false }), checkPermissions("Admin"), async (req, res) => {
+
+  let users = await userService.getUsers()
+
+  //console.log(users);
+
+  res.render('admin-control-panel', {users});
+
+
+})
+
 export default router;
 

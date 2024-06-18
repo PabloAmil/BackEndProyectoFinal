@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Users Control Panel</title>
+</head>
+
+<body>
+  <h1>Users Control Panel</h1>
+
+  <form id="userForm">
+
+    {{#each users}}
+    <div>
+      <h3>{{first_name}}, {{last_name}}</h3>
+      <h4>{{_id}}</h4>
+
+      {{!-- pedir explicacion de esto: --}}
+
+      <select name="roles[]" data-id="{{_id}}" class="user-role" selected="{{role}}">
+
+        <option value="Admin" selected>Admin</option>
+        <option value="Premium">Premium</option>
+        <option value="User" >User</option>
+
+
+{{!-- 
+        <option value="Admin" {{#if (eq role 'Admin')}}selected{{/if}}>Admin</option>
+        <option value="Premium" {{#if (eq role 'Premium')}}selected{{/if}}>Premium</option>
+        <option value="User" {{#if (eq role 'User')}}selected{{/if}}>User</option> --}}
+      </select>
+      <br><br>
+
+      <label for="erase-{{_id}}">
+        <input type="checkbox" id="erase-{{_id}}" name="erase[]" value="{{_id}}">
+        Erase User
+      </label>
+      <br><br>
+    </div>
+    {{/each}}
+
+    <br><br>
+    <input type="button" value="Submit-changes" class="submit-button" >
+
+  </form>
+  <script src="/js/user-setup.js"></script>
+</body>

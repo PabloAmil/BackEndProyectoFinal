@@ -69,6 +69,7 @@ handlebars.registerHelper('json', function(context) {
   return JSON.stringify(context);
 });
 
+
 if (enviorment === "development") {
   logger = devLogger;
 } else {
