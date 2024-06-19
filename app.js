@@ -11,6 +11,8 @@ import session from 'express-session';
 import initializePassport from "./src/dao/passport.config.js";
 import passport from "passport";
 import config from "./src/config/config.js";
+import exphbs from 'express-handlebars';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -55,7 +57,12 @@ const swaggerOptions = {
 const specs = swaggerJSDoc(swaggerOptions);
 app.use("/apidocs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
 
-app.engine('handlebars', engine());
+app.engine('handlebars', engine({ 
+  helpers: {
+    eq: (a, b) => a === b
+  }
+}));
+
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, '/views'));
 
@@ -68,7 +75,6 @@ app.use(cookieParser("secret_cookie"));
 handlebars.registerHelper('json', function(context) {
   return JSON.stringify(context);
 });
-
 
 if (enviorment === "development") {
   logger = devLogger;

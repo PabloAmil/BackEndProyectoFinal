@@ -93,17 +93,20 @@ router.post("/:uid/documents", passport.authenticate("jwt", { session: false }),
   }
 });
 
-
 router.get("/admin-control-panel", passport.authenticate("jwt", { session: false }), checkPermissions("Admin"), async (req, res) => {
 
   let users = await userService.getUsers()
-
-  //console.log(users);
-
   res.render('admin-control-panel', {users});
+});
 
-
-})
+router.post("/admin-control-panel", async (req, res) => {
+  try {
+    let result = await userService.modifyOrDelete(req.body);
+    res.status(200).json({ message: 'User modified successfully', result }); 
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to modify an user', error: error.message }); 
+  }
+});
 
 export default router;
 

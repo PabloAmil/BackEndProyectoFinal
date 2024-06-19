@@ -57,6 +57,11 @@ class UsersRepository {
     let result = await this.DAO.deleteAllExpiredUsers();
     return result;
   }
+
+  modifyOrDelete = async (users_data) => {
+    let result = await this.DAO.modifyOrDeleteUsers(users_data);
+    return result;
+  }
 }
 
 const userService = new UsersRepository(UsersDAO, usersDTO);

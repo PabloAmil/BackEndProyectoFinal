@@ -56,10 +56,26 @@ class UsersDAO {
             console.error(`Error sending email to ${user.email}:`, error);
           }
         }
-        let deletions = Users.findByIdAndDelete(user._id)
+        let deletions = await Users.findByIdAndDelete(user._id)
         return deletions;
       }
     }
+    return true;
+  }
+
+  static async modifyOrDeleteUsers(users) {
+
+    for (let user of users) { 
+      let oldUser = await this.getUserById(user.id);
+      if (oldUser.role !== user.role) {
+        oldUser.role = user.role;
+        let result = await this.updateUser(oldUser.email, oldUser);
+      }
+      if (user.erase === true) {
+        await Users.findByIdAndDelete(user.id)
+      }
+    }
+
     return true;
   }
 };
