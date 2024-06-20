@@ -3,27 +3,60 @@ agregar docker
 
 mejorar middleware de permisos
 
-llamar user service en vez de DAOs
 
-arreglar el endpoint para agregar items al carrito.
 
-corroborar la seguridad del /create-payment-intent', puede que necesite mandarle el jwt como con los tests
+PRIORIDAD
+
+arreglar el endpoint para agregar items al carrito. cambiar de GET A POST para cuando agregue productos del backend
+
+
+
+
 
 tengo que poder entrar al front, cargar productos al carrito al clickearlos, ir a un boton que me redirija al pago, poder borrar productos del carrito
 
 
 
 
+probar todos los endpoints
 
-///////////////////////////////
-
-
-postman tests: 
-
-
-add product to cart ----- FIX auth
+agregar nuevos endpoints a documentacion
 
 
 
-/////
+
+
+crear usuarios de prueba para usar
+
+
+Realizar el despliegue de tu aplicativo en la plataforma de tu elección (Preferentemente Railway.app, pues es la
+abarcada en el curso) y corroborar que se puede llevar a cabo un proceso de compra completo.
+
+
+
+falta: 
+
+Crear una vista para poder visualizar, modificar el rol y eliminar un usuario. Esta vista únicamente será
+accesible para el administrador del ecommerce - funciona, pero ver el tema del reload
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------
+
+paso 1: poder ver todos los productos - CHECK
+
+paso 2: poder clickear un producto, elegir la cantidad y mandarla al cart
+
+
+
 

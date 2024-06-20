@@ -35,7 +35,7 @@ router.get("/:id", async (req, res) => {
   if (!cart) {
     res.render("404");
   }
-
+  
   //res.send(cart)
 
   res.render("cart", {
@@ -124,7 +124,7 @@ router.put("/:cartId/products/:productId", async (req, res) => {
 
 
 // add product to cart
-router.post("/:cartId/addProduct/:productId", passport.authenticate("jwt", { session: false }), checkPermissions("User"), async (req, res) => {
+router.get("/:cartId/addProduct/:productId", passport.authenticate("jwt", { session: false }), checkPermissions('Admin'), async (req, res) => {
 
   let cartId = req.params.cartId;
   let productId = req.params.productId;
@@ -204,7 +204,7 @@ router.delete("/:cartId/products/:productId", async (req, res) => {
 });
 
 
-// ver como obtener el cartId
+// ver como obtener el cartId, del user de la cookie
 
 router.get("/:cartId/purchase", passport.authenticate("jwt", { session: false }), checkPermissions("User"), async (req, res) => {
 

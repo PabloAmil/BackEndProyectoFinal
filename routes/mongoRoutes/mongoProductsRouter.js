@@ -100,7 +100,7 @@ router.get("/new", passport.authenticate("jwt", { session: false }), checkPermis
 
 
 // get product by id
-router.get("/:id", async (req, res) => {
+router.get("/:id", passport.authenticate("jwt", { session: false }), checkPermissions("User") ,async (req, res) => {
 
   let id = req.params.id;
   if (!id) {
@@ -117,6 +117,7 @@ router.get("/:id", async (req, res) => {
     }
 
     // aca iria un repository con un DTO que prepare el producto para renderizarlo
+    //a product le tengo que poder pasar a que cart va a mandar la data 
 
     res.render('product', {
       title: product.title,
@@ -125,7 +126,8 @@ router.get("/:id", async (req, res) => {
       photo: product.photo,
       category: product.category,
       isStock: product.stock > 0,
-      style: 'product.css'
+      style: 'product.css',
+      stock: product.stock
     });
 
   } catch (error) {

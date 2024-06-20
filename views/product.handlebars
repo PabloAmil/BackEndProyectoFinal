@@ -27,10 +27,18 @@
       <p>Description: {{description}}</p>
       {{#if isStock}}
       <p>price: ${{price}}</p>
+      <p>stock: {{stock}}</p>
       {{else}}
       <p>Out of stock</p>
       {{/if}}
       <p>Category: {{category}}</p>
+
+
+      <form method="post" action="api/carts/:cartId/addProduct/:productId">
+      
+      </form>
+
+
       <input type="submit" value="Add to cart" class="addButton"></input>
     </div>
   </div>

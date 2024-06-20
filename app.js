@@ -107,8 +107,6 @@ app.use("/api/users", usersRouter);
 app.use("/", viewsRouter);
 app.use('/api/payments', paymentRouter)
 
-// app.use("/api/products", routerProducts);
-// app.use("/api/carts", routerCarts);
 
 app.get("/", (req, res) => {
   res.render("home", {

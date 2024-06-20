@@ -82,6 +82,7 @@ router.post("/login", async (req, res) => {
 
       logger.info(`user ${user.first_name, user.last_name} has logged in`);
       let token = jwt.sign({ id: user._id }, config.jwt_secret, { expiresIn: "1h" })
+
       res.cookie("jwt", token, {
         signed: true,
         httpOnly: true,
