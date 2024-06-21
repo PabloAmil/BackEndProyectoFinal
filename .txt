@@ -3,18 +3,18 @@ agregar docker
 
 mejorar middleware de permisos
 
+
+
 probar todos los endpoints
 
-agregar nuevos endpoints a documentacion
+
 
 crear usuarios de prueba para usar
 
 
 
-
 Realizar el despliegue de tu aplicativo en la plataforma de tu elección (Preferentemente Railway.app, pues es la
-abarcada en el curso) y corroborar que se puede llevar a cabo un proceso de compra completo.
-
+abarcada en el curso) 
 
 
 ----------------------------------------------------------------------------
@@ -22,8 +22,4 @@ abarcada en el curso) y corroborar que se puede llevar a cabo un proceso de comp
 al agregar un item al cart, que salte un alert y me devuelva a la pagina de productos
 
 
-paso 6: terminar la pagina de success o failure
-
-
-
-
+agregar nuevos endpoints a documentacion: el de documentos, el panel de control del admin

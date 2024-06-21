@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (error) {
       console.error(error);
+      window.location.href = '/failure';
     } else {
       console.log('Payment successful!', paymentIntent);
       window.location.href = '/success';
