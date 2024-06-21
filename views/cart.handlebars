@@ -1,19 +1,14 @@
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Bokor&family=Metal&family=Protest+Guerrilla&family=Roboto:wght@100;300&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bokor&family=Metal&family=Protest+Guerrilla&family=Roboto:wght@100;300&display=swap" rel="stylesheet">
   <title></title>
 </head>
 <body>
-
   <h1>cart</h1>
-
   <div class="product-container">
     <ul>
       {{#each cartContent}}
@@ -21,22 +16,20 @@
         <h2>{{title}}</h2>
         <p>{{description}}</p>
         <p>{{price}}</p>
+        <button class="eraseItemButton" data-item-id="{{_id}}" data-cart-id="{{../cartId}}">Delete from cart</button>
       </li>
-
-      <button class="eraseItemButton" data-item-id="{{_id}}" data-cart-id="{{../cartId}}">Delete from cart</button>
-      <br>
-      <br>
-      <br>
-
+      <br><br><br>
       {{/each}}
 
+      {{#if cartContent}}
       <button><a href="http://localhost:8080/api/carts/{{cartId}}/purchase">Purchase</a></button>
+      <button id="emptyCartButton" value="{{cartId}}">Empty Cart</button>
+      {{/if}}
+
       <button><a href="http://localhost:8080/api/products">Go to products</a></button>
-      <button id="emptyCartButton"  value="{{cartId}}">Empty Cart</a></button>
     </ul>
   </div>
 
-    <script src="/js/empty-cart.js"></script>
+  <script src="/js/empty-cart.js"></script>
 </body>
-
 </html>

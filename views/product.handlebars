@@ -32,15 +32,18 @@
       <p>price: ${{product.price}}</p>
 
       <form method="post" action="/api/carts/{{cartId}}/addProduct/{{product._id}}" class="product-form">
+        <input type="hidden" name="cartId" value="{{cartId}}">
         <input type="hidden" name="productId" value="{{product._id}}">
-          <input type="submit" value="Add to cart" class="addButton">
+        <input type="submit" value="Add to cart" id="add-to-cart-form">
       </form>
       {{else}}
       <p>Out of stock</p>
       {{/if}}
     </div>
   </div>
+  <button><a href="http://localhost:8080/api/products">Go to products</a></button>
 
+  <script src="/js/product-redirect.js"></script>
 </body>
 
 </html>

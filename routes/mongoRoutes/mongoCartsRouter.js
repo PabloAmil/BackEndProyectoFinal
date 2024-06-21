@@ -9,8 +9,6 @@ import axios from 'axios';
 import Stripe from 'stripe';
 
 
-
-
 const router = Router();
 const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY);
 
@@ -148,12 +146,13 @@ router.post("/:cartId/addProduct/:productId", passport.authenticate("jwt", { ses
 
       cart.content.push(product);
       let result = await cartService.update(cartId, cart);
-
-      res.status(200).send({
+      
+      res.status(200).json({
         status: 200,
         result: "Success",
-        payload: result
-      })
+        payload: result,
+        redirectUrl: "http://localhost:8080/api/products"
+      });
     } else {
       res.status(401).send(`You cannot add your own product to your cart`);
     }
@@ -193,11 +192,10 @@ router.delete("/:cartId", async (req, res) => {
 router.delete("/:cartId/products/:productId", async (req, res) => {
 
   let cartId = req.params.cartId;
-  let productId = req.params.productId;
+  let productId = req.params.productId; 
 
   try {
     let cart = await cartService.getCartById(cartId);
-
     let newContent = [];
 
     for (let product of cart.content) {
@@ -208,18 +206,18 @@ router.delete("/:cartId/products/:productId", async (req, res) => {
     }
 
     cart.content = newContent;
+
     let newCart = await cartService.update(cartId, cart);
-    console.log(newCart);
+    let newCartId = JSON.stringify(newCart._id);
 
-    res.redirect(`http://localhost:8080/api/carts/${cartId}`);
-
+    res.status(200).send('product deleted');
 
   } catch (error) {
     res.status(500).send({
-          status: 500,
-          result: "Error",
-          error: "Unable to delete the product."
-        });
+      status: 500,
+      result: "Error",
+      error: "Unable to delete the product."
+    });
   }
 });
 

@@ -3,21 +3,6 @@ agregar docker
 
 mejorar middleware de permisos
 
-
-
-PRIORIDAD
-
-arreglar el endpoint para agregar items al carrito. cambiar de GET A POST para cuando agregue productos del backend
-
-
-
-
-
-tengo que poder entrar al front, cargar productos al carrito al clickearlos, ir a un boton que me redirija al pago, poder borrar productos del carrito
-
-
-
-
 probar todos los endpoints
 
 agregar nuevos endpoints a documentacion
@@ -26,7 +11,10 @@ agregar nuevos endpoints a documentacion
 
 
 
+
 crear usuarios de prueba para usar
+
+
 
 
 Realizar el despliegue de tu aplicativo en la plataforma de tu elección (Preferentemente Railway.app, pues es la
@@ -43,19 +31,12 @@ accesible para el administrador del ecommerce - funciona, pero ver el tema del r
 
 
 
-
-
-
-
-
-
-
-
 ----------------------------------------------------------------------------
 
-paso 1: poder ver todos los productos - CHECK
+al agregar un item al cart, que salte un alert y me devuelva a la pagina de productos
 
-paso 2: poder clickear un producto, elegir la cantidad y mandarla al cart
+
+paso 6: terminar la pagina de success o failure
 
 
 
