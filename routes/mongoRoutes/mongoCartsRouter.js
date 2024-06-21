@@ -9,6 +9,8 @@ import axios from 'axios';
 import Stripe from 'stripe';
 
 
+
+
 const router = Router();
 const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY);
 
@@ -26,23 +28,28 @@ router.get('/new', passport.authenticate("jwt", { session: false }), checkPermis
 
 router.get("/:id", async (req, res) => {
 
-  let id = req.params.id;
+  const cartId = req.params.id;
+  const cartContent = [];
 
-  if (!id) {
+  if (!cartId) {
     res.redirect("carts");
   }
-  let cart = await cartService.getCartById(id)
+  let cart = await cartService.getCartById(cartId)
   if (!cart) {
     res.render("404");
   }
-  
-  //res.send(cart)
+
+  for (let product of cart.content) {
+    let prod = await ProductsDAO.getById(product._id);
+    cartContent.push(prod);
+  }
 
   res.render("cart", {
-    cart,
+    cartId,
+    cartContent,
     style: 'cart.css'
   })
-})
+});
 
 
 // update cart
@@ -124,7 +131,11 @@ router.put("/:cartId/products/:productId", async (req, res) => {
 
 
 // add product to cart
-router.get("/:cartId/addProduct/:productId", passport.authenticate("jwt", { session: false }), checkPermissions('Admin'), async (req, res) => {
+router.post("/:cartId/addProduct/:productId", passport.authenticate("jwt", { session: false }), checkPermissions('Admin'), async (req, res) => {
+
+  if (!req.user) {
+    return res.status(401)
+  }
 
   let cartId = req.params.cartId;
   let productId = req.params.productId;
@@ -133,12 +144,9 @@ router.get("/:cartId/addProduct/:productId", passport.authenticate("jwt", { sess
     let cart = await cartService.getCartById(cartId);
     let product = await ProductsDAO.getById(productId);
 
-    if (!req.user) {
-      return res.status(401)
-    }
-
     if (product.owner !== req.user.email) {
-      cart.content.push({ product: productId });
+
+      cart.content.push(product);
       let result = await cartService.update(cartId, cart);
 
       res.status(200).send({
@@ -183,35 +191,44 @@ router.delete("/:cartId", async (req, res) => {
 // delete 1 product from cart 
 
 router.delete("/:cartId/products/:productId", async (req, res) => {
+
   let cartId = req.params.cartId;
   let productId = req.params.productId;
 
   try {
-    let result = await cartService.update(cartId, { $pull: { "content": { product: productId } } }, { new: true });
+    let cart = await cartService.getCartById(cartId);
 
-    res.status(200).send({
-      status: 200,
-      result: "product deleted successfully.",
-    });
+    let newContent = [];
+
+    for (let product of cart.content) {
+      let productStringId = product._id.toString();
+      if (productStringId !== productId) {
+        newContent.push(product);
+      }
+    }
+
+    cart.content = newContent;
+    let newCart = await cartService.update(cartId, cart);
+    console.log(newCart);
+
+    res.redirect(`http://localhost:8080/api/carts/${cartId}`);
+
 
   } catch (error) {
     res.status(500).send({
-      status: 500,
-      result: "Error",
-      error: "Unable to delete the product."
-    });
+          status: 500,
+          result: "Error",
+          error: "Unable to delete the product."
+        });
   }
 });
 
 
-// ver como obtener el cartId, del user de la cookie
-
 router.get("/:cartId/purchase", passport.authenticate("jwt", { session: false }), checkPermissions("User"), async (req, res) => {
 
-  const ticket = await ticketsDAO.createTicket(req.user);
-  const user = req.user;
-
   try {
+    const user = req.user;
+    const ticket = await ticketsDAO.createTicket(user);
     const postData = {
       userData: user,
       ticket: ticket
@@ -222,7 +239,7 @@ router.get("/:cartId/purchase", passport.authenticate("jwt", { session: false })
         'Content-Type': 'application/json',
       }
     });
-    const clientSecret = response.data.clientSecret; 
+    const clientSecret = response.data.clientSecret;
 
     res.redirect(`http://localhost:8080/api/payments/checkout?clientSecret=${clientSecret}`);
 

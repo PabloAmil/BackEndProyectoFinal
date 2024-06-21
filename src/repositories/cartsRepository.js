@@ -8,11 +8,6 @@ class CartsRepository {
 
   getAllCarts = async () => {
     let result = await this.DAO.getAll();
-
-    // console.log("/////////////////////////////////////")
-    // console.log(result)
-    // console.log("/////////////////////////////////////")
-
     return result;
   }
 

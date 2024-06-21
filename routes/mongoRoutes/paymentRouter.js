@@ -16,7 +16,7 @@ router.post('/create-payment-intent', async (req, res) => {
 
   const amount = req.body.ticket.amount;
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: 5000000, // quitar el hardcodeo luego
+    amount: amount, 
     currency: 'usd',
     metadata: {
       email: req.body.userData.email,

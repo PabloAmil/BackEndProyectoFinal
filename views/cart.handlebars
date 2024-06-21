@@ -8,22 +8,35 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Bokor&family=Metal&family=Protest+Guerrilla&family=Roboto:wght@100;300&display=swap"
     rel="stylesheet">
-  <title>{{cart._id}}</title>
+  <title></title>
 </head>
 <body>
 
   <h1>cart</h1>
+
   <div class="product-container">
     <ul>
-      {{#each cart.content}}
+      {{#each cartContent}}
       <li>
-        <h2>{{this.product.title}}</h2>
-        <p>{{this.product.description}}</p>
-        <p>{{this.product.title}}</p>
+        <h2>{{title}}</h2>
+        <p>{{description}}</p>
+        <p>{{price}}</p>
       </li>
+
+      <button class="eraseItemButton" data-item-id="{{_id}}" data-cart-id="{{../cartId}}">Delete from cart</button>
+      <br>
+      <br>
+      <br>
+
       {{/each}}
+
+      <button><a href="http://localhost:8080/api/carts/{{cartId}}/purchase">Purchase</a></button>
+      <button><a href="http://localhost:8080/api/products">Go to products</a></button>
+      <button id="emptyCartButton"  value="{{cartId}}">Empty Cart</a></button>
     </ul>
   </div>
+
+    <script src="/js/empty-cart.js"></script>
 </body>
 
 </html>

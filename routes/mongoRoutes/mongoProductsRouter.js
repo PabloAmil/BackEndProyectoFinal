@@ -1,4 +1,4 @@
-import { Router, query } from "express";
+import { Router, json, query } from "express";
 import ProductsDAO from "../../src/dao/mongoDbManagers/productsDbManager.js";
 import upload from "../../utils/upload.middlewares.js";
 import passport from "passport";
@@ -8,11 +8,12 @@ import productIntputChecker from "../../utils/productInputChecker.js";
 import transport from "../../src/config/mailing.js";
 import userService from "../../src/repositories/usersRepository.js";
 import config from "../../src/config/config.js";
+import optionalAuthenticate from "../../utils/optional.authenticate.js";
 
 const router = Router();
 
 // get products
-router.get("/", async (req, res) => {
+router.get("/", optionalAuthenticate, async (req, res) => {
 
   let page = parseInt(req.query.page);
   if (!page) {
@@ -53,10 +54,12 @@ router.get("/", async (req, res) => {
     let user;
     let userLastName;
     let role = '';
+    let userCart;
 
     if (req.user) {
       user = req.user.first_name;
       userLastName = req.user.last_name;
+      userCart = req.user.cart;
       if (req.user.role && req.user.role === "Admin") {
         role = req.user.role.toUpperCase();
       }
@@ -72,7 +75,8 @@ router.get("/", async (req, res) => {
       products,
       user,
       userLastName,
-      role
+      role,
+      userCart
     });
 
   } catch (error) {
@@ -100,7 +104,10 @@ router.get("/new", passport.authenticate("jwt", { session: false }), checkPermis
 
 
 // get product by id
-router.get("/:id", passport.authenticate("jwt", { session: false }), checkPermissions("User") ,async (req, res) => {
+router.get("/:id", passport.authenticate("jwt", { session: false }), checkPermissions("User"), async (req, res) => {
+
+  const user = req.user;
+  const cartId = user.cart;
 
   let id = req.params.id;
   if (!id) {
@@ -109,6 +116,7 @@ router.get("/:id", passport.authenticate("jwt", { session: false }), checkPermis
 
   try {
     let product = await ProductsDAO.getById(id);
+
     if (!product) {
       res.render('404', {
         style: "404.css"
@@ -116,18 +124,11 @@ router.get("/:id", passport.authenticate("jwt", { session: false }), checkPermis
       )
     }
 
-    // aca iria un repository con un DTO que prepare el producto para renderizarlo
-    //a product le tengo que poder pasar a que cart va a mandar la data 
-
     res.render('product', {
-      title: product.title,
-      description: product.description,
-      price: product.price,
-      photo: product.photo,
-      category: product.category,
+      product,
       isStock: product.stock > 0,
+      cartId,
       style: 'product.css',
-      stock: product.stock
     });
 
   } catch (error) {
@@ -179,10 +180,10 @@ router.get("/delete/:id", passport.authenticate("jwt", { session: false }), asyn
 
       let producOwner = await userService.getUsersByEmail(product.owner);
       if (producOwner.role === "Premium") {
-        
+
         let result = await transport.sendMail({
           from: config.gmailUSer,
-          to: producOwner.email, 
+          to: producOwner.email,
           subject: 'A product of yours has been deleted by an Admin',
           html: `
           <div>
@@ -193,7 +194,7 @@ router.get("/delete/:id", passport.authenticate("jwt", { session: false }), asyn
           attachments: []
         })
       }
-      
+
       await ProductsDAO.remove(id);
       logger.info('Product deleted successfully');
       res.json({ success: true, message: 'Product deletion success' });

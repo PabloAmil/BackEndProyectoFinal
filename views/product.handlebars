@@ -8,7 +8,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Bokor&family=Metal&family=Protest+Guerrilla&family=Roboto:wght@100;300&display=swap"
     rel="stylesheet">
-  <title>{{title}}</title>
+  <title>{{product.title}}</title>
 </head>
 
 <body>
@@ -17,31 +17,30 @@
   <div class="product-container">
 
     <div class="photo-container">
-      {{#if photo}}
-      <img src="/images/products/{{photo}}">
+      {{#if product.photo}}
+      <img src="/images/products/{{product.photo}}">
       {{/if}}
     </div>
 
     <div class="details-container">
-      <h3>{{title}}</h3>
-      <p>Description: {{description}}</p>
+
+      <h3>{{product.title}}</h3>
+      <p>Description: {{product.description}}</p>
+      <p>Category: {{product.category}}</p>
+
       {{#if isStock}}
-      <p>price: ${{price}}</p>
-      <p>stock: {{stock}}</p>
+      <p>price: ${{product.price}}</p>
+
+      <form method="post" action="/api/carts/{{cartId}}/addProduct/{{product._id}}" class="product-form">
+        <input type="hidden" name="productId" value="{{product._id}}">
+          <input type="submit" value="Add to cart" class="addButton">
+      </form>
       {{else}}
       <p>Out of stock</p>
       {{/if}}
-      <p>Category: {{category}}</p>
-
-
-      <form method="post" action="api/carts/:cartId/addProduct/:productId">
-      
-      </form>
-
-
-      <input type="submit" value="Add to cart" class="addButton"></input>
     </div>
   </div>
+
 </body>
 
 </html>

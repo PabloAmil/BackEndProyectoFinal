@@ -16,7 +16,9 @@
 
     {{#if user}}
     <h3>Hello, {{user}} {{userLastName}} {{role}}</h3>
+    <button><a href="http://localhost:8080/api/carts/{{userCart}}">My cart</a></button>
     {{/if}}
+
     <ul>
         {{#each products.docs}}
         <li>
