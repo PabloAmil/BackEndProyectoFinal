@@ -10,8 +10,9 @@
   <form id="userForm">
     {{#each users}}
     <div>
-      <h3>{{first_name}}, {{last_name}}</h3>
-      <h4>{{_id}}</h4>
+      <h3>User: {{first_name}}, {{last_name}}</h3>
+      <h4>User ID: {{_id}}</h4>
+      <span>Role</span>
       <select name="roles[]" data-id="{{_id}}" class="user-role">
         <option value="Admin" {{#if (eq role 'Admin')}}selected{{/if}}>Admin</option>
         <option value="Premium" {{#if (eq role 'Premium')}}selected{{/if}}>Premium</option>

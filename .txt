@@ -7,11 +7,6 @@ probar todos los endpoints
 
 agregar nuevos endpoints a documentacion
 
-
-
-
-
-
 crear usuarios de prueba para usar
 
 
@@ -19,15 +14,6 @@ crear usuarios de prueba para usar
 
 Realizar el despliegue de tu aplicativo en la plataforma de tu elección (Preferentemente Railway.app, pues es la
 abarcada en el curso) y corroborar que se puede llevar a cabo un proceso de compra completo.
-
-
-
-falta: 
-
-Crear una vista para poder visualizar, modificar el rol y eliminar un usuario. Esta vista únicamente será
-accesible para el administrador del ecommerce - funciona, pero ver el tema del reload
-
-
 
 
 

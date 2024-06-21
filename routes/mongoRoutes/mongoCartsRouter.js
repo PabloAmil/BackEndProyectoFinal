@@ -206,7 +206,6 @@ router.delete("/:cartId/products/:productId", async (req, res) => {
     }
 
     cart.content = newContent;
-
     let newCart = await cartService.update(cartId, cart);
     let newCartId = JSON.stringify(newCart._id);
 
@@ -220,7 +219,6 @@ router.delete("/:cartId/products/:productId", async (req, res) => {
     });
   }
 });
-
 
 router.get("/:cartId/purchase", passport.authenticate("jwt", { session: false }), checkPermissions("User"), async (req, res) => {
 
@@ -248,7 +246,6 @@ router.get("/:cartId/purchase", passport.authenticate("jwt", { session: false })
     })
   }
 });
-
 
 export default router;
 
