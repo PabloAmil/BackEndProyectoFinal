@@ -1,7 +1,16 @@
 body {
-  background:  #113f67; 
+  background:  #d8dcdf; 
 } 
 
+h1 {
+  margin-top: 3em;
+  margin-bottom: 1em;
+  font-size: 50px;
+  text-align: center;
+  font-family: "Playwrite DE Grund", cursive;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
 ul {
   list-style: none;
 }

@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playwrite+DE+Grund:wght@100..400&display=swap" rel="stylesheet">
   <title>Users Control Panel</title>
 </head>
+
 <body>
   <h1>Admin Control Panel</h1>
   <form id="userForm">
@@ -14,9 +19,9 @@
       <h4>User ID: {{_id}}</h4>
       <span>Role</span>
       <select name="roles[]" data-id="{{_id}}" class="user-role">
-        <option value="Admin" {{#if (eq role 'Admin')}}selected{{/if}}>Admin</option>
-        <option value="Premium" {{#if (eq role 'Premium')}}selected{{/if}}>Premium</option>
-        <option value="User" {{#if (eq role 'User')}}selected{{/if}}>User</option>
+        <option value="Admin" {{#if (eq role 'Admin' )}}selected{{/if}}>Admin</option>
+        <option value="Premium" {{#if (eq role 'Premium' )}}selected{{/if}}>Premium</option>
+        <option value="User" {{#if (eq role 'User' )}}selected{{/if}}>User</option>
       </select>
       <br><br>
       <label for="erase-{{_id}}">
@@ -31,4 +36,5 @@
   </form>
   <script src="/js/user-setup.js"></script>
 </body>
+
 </html>

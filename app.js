@@ -107,15 +107,6 @@ app.use("/api/users", usersRouter);
 app.use("/", viewsRouter);
 app.use('/api/payments', paymentRouter)
 
-
-app.get('/auth/github', passport.authenticate('github', { scope: ['user:email'] }));
-
-app.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/' }), (req, res) => {
-  res.cookie('jwt', req.user.token, { httpOnly: true, signed: true });
-  res.redirect('/'); 
-});
-
-
 app.get("/", (req, res) => {
 
   res.render("home", {
