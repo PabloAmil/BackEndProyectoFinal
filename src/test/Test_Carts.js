@@ -5,7 +5,7 @@ const requester = supertest("http://localhost:8080/");
 
 const testConfig = {
   jwt_secret: process.env.JWT_SECRET,
-  dbConnectionString: 'mongodb://localhost:27017/ecommerce',
+  dbConnectionString: 'mongodb+srv://pabloamil91:UV3JvqPcG41yKbnu@cluster0.ea2y0wr.mongodb.net/?retryWrites=true&w=majority',
 };
 
 describe('Carts creation, permissions', () => {
@@ -65,7 +65,7 @@ describe('Carts creation, permissions', () => {
         .expect(200);
 
       const cartId = carts.body[carts.body.length - 1]._id;
-      const productId = '664e6c70339275130ab13d6d';
+      const productId = '667605556cf9036ea03bd45f';
 
       const addProduct = await requester
         .post(`api/carts/${cartId}/addProduct/${productId}`)

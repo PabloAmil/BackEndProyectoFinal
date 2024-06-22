@@ -1,40 +1,52 @@
-
-agregar docker
-
+README: 
 
 
+TEST USERS: 
 
-probar todos los endpoints
+123@gmail.com
+pass: 123
+role: Admin
 
-/  - check
-/success - check
-/failure - check
 
-carts
+1234@gmail.com
+pass: 1234
+role: User
 
-/new - check
-/:id 664e8cf669cad81df6263ab3 - check
 
-add product
-/:cartId/addProduct/:productId - check
-
-clear cart 
-/:cartId - check
-
-delete 1 product from cart 
-/:cartId/products/:productId - check
-
-purchase
-/:cartId/purchase - check
+12345@gmail.com
+pass: 12345
+role: Premium
 
 
 
-products
+TEST CART ID: 6675f02561950335fec550bf
+TEST PRODUCT ID: 667604436cf9036ea03bd433
 
-/ - check
-/new - check
-/:id - check
 
+
+SCRIPTS: 
+
+
+Run with Nodemon: npm run dev
+
+
+
+
+TESTS (CHANGE AT package.json)
+
+"test": "mocha src/test/Test_Carts.js"
+"test": "mocha src/test/Test_Products.js"
+"test": "mocha src/test/Test_Users.js"
+
+Run tests: npm run test
+
+
+
+
+
+ENDPOINTS DOCUMENTATION
+
+http://localhost:8080/apidocs/
 
 
 
@@ -44,5 +56,3 @@ abarcada en el curso)
 
 ----------------------------------------------------------------------------
 
-
-agregar nuevos endpoints a documentacion: el de documentos, el panel de control del admin, borrar usuarios caducados
