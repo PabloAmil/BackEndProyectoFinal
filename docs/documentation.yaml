@@ -5,9 +5,12 @@ info:
   description: API documentation for products, carts, and users endpoints.
 
 paths:
+
   /api/carts/:
     get:
       summary: Retrieve all carts
+      tags:
+        - Carts
       responses:
         '200':
           description: A list of carts
@@ -16,6 +19,8 @@ paths:
 
     post:
       summary: Create a new cart
+      tags:
+        - Carts
       responses:
         '200':
           description: Successfully created cart
@@ -25,6 +30,8 @@ paths:
   /api/carts/new:
     get:
       summary: Create a new dummy cart (Admin only)
+      tags:
+        - Carts
       responses:
         '200':
           description: Successfully created dummy cart
@@ -34,6 +41,8 @@ paths:
   /api/carts/{id}:
     get:
       summary: Get cart by ID
+      tags:
+        - Carts
       parameters:
         - in: path
           name: id
@@ -48,6 +57,8 @@ paths:
 
     put:
       summary: Update cart by ID
+      tags:
+        - Carts
       parameters:
         - in: path
           name: id
@@ -70,7 +81,6 @@ paths:
                       properties:
                         _id:
                           type: string
-                        
       responses:
         '200':
           description: Cart updated successfully
@@ -80,6 +90,8 @@ paths:
   /api/carts/{cartId}/products/{productId}:
     put:
       summary: Update product in cart
+      tags:
+        - Carts
       parameters:
         - in: path
           name: cartId
@@ -106,6 +118,8 @@ paths:
 
     delete:
       summary: Delete product from cart
+      tags:
+        - Carts
       parameters:
         - in: path
           name: cartId
@@ -126,6 +140,8 @@ paths:
   /api/carts/{cartId}:
     delete:
       summary: Delete cart by ID
+      tags:
+        - Carts
       parameters:
         - in: path
           name: cartId
@@ -141,6 +157,8 @@ paths:
   /api/carts/{cartId}/purchase:
     get:
       summary: Purchase products in cart (User only)
+      tags:
+        - Carts
       parameters:
         - in: path
           name: cartId
@@ -156,6 +174,8 @@ paths:
   /api/products/:
     get:
       summary: Retrieve all products with pagination and filtering
+      tags:
+        - Products
       responses:
         '200':
           description: A list of products
@@ -164,6 +184,8 @@ paths:
 
     post:
       summary: Create a new product (Admin only)
+      tags:
+        - Products
       requestBody:
         required: true
         content:
@@ -181,6 +203,8 @@ paths:
   /api/products/new:
     get:
       summary: Render page to create a new product (Premium users only)
+      tags:
+        - Products
       responses:
         '200':
           description: Rendered new product page
@@ -192,6 +216,8 @@ paths:
   /api/products/{id}:
     get:
       summary: Get product by ID
+      tags:
+        - Products
       parameters:
         - in: path
           name: id
@@ -208,6 +234,8 @@ paths:
 
     delete:
       summary: Delete product by ID
+      tags:
+        - Products
       parameters:
         - in: path
           name: id
@@ -224,6 +252,8 @@ paths:
 
     put:
       summary: Update product by ID
+      tags:
+        - Products
       parameters:
         - in: path
           name: id
@@ -248,6 +278,8 @@ paths:
   /api/products/{id}/delete:
     get:
       summary: Delete product by ID (Admin only)
+      tags:
+        - Products
       parameters:
         - in: path
           name: id
@@ -265,6 +297,8 @@ paths:
   /api/products/{id}/edit:
     get:
       summary: Render page to edit product by ID (Admin or product owner only)
+      tags:
+        - Products
       parameters:
         - in: path
           name: id
@@ -284,6 +318,8 @@ paths:
   /api/products/admin-update/{id}:
     post:
       summary: Update product by ID (Admin only)
+      tags:
+        - Products
       parameters:
         - in: path
           name: id
@@ -306,6 +342,8 @@ paths:
   /api/users/:
     get:
       summary: Retrieve all users (Admin only)
+      tags:
+        - Users
       responses:
         '200':
           description: A list of users
@@ -315,6 +353,8 @@ paths:
   /api/users/delete:
     get:
       summary: Delete outdated users (Admin only)
+      tags:
+        - Users
       responses:
         '200':
           description: Deleted outdated users successfully
@@ -324,6 +364,8 @@ paths:
   /api/users/premium/{uid}:
     get:
       summary: Update user role to Premium or revert to User based on conditions (Admin only)
+      tags:
+        - Users
       parameters:
         - in: path
           name: uid
@@ -341,6 +383,8 @@ paths:
   /api/users/{uid}/documents:
     get:
       summary: Render page to upload documents for a user (Admin or user only)
+      tags:
+        - Users
       parameters:
         - in: path
           name: uid
@@ -359,6 +403,8 @@ paths:
 
     post:
       summary: Upload documents for a user (Admin or user only)
+      tags:
+        - Users
       parameters:
         - in: path
           name: uid
@@ -372,17 +418,12 @@ paths:
             schema:
               type: object
               properties:
-                profile:
+                file:
                   type: string
-                product:
-                  type: string
-                document:
-                  type: array
-                  items:
-                    type: string
+                  format: binary
       responses:
         '200':
-          description: Files uploaded successfully
+          description: Documents uploaded successfully
         '401':
           description: Unauthorized
         '404':
@@ -390,36 +431,86 @@ paths:
         '500':
           description: Internal Server Error
 
-  /api/users/admin-control-panel:
-    get:
-      summary: Render admin control panel to manage users (Admin only)
-      responses:
-        '200':
-          description: Rendered admin control panel
-        '401':
-          description: Unauthorized
-        '500':
-          description: Internal Server Error
-
-    post:
-      summary: Modify or delete a user (Admin only)
-      requestBody:
-        required: true
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
         content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                action:
-                  type: string
-                uid:
-                  type: string
-      responses:
-        '200':
-          description: User modified or deleted successfully
-        '401':
-          description: Unauthorized
-        '404':
-          description: User not found
-        '500':
-          description: Internal Server Error
+          type: array
+          items:
+            type: object
+            properties:
+              product:
+                type: string
+                description: Product ID referencing the products collection
+      required:
+        - content
+
+    Product:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        code:
+          type: string
+        price:
+          type: number
+        status:
+          type: string
+          enum: [active, inactive]
+        stock:
+          type: integer
+        category:
+          type: string
+        photo:
+          type: string
+        owner:
+          type: string
+        _id:
+          type: string
+      required:
+        - title
+        - description
+        - code
+        - price
+        - status
+        - stock
+        - category
+
+    User:
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        age:
+          type: integer
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+          enum: [User, Premium, Admin]
+        cart:
+          type: string
+          description: Cart ID referencing the carts collection
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              reference:
+                type: string
+        last_conection:
+          type: string
+      required:
+        - email
+        - password
+        - role
