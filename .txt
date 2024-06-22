@@ -34,6 +34,8 @@ Run with Nodemon: npm run dev
 
 TESTS (CHANGE AT package.json)
 
+NOTE: NEEDS TO RUN SERVER AND TESTS AT THE SAME TIME
+
 "test": "mocha src/test/Test_Carts.js"
 "test": "mocha src/test/Test_Products.js"
 "test": "mocha src/test/Test_Users.js"
@@ -47,6 +49,7 @@ Run tests: npm run test
 ENDPOINTS DOCUMENTATION
 
 http://localhost:8080/apidocs/
+
 
 
 
