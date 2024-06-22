@@ -31,8 +31,6 @@ router.post('/register', async (req, res) => {
       return res.status(400).send({ status: "failed", message: "All fields must be completed" });
     }
 
-    // repository dedicado a carts?
-
     const newCart = await cartsDAO.createNewCart();
     const cartId = newCart._id;
 

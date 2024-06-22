@@ -86,8 +86,8 @@ logger.info(`now using development: ${enviorment}`)
 
 app.use(session({
   store: MongoStore.create({
-    mongoUrl: config.local_mongo_url,
-    //mongoUrl: config.atlas_mongo_url,
+    //mongoUrl: config.local_mongo_url,
+    mongoUrl: config.atlas_mongo_url,
     ttl: 900,
   }),
   secret: config.session_secret, 
@@ -108,7 +108,16 @@ app.use("/", viewsRouter);
 app.use('/api/payments', paymentRouter)
 
 
+app.get('/auth/github', passport.authenticate('github', { scope: ['user:email'] }));
+
+app.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/' }), (req, res) => {
+  res.cookie('jwt', req.user.token, { httpOnly: true, signed: true });
+  res.redirect('/'); 
+});
+
+
 app.get("/", (req, res) => {
+
   res.render("home", {
     style: "home.css"
   });
@@ -150,8 +159,8 @@ io.on('connection', (socket) => {
 
 export default logger;
 
-mongoose.connect(config.local_mongo_url);
-////mongoose.connect(config.atlas_mongo_url);
+//mongoose.connect(config.local_mongo_url);
+mongoose.connect(config.atlas_mongo_url);
 httpServer.listen(8080, () => logger.info("now listening to port 8080")); 
 
 

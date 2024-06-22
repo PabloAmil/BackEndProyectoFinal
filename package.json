@@ -2,7 +2,7 @@
   "name": "proyecto-final",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js", 
   "scripts": {
     "dev": "nodemon app.js",
     "test": "mocha src/test/Test_Carts.js"
@@ -12,7 +12,7 @@
   "type": "module",
   "dependencies": {
     "axios": "^1.7.2",
-    "bcrypt": "^5.1.1",
+    "bcrypt": "5.1.1",
     "chai-http": "^4.4.0",
     "connect-mongo": "^5.1.0",
     "cookie-parser": "^1.4.6",

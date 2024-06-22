@@ -5,6 +5,7 @@ import cartsDAO from "./mongoDbManagers/cartsDbManager.js";
 import config from "../config/config.js";
 import userService from "../repositories/usersRepository.js";
 import getConnectionTime from "../../utils/getConnectionTime.js";
+import jwt from "jsonwebtoken";
 
 const initializePassport = () => {
 
@@ -17,8 +18,6 @@ const initializePassport = () => {
     try {
 
       let user = await userService.getUsersByEmail(profile._json.email);
-
-      // repository para carts
 
       const newCart = await cartsDAO.createNewCart();
       const cartId = newCart._id;
@@ -33,8 +32,9 @@ const initializePassport = () => {
         const connectionTime = getConnectionTime();
         user.last_conection = connectionTime;
         let updatedUser = await userService.updateUsers(user.email, user);
-
         let storedUser = await userService.returnFormatedDataFromDAO(user);
+        const token = jwt.sign({ id: storedUser._id }, config.jwt_secret, { expiresIn: '1h' });
+
         done(null, storedUser);
       }
     } catch (e) {

@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
   res.status(200).send(carts);
 })
 
-router.get('/new', passport.authenticate("jwt", { session: false }), checkPermissions('Admin'), async (req, res) => { // revisar
+router.get('/new', passport.authenticate("jwt", { session: false }), checkPermissions('Admin'), async (req, res) => { 
 
   let dummyCart = await cartService.create()
   res.status(200).send(dummyCart);
@@ -129,7 +129,7 @@ router.put("/:cartId/products/:productId", async (req, res) => {
 
 
 // add product to cart
-router.post("/:cartId/addProduct/:productId", passport.authenticate("jwt", { session: false }), checkPermissions('Admin'), async (req, res) => {
+router.post("/:cartId/addProduct/:productId", passport.authenticate("jwt", { session: false }), checkPermissions('User'), async (req, res) => {
 
   if (!req.user) {
     return res.status(401)

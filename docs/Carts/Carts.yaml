@@ -1,471 +1,127 @@
+swagger: '2.0'
+info:
+  version: '1.0.0'
+  title: Shopping Cart API
 paths:
-  /api/carts/:
+  /api/carts:
     get:
-      tags: 
-        - Carts
-      summary: Get All Carts
-      description: Retrieves all carts from the database.
-      operationId: getAllCarts
+      summary: Retrieve all carts
       responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Cart'
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: "Error while trying to fetch carts"
-
+        200:
+          description: A list of carts
+    post:
+      summary: Create a new cart
+      responses:
+        200:
+          description: The newly created cart
+  /api/carts/new:
+    get:
+      summary: Create a dummy cart (Admin only)
+      security:
+        - jwt: []
+      responses:
+        200:
+          description: The newly created dummy cart
   /api/carts/{id}:
     get:
-      tags:
-        - Carts
-      summary: Get Cart by ID
-      description: Retrieves a cart by its ID from the database and displays it in a HTML
-      operationId: getCartById
+      summary: Get cart details by ID
       parameters:
         - name: id
           in: path
-          description: ID of the cart to retrieve.
           required: true
-          schema:
-            type: string
+          type: string
       responses:
-        '200':
-          description: Successful response
-          content:
-            text/html:
-              schema:
-                type: string
-                example: "<!DOCTYPE html>...</html>"
-        '404':
-          description: Cart not found
-          content:
-            text/html:
-              schema:
-                type: string
-                example: "<!DOCTYPE html><html><head>...</head><body>Cart not found</body></html>"
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: "Error while trying to fetch cart by ID"
-
+        200:
+          description: Details of the requested cart
     put:
-      tags:
-        - Carts
-      summary: Update Cart by ID
-      description: Updates a cart while adding or removing products from it. No need to do this manually if not debbuging.
-      operationId: updateCartById
+      summary: Update cart by ID
       parameters:
         - name: id
           in: path
-          description: ID of the cart to update.
+          required: true
+          type: string
+        - name: body
+          in: body
           required: true
           schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                product:
-                  type: string
-                  description: ID of the product to add to the cart.
+            type: object
       responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: integer
-                    example: 200
-                  result:
-                    type: string
-                    example: "Success"
-                  payload:
-                    $ref: '#/components/schemas/Cart'
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: integer
-                    example: 400
-                  result:
-                    type: string
-                    example: "error"
-                  error:
-                    type: string
-                    example: "cart not found"
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: integer
-                    example: 500
-                  result:
-                    type: string
-                    example: "Error"
-                  error:
-                    type: string
-                    example: "Error updating Cart"
-
-    delete:
-      tags:
-        - Carts
-      summary: Empty Cart
-      description: Empties a cart by its ID, removing all products from it.
-      operationId: emptyCart
-      parameters:
-        - name: cartId
-          in: path
-          description: ID of the cart to empty.
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: integer
-                    example: 200
-                  result:
-                    type: string
-                    example: "Cart emptied successfully."
-                  payload:
-                    type: object  # Adjust this type according to your response payload structure
-                    example: {}  # Adjust this example according to your response payload structure
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: integer
-                    example: 500
-                  result:
-                    type: string
-                    example: "Error"
-                  error:
-                    type: string
-                    example: "Unable to empty the cart."
-
-
-
-
-
-
+        200:
+          description: Updated cart details
   /api/carts/{cartId}/products/{productId}:
     put:
-      tags:
-        - Carts
-      summary: Update Product in Cart
-      description: Updates a product within a cart by its ID. This is done automatically, product ID MUST NOT BE CHANGED.
-      operationId: updateProductInCart
+      summary: Update product in cart
       parameters:
         - name: cartId
           in: path
-          description: ID of the cart containing the product.
           required: true
-          schema:
-            type: string
+          type: string
         - name: productId
           in: path
-          description: ID of the product to update within the cart.
+          required: true
+          type: string
+        - name: body
+          in: body
           required: true
           schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                product:
-                  $ref: '#/components/schemas/Product'
+            type: object
       responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: integer
-                    example: 200
-                  result:
-                    type: string
-                    example: "Success"
-                  payload:
-                    $ref: '#/components/schemas/Cart'
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: integer
-                    example: 400
-                  result:
-                    type: string
-                    example: "error"
-                  error:
-                    type: string
-                    example: "Cart not found or product not found in cart"
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: integer
-                    example: 500
-                  result:
-                    type: string
-                    example: "Error"
-                  error:
-                    type: string
-                    example: "Error updating product in cart"
-
-    post:
-      tags:
-        - Carts
-      summary: Add Product to Cart
-      description: Adds a product to a cart by their IDs. This method is usually automatically used. Requires being Logged in. Returns the cart with the product ID as references inside "content".
-      operationId: addProductToCart
-      parameters:
-        - name: cartId
-          in: path
-          description: ID of the cart to which the product will be added.
-          required: true
-          schema:
-            type: string
-        - name: productId
-          in: path
-          description: ID of the product to add to the cart.
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: integer
-                    example: 200
-                  result:
-                    type: string
-                    example: "Success"
-                  payload:
-                    $ref: '#/components/schemas/Cart'
-        '401':
-          description: Unauthorized
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: "You cannot add your own product to your cart"
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: integer
-                    example: 500
-                  result:
-                    type: string
-                    example: "Error"
-                  error:
-                    type: string
-                    example: "Could not add product to cart"
-
+        200:
+          description: Updated cart with modified product
     delete:
-      tags:
-        - Carts
-      summary: Delete Product from Cart
-      description: Deletes a product from a cart by their IDs.
-      operationId: deleteProductFromCart
+      summary: Delete product from cart
       parameters:
         - name: cartId
           in: path
-          description: ID of the cart from which the product will be deleted.
           required: true
-          schema:
-            type: string
+          type: string
         - name: productId
           in: path
-          description: ID of the product to delete from the cart.
           required: true
-          schema:
-            type: string
+          type: string
       responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: integer
-                    example: 200
-                  result:
-                    type: string
-                    example: "Product deleted successfully."
-                  cart:
-                    $ref: '#/components/schemas/Cart'
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: integer
-                    example: 500
-                  result:
-                    type: string
-                    example: "Error"
-                  error:
-                    type: string
-                    example: "Unable to delete the product."
-
+        200:
+          description: Product deleted from cart
+  /api/carts/{cartId}/addProduct/{productId}:
+    post:
+      summary: Add product to cart
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          type: string
+        - name: productId
+          in: path
+          required: true
+          type: string
+      security:
+        - jwt: []
+      responses:
+        200:
+          description: Product added to cart
+  /api/carts/{cartId}:
+    delete:
+      summary: Delete cart by ID
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Cart deleted successfully
   /api/carts/{cartId}/purchase:
     get:
-      tags:
-        - Carts
-      summary: Purchase Cart Items
-      description: Creates a ticket for the items in the cart and completes the purchase. Requires being logged in.
-      operationId: purchaseCartItems
+      summary: Initiate purchase process
       parameters:
         - name: cartId
           in: path
-          description: ID of the cart to purchase items from.
           required: true
-          schema:
-            type: string
+          type: string
       security:
-        - jwtAuth: []
+        - jwt: []
       responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Ticket'
-        '401':
-          description: Unauthorized
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: "Unauthorized: Access is denied due to invalid credentials."
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: integer
-                    example: 500
-                  result:
-                    type: string
-                    example: "Error"
-                  error:
-                    type: string
-                    example: "Failed to create ticket"
+        302:
+          description: Redirect to payment checkout page
 
-components:
-  schemas:
-    Cart:
-      type: object
-      properties:
-        _id:
-          type: string
-        content:
-          type: array
-          items:
-            type: object
-            properties:
-              product:
-                type: string
-                description: ID of the product in the cart.
 
-    Ticket:
-      type: object
-      properties:
-        code:
-          type: string
-          description: The code of the ticket.
-        purchase_datetime:
-          type: string
-          format: date-time
-          description: The date and time of the ticket purchase.
-        amount:
-          type: number
-          description: The amount associated with the ticket.
-        purchaser:
-          type: string
-          description: The purchaser's information.
-      required:
-        - code
-        - purchase_datetime
-        - amount
-        - purchaser

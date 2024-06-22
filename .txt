@@ -1,15 +1,40 @@
 
 agregar docker
 
-mejorar middleware de permisos
 
 
 
 probar todos los endpoints
 
+/  - check
+/success - check
+/failure - check
+
+carts
+
+/new - check
+/:id 664e8cf669cad81df6263ab3 - check
+
+add product
+/:cartId/addProduct/:productId - check
+
+clear cart 
+/:cartId - check
+
+delete 1 product from cart 
+/:cartId/products/:productId - check
+
+purchase
+/:cartId/purchase - check
 
 
-crear usuarios de prueba para usar
+
+products
+
+/ - check
+/new - check
+/:id - check
+
 
 
 
@@ -19,7 +44,5 @@ abarcada en el curso)
 
 ----------------------------------------------------------------------------
 
-al agregar un item al cart, que salte un alert y me devuelva a la pagina de productos
 
-
-agregar nuevos endpoints a documentacion: el de documentos, el panel de control del admin
+agregar nuevos endpoints a documentacion: el de documentos, el panel de control del admin, borrar usuarios caducados

@@ -4,7 +4,6 @@ const authMiddleware = (requiredRole) => {
     if (req.user.role !== requiredRole && req.user.role !== "Admin" ) {
       return res.status(403).json({ message: 'Unauthorized User' });
     }
-
     next();
   };
 };
