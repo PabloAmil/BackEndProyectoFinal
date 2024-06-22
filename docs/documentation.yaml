@@ -1,0 +1,425 @@
+openapi: 3.0.0
+info:
+  title: API Documentation
+  version: 1.0.0
+  description: API documentation for products, carts, and users endpoints.
+
+paths:
+  /api/carts/:
+    get:
+      summary: Retrieve all carts
+      responses:
+        '200':
+          description: A list of carts
+        '500':
+          description: Internal Server Error
+
+    post:
+      summary: Create a new cart
+      responses:
+        '200':
+          description: Successfully created cart
+        '500':
+          description: Internal Server Error
+
+  /api/carts/new:
+    get:
+      summary: Create a new dummy cart (Admin only)
+      responses:
+        '200':
+          description: Successfully created dummy cart
+        '500':
+          description: Internal Server Error
+
+  /api/carts/{id}:
+    get:
+      summary: Get cart by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cart details
+        '500':
+          description: Internal Server Error
+
+    put:
+      summary: Update cart by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - in: body
+          name: cart
+          required: true
+          schema:
+            type: object
+            properties:
+              content:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    product:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                        
+      responses:
+        '200':
+          description: Cart updated successfully
+        '500':
+          description: Internal Server Error
+
+  /api/carts/{cartId}/products/{productId}:
+    put:
+      summary: Update product in cart
+      parameters:
+        - in: path
+          name: cartId
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: productId
+          required: true
+          schema:
+            type: string
+        - in: body
+          name: product
+          required: true
+          schema:
+            type: object
+            properties:
+              // Define properties to update
+      responses:
+        '200':
+          description: Product updated in cart successfully
+        '500':
+          description: Internal Server Error
+
+    delete:
+      summary: Delete product from cart
+      parameters:
+        - in: path
+          name: cartId
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: productId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Product deleted from cart successfully
+        '500':
+          description: Internal Server Error
+
+  /api/carts/{cartId}:
+    delete:
+      summary: Delete cart by ID
+      parameters:
+        - in: path
+          name: cartId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cart deleted successfully
+        '500':
+          description: Internal Server Error
+
+  /api/carts/{cartId}/purchase:
+    get:
+      summary: Purchase products in cart (User only)
+      parameters:
+        - in: path
+          name: cartId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Redirect to checkout page
+        '500':
+          description: Internal Server Error
+
+  /api/products/:
+    get:
+      summary: Retrieve all products with pagination and filtering
+      responses:
+        '200':
+          description: A list of products
+        '500':
+          description: Internal Server Error
+
+    post:
+      summary: Create a new product (Admin only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                // Define product properties
+      responses:
+        '200':
+          description: Successfully created product
+        '500':
+          description: Internal Server Error
+
+  /api/products/new:
+    get:
+      summary: Render page to create a new product (Premium users only)
+      responses:
+        '200':
+          description: Rendered new product page
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+
+  /api/products/{id}:
+    get:
+      summary: Get product by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Product details
+        '404':
+          description: Product not found
+        '500':
+          description: Internal Server Error
+
+    delete:
+      summary: Delete product by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Product deleted successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+
+    put:
+      summary: Update product by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - in: body
+          name: product
+          required: true
+          schema:
+            type: object
+            properties:
+              // Define properties to update
+      responses:
+        '200':
+          description: Product updated successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+
+  /api/products/{id}/delete:
+    get:
+      summary: Delete product by ID (Admin only)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Product deleted successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+
+  /api/products/{id}/edit:
+    get:
+      summary: Render page to edit product by ID (Admin or product owner only)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Rendered product edit page
+        '401':
+          description: Unauthorized
+        '404':
+          description: Product not found
+        '500':
+          description: Internal Server Error
+
+  /api/products/admin-update/{id}:
+    post:
+      summary: Update product by ID (Admin only)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - in: body
+          name: product
+          required: true
+          schema:
+            type: object
+            properties:
+              // Define properties to update
+      responses:
+        '200':
+          description: Product updated successfully
+        '500':
+          description: Internal Server Error
+
+  /api/users/:
+    get:
+      summary: Retrieve all users (Admin only)
+      responses:
+        '200':
+          description: A list of users
+        '500':
+          description: Internal Server Error
+
+  /api/users/delete:
+    get:
+      summary: Delete outdated users (Admin only)
+      responses:
+        '200':
+          description: Deleted outdated users successfully
+        '500':
+          description: Internal Server Error
+
+  /api/users/premium/{uid}:
+    get:
+      summary: Update user role to Premium or revert to User based on conditions (Admin only)
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User role updated successfully
+        '404':
+          description: User not found
+        '500':
+          description: Internal Server Error
+
+  /api/users/{uid}/documents:
+    get:
+      summary: Render page to upload documents for a user (Admin or user only)
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Rendered document upload page
+        '401':
+          description: Unauthorized
+        '404':
+          description: User not found
+        '500':
+          description: Internal Server Error
+
+    post:
+      summary: Upload documents for a user (Admin or user only)
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                profile:
+                  type: string
+                product:
+                  type: string
+                document:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Files uploaded successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: User not found
+        '500':
+          description: Internal Server Error
+
+  /api/users/admin-control-panel:
+    get:
+      summary: Render admin control panel to manage users (Admin only)
+      responses:
+        '200':
+          description: Rendered admin control panel
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+
+    post:
+      summary: Modify or delete a user (Admin only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                uid:
+                  type: string
+      responses:
+        '200':
+          description: User modified or deleted successfully
+        '401':
+          description: Unauthorized
+        '404':
+          description: User not found
+        '500':
+          description: Internal Server Error

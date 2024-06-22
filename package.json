@@ -5,7 +5,8 @@
   "main": "app.js", 
   "scripts": {
     "dev": "nodemon app.js",
-    "test": "mocha src/test/Test_Carts.js"
+    "test": "mocha src/test/Test_Carts.js",
+    "start": "node app.js"
   },
   "author": "",
   "license": "ISC",

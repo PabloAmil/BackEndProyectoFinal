@@ -14,39 +14,54 @@ const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY);
 
 router.get('/', async (req, res) => {
 
-  let carts = await cartService.getAllCarts();
-  res.status(200).send(carts);
+  try {
+    let carts = await cartService.getAllCarts();
+    res.status(200).send(carts);
+    
+  } catch (error) {
+    res.status(500).send('Could not get Carts');
+  }
 })
 
 router.get('/new', passport.authenticate("jwt", { session: false }), checkPermissions('Admin'), async (req, res) => { 
 
-  let dummyCart = await cartService.create()
-  res.status(200).send(dummyCart);
+  try {
+    let dummyCart = await cartService.create()
+    res.status(200).send(dummyCart);
+    
+  } catch (error) {
+    res.status(500).send("Failed to create Dummy Cart");
+  }
 })
 
 router.get("/:id", async (req, res) => {
 
-  const cartId = req.params.id;
-  const cartContent = [];
-
-  if (!cartId) {
-    res.redirect("carts");
+  try {
+    const cartId = req.params.id;
+    const cartContent = [];
+  
+    if (!cartId) {
+      res.redirect("carts");
+    }
+    let cart = await cartService.getCartById(cartId)
+    if (!cart) {
+      res.render("404");
+    }
+  
+    for (let product of cart.content) {
+      let prod = await ProductsDAO.getById(product._id);
+      cartContent.push(prod);
+    }
+  
+    res.render("cart", {
+      cartId,
+      cartContent,
+      style: 'cart.css'
+    })
+    
+  } catch (error) {
+    res.status(500).send('Could not retrieve Cart')
   }
-  let cart = await cartService.getCartById(cartId)
-  if (!cart) {
-    res.render("404");
-  }
-
-  for (let product of cart.content) {
-    let prod = await ProductsDAO.getById(product._id);
-    cartContent.push(prod);
-  }
-
-  res.render("cart", {
-    cartId,
-    cartContent,
-    style: 'cart.css'
-  })
 });
 
 
@@ -188,7 +203,6 @@ router.delete("/:cartId", async (req, res) => {
 });
 
 // delete 1 product from cart 
-
 router.delete("/:cartId/products/:productId", async (req, res) => {
 
   let cartId = req.params.cartId;
@@ -220,6 +234,7 @@ router.delete("/:cartId/products/:productId", async (req, res) => {
   }
 });
 
+// purchase products
 router.get("/:cartId/purchase", passport.authenticate("jwt", { session: false }), checkPermissions("User"), async (req, res) => {
 
   try {
