@@ -37,10 +37,8 @@ router.get("/profile",  passport.authenticate("jwt", {session: false}), async (r
 
   if (req.user) {
     let user = await UsersDAO.getUserById(req.user._id);
-
     res.render("profile", {user});
   } else {
-    
     res.redirect("/login");
   }
 }) 
@@ -57,7 +55,6 @@ router.get("/change-password", (req, res)=> {
     res.render("change-password");
   }
 });
-
 
 router.get("/loggerTest", (req, res) => {
   logger.fatal('this is a fatal error test log');
