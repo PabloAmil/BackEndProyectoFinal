@@ -25,7 +25,7 @@ const logger = winston.createLogger({
   levels: customLevelOptions.levels,
   transports: [
     new winston.transports.Console({
-      level: "info", // por que sale 3 veces?? loguea en consola a partir de fatal
+      level: "info", 
       format: winston.format.combine(
         winston.format.colorize({ colors: customLevelOptions.colors }),
         winston.format.simple()
@@ -34,7 +34,7 @@ const logger = winston.createLogger({
 
     new winston.transports.File({
       filename: "utils/errors.log",
-      level: 'error', // loguea en file a partir de error
+      level: 'error', 
       format: winston.format.simple()
     })
   ]
@@ -43,11 +43,6 @@ const logger = winston.createLogger({
 let productionLogger = logger;
 export default productionLogger;
 
-// export const productionLogger = (req, res, next) => {
-//   req.logger = logger;
-//   req.logger.error({ message: 'Error test' });
-//   next();
-// };
 
 
 

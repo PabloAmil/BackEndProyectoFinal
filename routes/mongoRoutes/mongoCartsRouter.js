@@ -83,8 +83,8 @@ router.put("/:id", async (req, res) => {
     let cart = await cartService.update(id, newCartContent);
     let paginatedCart = await CartsDAO.paginate({}, { page: 1, limit: 10, lean: true });
 
-    paginatedCart.prevLink = paginatedCart.hasPrevPage ? `http://localhost:8080/api/carts/${id}/page=${paginatedCart.prevPage}` : '';
-    paginatedCart.nextLink = paginatedCart.hasNextPage ? `http://localhost:8080/api/carts/${id}/page=${paginatedCart.nextPage}` : '';
+    paginatedCart.prevLink = paginatedCart.hasPrevPage ? `${process.env.SERVER_URL}/api/carts/${id}/page=${paginatedCart.prevPage}` : '';
+    paginatedCart.nextLink = paginatedCart.hasNextPage ? `${process.env.SERVER_URL}/api/carts/${id}/page=${paginatedCart.nextPage}` : '';
 
 
     res.status(200).send({
@@ -166,7 +166,7 @@ router.post("/:cartId/addProduct/:productId", passport.authenticate("jwt", { ses
         status: 200,
         result: "Success",
         payload: result,
-        redirectUrl: "http://localhost:8080/api/products"
+        redirectUrl: `${process.env.SERVER_URL}/api/products`
       });
     } else {
       res.status(401).send(`You cannot add your own product to your cart`);
@@ -245,14 +245,14 @@ router.get("/:cartId/purchase", passport.authenticate("jwt", { session: false })
       ticket: ticket
     }
 
-    const response = await axios.post('http://localhost:8080/api/payments/create-payment-intent', postData, {
+    const response = await axios.post(`${process.env.SERVER_URL}/api/payments/create-payment-intent`, postData, {
       headers: {
         'Content-Type': 'application/json',
       }
     });
     const clientSecret = response.data.clientSecret;
 
-    res.redirect(`http://localhost:8080/api/payments/checkout?clientSecret=${clientSecret}`);
+    res.redirect(`${process.env.SERVER_URL}/api/payments/checkout?clientSecret=${clientSecret}`);
 
   } catch (error) {
     res.status(500).send({

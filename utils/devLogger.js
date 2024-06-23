@@ -37,10 +37,3 @@ const logger = winston.createLogger({
 let devLogger = logger;
 export default devLogger;
 
-// export const devLogger = (req, res, next) => {
-
-//   req.logger = logger;
-//   req.logger.error('prueba info'); 
-//   //req.logger.http('./')
-//   next();
-// };

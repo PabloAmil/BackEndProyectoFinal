@@ -22,11 +22,11 @@
       {{/each}}
 
       {{#if cartContent}}
-      <button><a href="http://localhost:8080/api/carts/{{cartId}}/purchase">Purchase</a></button>
+      <button><a href="/api/carts/{{cartId}}/purchase">Purchase</a></button>
       <button id="emptyCartButton" value="{{cartId}}">Empty Cart</button>
       {{/if}}
 
-      <button><a href="http://localhost:8080/api/products">Go to products</a></button>
+      <button><a href="/api/products">Go to products</a></button>
     </ul>
   </div>
 

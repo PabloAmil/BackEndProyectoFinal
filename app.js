@@ -118,7 +118,7 @@ app.get("/success", (req, res) => {
   res.status(200).json({
     status: 200,
     message: 'Successful purchase',
-    redirectUrl: "http://localhost:8080/api/products"
+    redirectUrl: `${process.env.SERVER_URL}/api/products`
   });
 })
 
@@ -126,7 +126,7 @@ app.get("/failure", (req, res) => {
   res.status(500).json({
     status: 500,
     message: 'Failed purchase. Something went wrong with your payment.',
-    redirectUrl: "http://localhost:8080/api/products"
+    redirectUrl: `${process.env.SERVER_URL}/api/products`
   });
 })
 

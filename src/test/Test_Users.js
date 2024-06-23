@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import supertest from "supertest";
 
-const requester = supertest("http://localhost:8080/");
+const requester = supertest(process.env.SERVER_URL);
 
 describe('Testing user register, cart creation, password hashing', () => {
 

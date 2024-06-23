@@ -4,7 +4,7 @@ const eraseItemButtons = document.querySelectorAll('.eraseItemButton');
 if (emptyCartButton) {
   emptyCartButton.addEventListener('click', async () => {
     const cartId = emptyCartButton.value;
-    const response = await fetch(`http://localhost:8080/api/carts/${cartId}`, {
+    const response = await fetch(`${process.env.SERVER_URL}/api/carts/${cartId}`, {
       method: 'DELETE'
     });
     if (response.ok) {
@@ -21,7 +21,7 @@ eraseItemButtons.forEach(button => {
     let itemId = button.getAttribute('data-item-id');
     let cartId = button.getAttribute('data-cart-id');
 
-    const response = await fetch(`http://localhost:8080/api/carts/${cartId}/products/${itemId}`, {
+    const response = await fetch(`${process.env.SERVER_URL}/api/carts/${cartId}/products/${itemId}`, {
       method: 'DELETE'
     });
 

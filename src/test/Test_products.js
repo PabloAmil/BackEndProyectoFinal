@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import supertest from "supertest";
 
-const requester = supertest("http://localhost:8080/");
+const requester = supertest(process.env.SERVER_URL);
 
 describe('All fields are complete, jwt created succesfully, product is saved correctly', () => {
 
