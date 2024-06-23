@@ -355,6 +355,8 @@ paths:
       summary: Delete outdated users (Admin only)
       tags:
         - Users
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: Deleted outdated users successfully
@@ -463,6 +465,12 @@ paths:
           description: Failed to modify a user
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     Cart:
       type: object
@@ -545,4 +553,3 @@ components:
         - email
         - password
         - role
-

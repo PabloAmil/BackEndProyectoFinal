@@ -59,11 +59,14 @@ router.get("/premium/:uid", passport.authenticate("jwt", { session: false }), as
   }
 });
 
-
 router.get("/:uid/documents", passport.authenticate("jwt", { session: false }), async (req, res) => {
   let uid = req.params.uid;
-  res.render("upload-documents", { uid });
+  res.render("upload-documents", {
+    uid: uid,
+    style: "documents.css"
+  });
 });
+
 
 router.post("/:uid/documents", passport.authenticate("jwt", { session: false }), upload.fields([
   { name: 'profile', maxCount: 1 },

@@ -13,35 +13,48 @@ router.get('/', (req, res) => {
 router.get('/home', (req, res) => { 
 
   if (req.user) {
-    res.render("profile");
+    res.render("profile", { 
+    });
   } 
   else {
     res.render("home");
   }
 })
 
-router.get('/register', (req, res)=> {
-  res.render("register");
-})
+router.get('/register', (req, res) => {
+  res.render("register", {
+    style: "register.css"
+  });
+});
+
 
 router.get("/login", (req, res)=> { 
 
   if (req.user) {
     res.redirect("/profile");
   } else {
-    res.render("login");
+    res.render("login", {
+      style: "login.css"
+    });
   }
 })
 
-router.get("/profile",  passport.authenticate("jwt", {session: false}), async (req, res)=> {
-
-  if (req.user) {
-    let user = await UsersDAO.getUserById(req.user._id);
-    res.render("profile", {user});
-  } else {
-    res.redirect("/login");
+router.get("/profile", passport.authenticate("jwt", { session: false }), async (req, res) => {
+  try {
+    if (req.user) {
+      let user = await UsersDAO.getUserById(req.user._id);
+      res.render("profile", {
+        user,
+        style: "profile.css"
+      });
+    } else {
+      res.redirect("/login");
+    }
+  } catch (err) {
+    console.error('Error fetching user profile:', err);
+    res.status(500).send("Internal Server Error");
   }
-}) 
+});
 
 router.get("/reset-password", (req, res) => {
   res.render("reset-password");

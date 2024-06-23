@@ -3,22 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playwrite+DE+Grund:wght@100..400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/login.css">
   <title>Document</title>
 </head>
 
 <body>
   <h1>Log in</h1>
 
-  <form method="post" action="/api/sessions/login">
-    <input type="text" name="email" placeholder="Email">
-    <input type="password" name="password" placeholder="password">
-    <input type="submit" value="Log in!">
-  </form>
-  <div>
-    <a href="/api/sessions/github"><button>Log in with github</button></a>
+  <div class="login-form">
+    <form method="post" action="/api/sessions/login" class="form">
+      <input type="text" name="email" placeholder="Email">
+      <input type="password" name="password" placeholder="password">
+      <input type="submit" value="Log in!" class="submit-button">
+    </form>
   </div>
 
-  <a href="/reset-password/">I forgot my password</a>
+  <div class="other-options">
+    <a href="/api/sessions/github"><button>Log in with github</button></a>
+    <a href="/reset-password/" class="I-forgot">I forgot my password</a>
+  </div>
 </body>
 
 </html>

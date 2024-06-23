@@ -38,7 +38,9 @@ router.post('/register', async (req, res) => {
     let result = await userService.insertUser(newUser);
 
     logger.info('User successfully registered');
-    res.send({ status: "succes", message: "user registered" });
+
+    //res.send({ status: "succes", message: "user registered" });
+    res.status(200).redirect('/login');
 
   } catch (error) {
     logger.error('Failed to register user', error);
@@ -82,7 +84,9 @@ router.post("/login", async (req, res) => {
         signed: true,
         httpOnly: true,
         maxAge: 1000 * 60 * 60
-      }).json({ status: 200, msg: "loggend in" });
+      });
+
+      res.status(200).redirect('/profile');
     }
   } catch (err) {
     logger.warning('User not found', err)

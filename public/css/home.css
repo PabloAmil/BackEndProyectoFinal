@@ -1,5 +1,5 @@
 body {
-  background:  #113f67; 
+  background:  #d8dcdf; 
 } 
 
 h1 {
@@ -7,5 +7,27 @@ h1 {
   margin-bottom: 1em;
   font-size: 50px;
   text-align: center;
-  font-family: "Protest Guerrilla", sans-serif;
+  font-family: "Playwrite DE Grund", cursive;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.title-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.login-or-register {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+a {
+  text-decoration: none;
+  font-family: "Playwrite DE Grund", cursive;
+  color: black;
+  font-size: 2rem;
+  font-weight: 500;
 }

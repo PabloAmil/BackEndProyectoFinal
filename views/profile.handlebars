@@ -1,15 +1,45 @@
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playwrite+DE+Grund:wght@100..400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/profile.css">
   <title>Document</title>
 </head>
+
 <body>
   <h1>Welcome, {{user.first_name}}</h1>
+  <h3>What do you want to do?</h3>
 
-  <p>Email: {{user.email}}</p>
+  <div class="options">
 
-  <a href="/api/products/">products</a>
-  <a href="/api/sessions/logout">logout</a>
+    <button>
+      <a href="../api/products/">Go to the store</a>
+    </button>
+
+    <button>
+      <a href="../api/products/new">Create a product</a>
+    </button>
+
+    <button>
+      <a href="../api/users/{{user._id}}/documents">Upload my documents</a>
+    </button>
+
+    <button>
+      <a href="../api/users//premium/{{user._id}}">Change my role</a>
+    </button>
+
+    <button>
+      <a href="../api/users/admin-control-panel">Go to Admin Control Panel - Admins Only</a>
+    </button>
+
+    <button>
+      <a href="../api/sessions/logout">logout</a>
+    </button>
+  </div>
 </body>
+
 </html>
