@@ -15,6 +15,7 @@ export default {
   prodEnviorment: process.env.PROD,
   gmailUSer: process.env.GUSER,
   gmailPass: process.env.GPASS,
+  serverUrl: process.env.SERVER_URL
 }
 
 

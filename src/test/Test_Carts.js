@@ -1,7 +1,8 @@
 import { expect } from 'chai';
 import supertest from 'supertest';
+import config from '../config/config';
 
-const requester = supertest(process.env.SERVER_URL);
+const requester = supertest(config.serverUrl);
 
 const testConfig = {
   jwt_secret: process.env.JWT_SECRET,

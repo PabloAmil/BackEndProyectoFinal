@@ -4,6 +4,7 @@ import checkDocuments from "../../utils/documentation.check.js";
 import passport from "passport";
 import userService from "../../src/repositories/usersRepository.js";
 import checkPermissions from "../../utils/auth.middleware.js";
+import config from "../../src/config/config.js";
 
 const router = Router();
 
@@ -96,7 +97,10 @@ router.post("/:uid/documents", passport.authenticate("jwt", { session: false }),
 router.get("/admin-control-panel", passport.authenticate("jwt", { session: false }), checkPermissions("Admin"), async (req, res) => {
 
   let users = await userService.getUsers()
+  let serverUrl = config.serverUrl;
+
   res.render('admin-control-panel', {
+    serverUrl,
     users,
     style: "admin-control-panel.css"
   });

@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    fetch(`${process.env.SERVER_URL}/api/users/admin-control-panel`, {
+    fetch(`${config.serverUrl}/api/users/admin-control-panel`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

@@ -140,7 +140,7 @@ router.post("/reset-password", async (req, res) => {
       html: `
       <div>
         <h1> Reset Password </h1>
-        <a href="http://localhost:8080/change-password?id=${userId}&date=${date}"> <button> Reset password </button></a>
+        <a href="${config.serverUrl}/change-password?id=${userId}&date=${date}"> <button> Reset password </button></a>
       </div>
       `,
       attachments: []

@@ -67,8 +67,8 @@ router.get("/", optionalAuthenticate, async (req, res) => {
 
     let products = await ProductsDAO.paginate(filter, { page, limit, lean: true, sort: { price: sort } })
 
-    products.prevLink = products.hasPrevPage ? `${process.env.SERVER_URL}/api/products/page=${products.prevPage}` : '';
-    products.nextLink = products.hasNextPage ? `${process.env.SERVER_URL}/api/products/page=${products.nextPage}` : '';
+    products.prevLink = products.hasPrevPage ? `${config.serverUrl}/api/products/page=${products.prevPage}` : '';
+    products.nextLink = products.hasNextPage ? `${config.serverUrl}/api/products/page=${products.nextPage}` : '';
 
     res.render("products", {
       style: 'products.css',
