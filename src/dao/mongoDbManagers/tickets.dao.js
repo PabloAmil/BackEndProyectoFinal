@@ -38,7 +38,6 @@ class ticketsDAO {
     });
 
     for (let product in Ids) {
-      
       let productToReview = await ProductsDAO.getById(product);
 
       if (productToReview.stock > Ids[product]) {
@@ -70,7 +69,7 @@ class ticketsDAO {
 
   static async createTicket(user) {
     try {
-      return new ticketModel({ code: await ticketsDAO.generateCode(25), purchase_datetime: await ticketsDAO.getDatetime(), amount: await ticketsDAO.checkStock(user.cart), purchaser: user.email }).save();
+      return await new ticketModel({ code: await ticketsDAO.generateCode(25), purchase_datetime: await ticketsDAO.getDatetime(), amount: await ticketsDAO.checkStock(user.cart), purchaser: user._id }).save();
     } catch (e) {
       console.log(`something went wrong with your purchase ` + e);
     }

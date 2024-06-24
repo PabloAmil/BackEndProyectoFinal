@@ -12,6 +12,7 @@ import initializePassport from "./src/dao/passport.config.js";
 import passport from "passport";
 import config from "./src/config/config.js";
 import exphbs from 'express-handlebars';
+import ticketModel from "./schemas/tickets.schema.js";
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -51,13 +52,13 @@ const swaggerOptions = {
       description: 'Store oriented API'
     }
   },
-  apis:[`${__dirname}/docs/**/*.yaml`]
+  apis: [`${__dirname}/docs/**/*.yaml`]
 }
 
 const specs = swaggerJSDoc(swaggerOptions);
 app.use("/apidocs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
 
-app.engine('handlebars', engine({ 
+app.engine('handlebars', engine({
   helpers: {
     eq: (a, b) => a === b
   }
@@ -72,7 +73,7 @@ app.use(express.static('public'));
 app.use(cookieParser("secret_cookie"));
 
 
-handlebars.registerHelper('json', function(context) {
+handlebars.registerHelper('json', function (context) {
   return JSON.stringify(context);
 });
 
@@ -90,7 +91,7 @@ app.use(session({
     mongoUrl: config.atlas_mongo_url,
     ttl: 900,
   }),
-  secret: config.session_secret, 
+  secret: config.session_secret,
   resave: true,
   saveUninitialized: true
 }))
@@ -103,7 +104,7 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/messages", chatRouter);
 app.use("/api/sessions", sessionRouter);
-app.use("/api/users", usersRouter); 
+app.use("/api/users", usersRouter);
 app.use("/", viewsRouter);
 app.use('/api/payments', paymentRouter)
 
@@ -114,13 +115,28 @@ app.get("/", (req, res) => {
   });
 })
 
-app.get("/success", (req, res) => {
-  res.status(200).json({
-    status: 200,
-    message: 'Successful purchase',
-    redirectUrl: `${config.serverUrl}/api/products`
-  });
-})
+app.get("/success", passport.authenticate("jwt", { session: false }), async (req, res) => {
+
+  try {
+    const user = req.user;
+    const tickets = await ticketModel.find({ purchaser: user._id }).lean();  
+
+    if (tickets) {
+      let ticket = tickets[tickets.length -1]
+      res.render("success", {
+        user,
+        ticket
+      });
+    } else {
+      res.redirect('/');
+    }
+  } catch (error) {
+    res.status(500).send({
+      message: 'Error in GET request',
+      error: error.message
+    });
+  }
+});
 
 app.get("/failure", (req, res) => {
   res.status(500).json({
@@ -152,7 +168,7 @@ export default logger;
 
 //mongoose.connect(config.local_mongo_url);
 mongoose.connect(config.atlas_mongo_url);
-httpServer.listen(process.env.PORT, () => logger.info("now initializing server")); 
+httpServer.listen(process.env.PORT, () => logger.info("now initializing server"));
 
 
 

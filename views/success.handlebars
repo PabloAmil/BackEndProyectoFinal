@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>  
+    <h2> Success! </h2>
+    <h4>Your ticket: </h4>
+
+    <div class="ticket">
+      <h5>Code: {{ticket.code}}</h5>
+      <p>User: {{user.email}}</p>
+      <p>Amount: {{ticket.amount}}</p>
+      <p>Date: {{ticket.purchase_datetime}}</p>
+    </div>
+
+    <button><a href="/api/products">Continue Shopping</a></button>
+
+</body>
+</html>

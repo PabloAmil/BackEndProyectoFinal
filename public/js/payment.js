@@ -29,7 +29,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.error(error);
       window.location.href = '/failure';
     } else {
-      console.log('Payment successful!', paymentIntent);
       window.location.href = '/success';
     }
   });

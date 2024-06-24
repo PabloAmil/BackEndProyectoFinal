@@ -165,12 +165,8 @@ router.post("/:cartId/addProduct/:productId", passport.authenticate("jwt", { ses
       cart.content.push(product);
       let result = await cartService.update(cartId, cart);
       
-      res.status(200).json({
-        status: 200,
-        result: "Success",
-        payload: result,
-        redirectUrl: `${config.serverUrl}/api/products`
-      });
+      res.redirect(`${config.serverUrl}/api/carts/${cartId}`);
+
     } else {
       res.status(401).send(`You cannot add your own product to your cart`);
     }
