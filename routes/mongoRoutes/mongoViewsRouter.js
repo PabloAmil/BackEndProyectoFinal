@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
   res.redirect('/home');
 })
 
-router.get('/home', checkAuthMethod, (req, res) => { 
+router.get('/home', (req, res) => { 
 
   if (req.user) {
     res.redirect("/profile");
@@ -27,14 +27,13 @@ router.get('/register', (req, res) => {
   });
 });
 
-
 router.get("/login", (req, res)=> { 
 
   if (req.session) {
     req.session.destroy;
   }
 
-  if (req.user) {
+  if (req.user || req.session.user) {
     res.redirect("/profile");
   } else {
     res.render("login", {
