@@ -38,6 +38,7 @@ router.get("/login", (req, res)=> {
     res.redirect(`${config.serverUrl}/profile`);
   } else {
     res.render("login", {
+      url: config.serverUrl,
       style: "login.css"
     });
   }
