@@ -4,6 +4,7 @@ import passport from "passport";
 import logger from "../../app.js";
 import checkDate from "../../utils/dateChecker.js";
 import checkAuthMethod from "../../utils/checkAuthMethod.js";
+import { config } from "dotenv";
 
 const router = Router();
 
@@ -34,7 +35,7 @@ router.get("/login", (req, res)=> {
   }
 
   if (req.user || req.session.user) {
-    res.redirect("/profile");
+    res.redirect(`${config.serverUrl}/profile`);
   } else {
     res.render("login", {
       style: "login.css"
@@ -54,7 +55,7 @@ router.get("/profile", checkAuthMethod, async (req, res) => {
         style: "profile.css"
       });
     } else {
-      res.redirect("/login");
+      res.redirect(`${config.serverUrl}/login`);
     }
   } catch (err) {
     console.error('Error fetching user profile:', err);
