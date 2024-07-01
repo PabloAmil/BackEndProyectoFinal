@@ -34,7 +34,8 @@ const initializePassport = () => {
         let updatedUser = await userService.updateUsers(user.email, user);
         let storedUser = await userService.returnFormatedDataFromDAO(user);
         const token = jwt.sign({ id: storedUser._id }, config.jwt_secret, { expiresIn: '1h' });
-
+        storedUser.token = token;
+        
         done(null, storedUser);
       }
     } catch (e) {
