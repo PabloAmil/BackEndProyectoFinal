@@ -66,3 +66,7 @@ RAILWAY APP:
 
 https://backendproyectofinal-production-d3ca.up.railway.app
 
+
+CHANGE ENV VARIABLE TO 
+
+CALLBACK_URL: https://backendproyectofinal-production-d3ca.up.railway.app/api/sessions/githubcallback
