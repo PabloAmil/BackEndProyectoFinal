@@ -55,6 +55,10 @@ router.get('/failregister', async (req, res) => {
 
 router.post("/login", async (req, res) => {
 
+  if (req.session) {
+    req.session.destroy;
+  }
+
   let email = req.body.email;
   let userPassword = req.body.password;
 

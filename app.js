@@ -13,6 +13,7 @@ import passport from "passport";
 import config from "./src/config/config.js";
 import exphbs from 'express-handlebars';
 import ticketModel from "./schemas/tickets.schema.js";
+import checkAuthMethod from "./utils/checkAuthMethod.js";
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -115,7 +116,7 @@ app.get("/", (req, res) => {
   });
 })
 
-app.get("/success", passport.authenticate("jwt", { session: false }), async (req, res) => {
+app.get("/success", checkAuthMethod, async (req, res) => {
 
   try {
     const user = req.user;

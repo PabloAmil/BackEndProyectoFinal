@@ -5,6 +5,7 @@ import passport from "passport";
 import userService from "../../src/repositories/usersRepository.js";
 import checkPermissions from "../../utils/auth.middleware.js";
 import config from "../../src/config/config.js";
+import checkAuthMethod from "../../utils/checkAuthMethod.js";
 
 const router = Router();
 
@@ -26,7 +27,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/delete', passport.authenticate("jwt", { session: false }), checkPermissions("Admin"), async (req, res) => {
+router.get('/delete', checkAuthMethod, checkPermissions("Admin"), async (req, res) => {
+
   try {
     let users = await userService.deleteOutOfDateUsers();
     res.send(users);
@@ -35,7 +37,7 @@ router.get('/delete', passport.authenticate("jwt", { session: false }), checkPer
   }
 })
 
-router.get("/premium/:uid", passport.authenticate("jwt", { session: false }), async (req, res) => {
+router.get("/premium/:uid", checkAuthMethod, async (req, res) => {
 
   let id = req.params.uid;
   let user = await userService.getUserById(id);
@@ -59,7 +61,8 @@ router.get("/premium/:uid", passport.authenticate("jwt", { session: false }), as
   }
 });
 
-router.get("/:uid/documents", passport.authenticate("jwt", { session: false }), async (req, res) => {
+router.get("/:uid/documents", checkAuthMethod, async (req, res) => {
+
   let uid = req.params.uid;
   res.render("upload-documents", {
     uid: uid,
@@ -68,7 +71,7 @@ router.get("/:uid/documents", passport.authenticate("jwt", { session: false }), 
 });
 
 
-router.post("/:uid/documents", passport.authenticate("jwt", { session: false }), upload.fields([
+router.post("/:uid/documents", upload.fields([
   { name: 'profile', maxCount: 1 },
   { name: 'product', maxCount: 1 },
   { name: 'document', maxCount: 10 }
@@ -97,7 +100,7 @@ router.post("/:uid/documents", passport.authenticate("jwt", { session: false }),
   }
 });
 
-router.get("/admin-control-panel", passport.authenticate("jwt", { session: false }), checkPermissions("Admin"), async (req, res) => {
+router.get("/admin-control-panel", checkAuthMethod, checkPermissions("Admin"), async (req, res) => {
 
   let users = await userService.getUsers()
   let serverUrl = config.serverUrl;

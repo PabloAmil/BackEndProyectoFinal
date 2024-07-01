@@ -9,6 +9,7 @@ import transport from "../../src/config/mailing.js";
 import userService from "../../src/repositories/usersRepository.js";
 import config from "../../src/config/config.js";
 import optionalAuthenticate from "../../utils/optional.authenticate.js";
+import checkAuthMethod from "../../utils/checkAuthMethod.js";
 
 const router = Router();
 
@@ -90,7 +91,8 @@ router.get("/", optionalAuthenticate, async (req, res) => {
 });
 
 // create product
-router.get("/new", passport.authenticate("jwt", { session: false }), checkPermissions("Premium"), (req, res) => {
+router.get("/new", checkAuthMethod, checkPermissions("Premium"), (req, res) => {
+
 
   if (req.user) {
     res.render("new-product", {
@@ -104,7 +106,7 @@ router.get("/new", passport.authenticate("jwt", { session: false }), checkPermis
 
 
 // get product by id
-router.get("/:id", passport.authenticate("jwt", { session: false }), checkPermissions("User"), async (req, res) => {
+router.get("/:id", checkAuthMethod, checkPermissions("User"), async (req, res) => {
 
   const user = req.user;
   const cartId = user.cart;
@@ -141,8 +143,7 @@ router.get("/:id", passport.authenticate("jwt", { session: false }), checkPermis
   }
 })
 
-
-router.post("/", upload.single('image'), passport.authenticate("jwt", { session: false }), async (req, res) => {
+router.post("/", upload.single('image'), checkAuthMethod, async (req, res) => {
 
   let filename = req.file.filename;
   let owner = req.user.email
@@ -164,7 +165,7 @@ router.post("/", upload.single('image'), passport.authenticate("jwt", { session:
 });
 
 // delete product
-router.get("/delete/:id", passport.authenticate("jwt", { session: false }), async (req, res) => {
+router.get("/delete/:id", checkAuthMethod, async (req, res) => {
 
   try {
     let id = req.params?.id;
@@ -210,7 +211,7 @@ router.get("/delete/:id", passport.authenticate("jwt", { session: false }), asyn
 
 
 // update product
-router.get("/product-edit/:id", passport.authenticate("jwt", { session: false }), checkPermissions("Admin"), async (req, res) => {
+router.get("/product-edit/:id", checkAuthMethod, checkPermissions("Admin"), async (req, res) => {
 
   let id = req.params?.id;
 

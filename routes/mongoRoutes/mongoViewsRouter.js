@@ -3,6 +3,7 @@ import UsersDAO from "../../src/dao/mongoDbManagers/usersDbManager.js";
 import passport from "passport";
 import logger from "../../app.js";
 import checkDate from "../../utils/dateChecker.js";
+import checkAuthMethod from "../../utils/checkAuthMethod.js";
 
 const router = Router();
 
@@ -10,11 +11,10 @@ router.get('/', (req, res) => {
   res.redirect('/home');
 })
 
-router.get('/home', (req, res) => { 
+router.get('/home', checkAuthMethod, (req, res) => { 
 
   if (req.user) {
-    res.render("profile", { 
-    });
+    res.redirect("/profile");
   } 
   else {
     res.render("home");
@@ -30,6 +30,10 @@ router.get('/register', (req, res) => {
 
 router.get("/login", (req, res)=> { 
 
+  if (req.session) {
+    req.session.destroy;
+  }
+
   if (req.user) {
     res.redirect("/profile");
   } else {
@@ -39,9 +43,12 @@ router.get("/login", (req, res)=> {
   }
 })
 
-router.get("/profile", passport.authenticate("jwt", { session: false }), async (req, res) => {
+router.get("/profile", checkAuthMethod, async (req, res) => {
   try {
     if (req.user) {
+
+      console.log(req.user);
+
       let user = await UsersDAO.getUserById(req.user._id);
       res.render("profile", {
         user,

@@ -1,10 +1,7 @@
 import passport from "passport";
-import jwt from "jsonwebtoken";
 
-const optionalAuthenticate = (req, res, next) => {
-  
+const checkAuthMethod = (req, res, next) => {
   if (req.session && req.session.user) {
-    
     req.user = {
       first_name: req.session.user.first_name,
       last_name: req.session.user.last_name,
@@ -15,13 +12,8 @@ const optionalAuthenticate = (req, res, next) => {
     };
     next();
   } else {
-    
-    passport.authenticate("jwt", { session: false }, (err, user, info) => {
-      if (err) return next(err);
-      if (user) req.user = user; 
-      next();
-    })(req, res, next);
+    passport.authenticate('jwt', { session: false })(req, res, next);
   }
 };
 
-export default optionalAuthenticate;
+export default checkAuthMethod;

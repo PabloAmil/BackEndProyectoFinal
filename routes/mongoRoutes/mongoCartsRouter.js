@@ -8,6 +8,7 @@ import ProductsDAO from "../../src/dao/mongoDbManagers/productsDbManager.js";
 import axios from 'axios';
 import Stripe from 'stripe';
 import config from "../../src/config/config.js";
+import checkAuthMethod from "../../utils/checkAuthMethod.js";
 
 const router = Router();
 const stripe = new Stripe(process.env.STRIPE_PRIVATE_KEY);
@@ -23,7 +24,7 @@ router.get('/', async (req, res) => {
   }
 })
 
-router.get('/new', passport.authenticate("jwt", { session: false }), checkPermissions('Admin'), async (req, res) => { 
+router.get('/new', checkAuthMethod, checkPermissions('Admin'), async (req, res) => { 
 
   try {
     let dummyCart = await cartService.create()
@@ -147,7 +148,7 @@ router.put("/:cartId/products/:productId", async (req, res) => {
 
 
 // add product to cart
-router.post("/:cartId/addProduct/:productId", passport.authenticate("jwt", { session: false }), checkPermissions('User'), async (req, res) => {
+router.post("/:cartId/addProduct/:productId", checkAuthMethod, checkPermissions('User'), async (req, res) => {
 
   if (!req.user) {
     return res.status(401)
@@ -234,7 +235,7 @@ router.delete("/:cartId/products/:productId", async (req, res) => {
 });
 
 // purchase products
-router.get("/:cartId/purchase", passport.authenticate("jwt", { session: false }), checkPermissions("User"), async (req, res) => {
+router.get("/:cartId/purchase", checkAuthMethod, checkPermissions("User"), async (req, res) => {
 
   try {
     const user = req.user;
