@@ -9,6 +9,7 @@ import logger from "../../app.js";
 import transport from "../../src/config/mailing.js";
 import intputChecker from "../../utils/inputChecker.js";
 import getConnectionTime from "../../utils/getConnectionTime.js";
+import checkAuthMethod from "../../utils/checkAuthMethod.js";
 //import checkPermissions from "../../utils/auth.middleware.js";
 
 const router = Router();
@@ -90,7 +91,7 @@ router.post("/login", async (req, res) => {
         maxAge: 1000 * 60 * 60
       });
 
-      res.status(200).redirect('/profile');
+      res.status(200).redirect(`${config.serverUrl}/profile`);
     }
   } catch (err) {
     logger.warning('User not found', err)
@@ -110,7 +111,7 @@ router.post("/change-password", async (req, res) => {
 
     if (isValidPassword(password, user.password)) {
       console.log("The new password cannot be the same as the old one");
-      res.redirect('/change-password');
+      res.redirect(`${SERVER_URL}/change-password`);
     } else {
       user.password = createHash(password); 
       await userService.updateUsers(email, user);
@@ -136,7 +137,7 @@ router.post("/reset-password", async (req, res) => {
 
     if (!user) {
       logger.info('user not found');
-      res.redirect("/register");
+      res.redirect(`${config.serverUrl}/register`);
     }
     const requestTime = new Date();
     let userId = createHash(user._id.toString());
@@ -170,7 +171,7 @@ router.get('/githubcallback', passport.authenticate('github', { failureRedirect:
   res.redirect('/');
 })
 
-router.get("/current", passport.authenticate("jwt", { session: false }), (req, res) => {
+router.get("/current", checkAuthMethod, (req, res) => {
   logger.info(JSON.stringify(req.user));
   res.json(req.user);
 })
