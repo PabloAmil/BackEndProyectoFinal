@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
 
 router.get('/home', (req, res) => { 
 
-  if (req.user) {
+  if (req.user || req.session.user) {
     res.redirect("/profile");
   } 
   else {
